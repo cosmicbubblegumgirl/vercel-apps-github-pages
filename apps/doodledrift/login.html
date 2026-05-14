@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DoodleDrift | Enter the Den</title>
+  <link rel="icon" href="assets/doodledrift-icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="github-pages-api.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body data-page="login">
+  <header class="topbar">
+    <div class="nav-inner">
+      <a class="brand" href="index.html"><img class="brand-logo" src="assets/doodledrift-logo.svg" alt="DoodleDrift"></a>
+      <nav class="nav-links" aria-label="Primary">
+        <a data-nav="home" href="index.html">Doodle Feed</a>
+        <a data-nav="canvas" href="canvas-cave.html">Canvas Cave</a>
+        <a data-nav="music" href="echo-forest.html">Echo Forest</a>
+        <a data-nav="blog" href="blog-burrow.html">Blog Burrow</a>
+        <a data-nav="mood" href="mood-meadow.html">Mood Meadow</a>
+        <a data-nav="clips" href="clips.html">Cloud Clips</a>
+      </nav>
+      <div id="accountActions" class="account-actions"><button class="theme-toggle" type="button" data-theme-toggle>Dark</button></div>
+    </div>
+  </header>
+
+  <main class="auth-shell">
+    <section class="auth-visual" aria-label="DoodleDrift fantasy artwork"></section>
+    <section class="auth-panel">
+      <p class="eyebrow">DoodleDen</p>
+      <h1>Enter the Den</h1>
+      <p class="lede">Begin Your Drift or return to your DoodleDen to save Cloud Clips, Glow Doodles, and leave Echoes.</p>
+      <div class="tabs">
+        <button class="active" type="button" data-auth-tab="login">Enter the Den</button>
+        <button type="button" data-auth-tab="register">Begin Your Drift</button>
+      </div>
+      <form id="loginForm" class="auth-form">
+        <label>Doodle Name or email
+          <input name="username" placeholder="QuantumCupcake or you@example.com" autocomplete="username" required>
+        </label>
+        <label>Password
+          <input name="password" type="password" placeholder="Your password" autocomplete="current-password" required>
+        </label>
+        <button class="button" type="submit">Enter the Den</button>
+      </form>
+      <form id="registerForm" class="auth-form hidden">
+        <label>Display name
+          <input name="displayName" placeholder="Moon Fern" autocomplete="name" required>
+        </label>
+        <label>Doodle Name
+          <input name="username" placeholder="moonfern" autocomplete="username" required>
+        </label>
+        <label>Email
+          <input name="email" type="email" placeholder="you@example.com" autocomplete="email" required>
+        </label>
+        <label>Password
+          <input name="password" type="password" minlength="8" autocomplete="new-password" required>
+        </label>
+        <button class="button" type="submit">Begin Your Drift</button>
+      </form>
+    </section>
+  </main>
+
+  <footer class="footer"><strong>A quantum cupcake creation</strong></footer>
+</body>
+</html>

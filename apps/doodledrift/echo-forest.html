@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DoodleDrift | Echo Forest</title>
+  <link rel="icon" href="assets/doodledrift-icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="github-pages-api.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body data-page="music">
+  <header class="topbar">
+    <div class="nav-inner">
+      <a class="brand" href="index.html"><img class="brand-logo" src="assets/doodledrift-logo.svg" alt="DoodleDrift"></a>
+      <nav class="nav-links" aria-label="Primary">
+        <a data-nav="home" href="index.html">Doodle Feed</a>
+        <a data-nav="canvas" href="canvas-cave.html">Canvas Cave</a>
+        <a data-nav="music" href="echo-forest.html">Echo Forest</a>
+        <a data-nav="blog" href="blog-burrow.html">Blog Burrow</a>
+        <a data-nav="mood" href="mood-meadow.html">Mood Meadow</a>
+        <a data-nav="prompts" href="prompt-potion.html">Prompt Potion</a>
+        <a data-nav="clips" href="clips.html">Cloud Clips</a>
+      </nav>
+      <div id="accountActions" class="account-actions"><button class="theme-toggle" type="button" data-theme-toggle>Dark</button></div>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <section class="page-head">
+      <div>
+        <p class="eyebrow">Echo Forest</p>
+        <h1>Tap a little forest of tones.</h1>
+        <p class="lede">Play soft sound pads, try mood playlists, then share an Echo Doodle with a tempo and reflection.</p>
+      </div>
+    </section>
+
+    <section class="grid-two">
+      <div class="sound-stage">
+        <div class="wave-line" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <div class="sound-garden">
+          <button class="note-pad" type="button" data-freq="196">Root</button>
+          <button class="note-pad" type="button" data-freq="246.94">Leaf</button>
+          <button class="note-pad" type="button" data-freq="293.66">Rain</button>
+          <button class="note-pad" type="button" data-freq="329.63">Glow</button>
+          <button class="note-pad" type="button" data-freq="392">Moon</button>
+          <button class="note-pad" type="button" data-freq="440">Spark</button>
+          <button class="note-pad" type="button" data-freq="523.25">Cloud</button>
+          <button class="note-pad" type="button" data-freq="659.25">Star</button>
+        </div>
+        <div class="range-row">
+          <span>Tempo</span>
+          <input id="tempo" type="range" min="44" max="132" value="72">
+          <strong id="tempoValue">72</strong>
+        </div>
+        <button id="playPattern" class="button" type="button">Play Forest Pattern</button>
+      </div>
+
+      <aside class="panel">
+        <h2>Mood Playlists</h2>
+        <div id="playlistGrid" class="playlist-grid"></div>
+        <form id="musicDoodleForm" class="form-grid">
+          <label>Song name
+            <input name="songName" placeholder="Lantern Sleep Loop">
+          </label>
+          <label>Title
+            <input name="title" placeholder="Three notes for courage" required>
+          </label>
+          <label>Sound journal
+            <textarea name="body" placeholder="What did the pattern help you notice?" required></textarea>
+          </label>
+          <div class="form-grid two">
+            <label>Mood
+              <input name="mood" placeholder="Cozy">
+            </label>
+            <label>Tags
+              <input name="tags" placeholder="ambient, breath">
+            </label>
+          </div>
+          <button class="button" type="submit">Share Echo Doodle</button>
+        </form>
+      </aside>
+    </section>
+  </main>
+
+  <footer class="footer"><strong>A quantum cupcake creation</strong></footer>
+</body>
+</html>

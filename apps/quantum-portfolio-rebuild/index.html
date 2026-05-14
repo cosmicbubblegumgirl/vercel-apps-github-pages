@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Simoné Govender | Interactive Portfolio</title>
+    <meta
+      name="description"
+      content="Employer-focused interactive portfolio for Simoné Govender: proof, build logs, skills timeline, resume filters, and live demo lab."
+    />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#proof" aria-label="Simoné Govender portfolio home">
+        <img class="brand-mark" src="assets/qc-logo.svg" alt="" />
+        <span>
+          <strong>Simoné Govender</strong>
+          <small>QuantumCupCakeCreations</small>
+        </span>
+      </a>
+      <nav aria-label="Portfolio sections">
+        <a href="#timeline">Timeline</a>
+        <a href="#logs">Build logs</a>
+        <a href="#credly">Badges</a>
+        <a href="#resume">Resume</a>
+        <a href="#lab">Demo lab</a>
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode">
+          <span aria-hidden="true">&#9679;</span>
+        </button>
+      </nav>
+    </header>
+
+    <main>
+      <section id="proof" class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Proof-first portfolio</p>
+          <h1>Creative full-stack web developer building useful, memorable digital experiences.</h1>
+          <p>
+            I turn messy ideas into polished, people-friendly web experiences: playful visuals, practical data thinking,
+            clear UX, and code that keeps the product useful after the first wow.
+          </p>
+          <div class="hero-actions" aria-label="Primary actions">
+            <a class="button primary" href="#lab">Explore builds</a>
+            <a class="button" href="assets/Simone_Govender_Web_Developer_Resume.pdf" download>Download resume</a>
+            <a class="button" href="assets/Simone_Govender_Web_Developer_Resume.docx" download>DOCX resume</a>
+            <a class="button" href="https://za.linkedin.com/in/simone-govender-91b8b2353" target="_blank" rel="noreferrer">LinkedIn source</a>
+          </div>
+        </div>
+
+        <div class="hero-showcase" aria-label="Portrait and portfolio proof">
+          <figure class="portrait-frame">
+            <img src="assets/simone-profile.png" alt="Portrait of Simoné Govender" />
+            <figcaption>
+              <strong>Simoné Govender</strong>
+              <span>Full-stack web developer with a teacher's clarity and a maker's eye for useful detail.</span>
+            </figcaption>
+          </figure>
+          <div class="proof-panel" aria-label="Portfolio proof metrics">
+            <article>
+              <strong>11</strong>
+              <span>public Credly badges across full-stack JavaScript, cloud-native delivery, and analytics.</span>
+            </article>
+            <article>
+              <strong>11</strong>
+              <span>published, recent, and new builds organised by employer problem type.</span>
+            </article>
+            <article>
+              <strong>2026</strong>
+              <span>IBM Full-Stack JavaScript Developer Professional Certificate completed on Credly.</span>
+            </article>
+            <article>
+              <strong>2014-2018</strong>
+              <span>University of KwaZulu-Natal Bachelor of Education foundation sourced from LinkedIn.</span>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="achievements" class="section achievement-section">
+        <div class="section-heading">
+          <p class="eyebrow">Certificate gallery</p>
+          <h2>Professional tech, data, UX, career, and degree certificates</h2>
+        </div>
+        <div class="achievement-grid" id="achievementGrid"></div>
+      </section>
+
+      <section id="credly" class="section credly-section">
+        <div class="section-heading">
+          <p class="eyebrow">Credly badge wall</p>
+          <h2>Verified badges from the public Credly profile</h2>
+        </div>
+        <div class="credly-grid" id="credlyGrid"></div>
+        <a
+          class="credly-profile-link"
+          href="https://www.credly.com/users/simone-govender.627f03de/badges#credly"
+          target="_blank"
+          rel="noreferrer"
+        >
+          View full Credly profile
+        </a>
+      </section>
+
+      <section id="timeline" class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Interactive project timeline</p>
+          <h2>How the skill stack evolved</h2>
+        </div>
+        <div class="timeline-shell">
+          <div class="timeline-list" role="tablist" aria-label="Skill timeline">
+            <button class="timeline-item active" type="button" data-timeline="education" role="tab" aria-selected="true">
+              <span>2014-2018</span>
+              Education foundation
+            </button>
+            <button class="timeline-item" type="button" data-timeline="data" role="tab" aria-selected="false">
+              <span>2025</span>
+              Data and analytics
+            </button>
+            <button class="timeline-item" type="button" data-timeline="web" role="tab" aria-selected="false">
+              <span>2025</span>
+              JavaScript and UX
+            </button>
+            <button class="timeline-item" type="button" data-timeline="fullstack" role="tab" aria-selected="false">
+              <span>2026</span>
+              Full-stack delivery
+            </button>
+            <button class="timeline-item" type="button" data-timeline="client" role="tab" aria-selected="false">
+              <span>Now</span>
+              Client-ready builds
+            </button>
+          </div>
+          <article class="timeline-detail" aria-live="polite">
+            <p class="tag" id="timelineTag">Education + communication</p>
+            <h3 id="timelineTitle">I started with teaching, structure, and clear explanation.</h3>
+            <p id="timelineBody">
+              LinkedIn lists a Bachelor of Education from the University of KwaZulu-Natal. That foundation shows up in
+              how I break down interfaces, write helpful UX copy, and explain technical choices.
+            </p>
+            <ul id="timelineSkills"></ul>
+          </article>
+        </div>
+      </section>
+
+      <section id="logs" class="section split">
+        <div class="section-heading">
+          <p class="eyebrow">Build log portfolio</p>
+          <h2>Evidence of how I think</h2>
+        </div>
+        <div class="log-board" id="logBoard"></div>
+      </section>
+
+      <section id="resume" class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Interactive resume</p>
+          <h2>Filter the work by what you need</h2>
+        </div>
+        <div class="filter-bar" role="toolbar" aria-label="Resume filters">
+          <button class="filter active" type="button" data-filter="all">All</button>
+          <button class="filter" type="button" data-filter="frontend">Frontend</button>
+          <button class="filter" type="button" data-filter="fullstack">Full stack</button>
+          <button class="filter" type="button" data-filter="data">Data</button>
+          <button class="filter" type="button" data-filter="ux">UX</button>
+          <button class="filter" type="button" data-filter="client">Client work</button>
+        </div>
+        <div class="resume-grid" id="resumeGrid"></div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <p class="eyebrow">Problem solver gallery</p>
+          <h2>Organised by employer pain points</h2>
+        </div>
+        <div class="problem-grid" id="problemGrid"></div>
+      </section>
+
+      <section id="lab" class="section lab-section">
+        <div class="section-heading">
+          <p class="eyebrow">Live demo lab</p>
+          <h2>Recent, new, and featured builds</h2>
+        </div>
+        <div class="lab-grid" id="labGrid"></div>
+      </section>
+
+      <section class="contact-band">
+        <div class="contact-copy">
+          <p class="eyebrow">Let’s connect</p>
+          <h2>Ready for roles where creativity has to produce usable software.</h2>
+          <p>For teams that want polished interfaces, practical data thinking, and a developer who cares about the human on the other side of the screen.</p>
+        </div>
+        <div class="contact-stack" aria-label="Contact and profile links">
+          <div class="linkedin-badge-shell" aria-label="LinkedIn profile badge">
+            <span class="contact-label">LinkedIn</span>
+            <div
+              class="linkedin-badge-variant light badge-base LI-profile-badge"
+              data-locale="en_US"
+              data-size="medium"
+              data-theme="light"
+              data-type="HORIZONTAL"
+              data-vanity="simone-govender-91b8b2353"
+              data-version="v1"
+            >
+              <a
+                class="badge-base__link LI-simple-link"
+                href="https://za.linkedin.com/in/simone-govender-91b8b2353?trk=profile-badge"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Simone Govender
+              </a>
+            </div>
+            <div
+              class="linkedin-badge-variant dark badge-base LI-profile-badge"
+              data-locale="en_US"
+              data-size="medium"
+              data-theme="dark"
+              data-type="HORIZONTAL"
+              data-vanity="simone-govender-91b8b2353"
+              data-version="v1"
+            >
+              <a
+                class="badge-base__link LI-simple-link"
+                href="https://za.linkedin.com/in/simone-govender-91b8b2353?trk=profile-badge"
+              >
+                Simone Govender
+              </a>
+            </div>
+          </div>
+          <div class="contact-actions">
+            <a class="button primary" href="mailto:simon3m3ll3m@gmail.com">Email Simoné</a>
+            <a class="button" href="assets/Simone_Govender_Web_Developer_Resume.pdf" download>Resume PDF</a>
+            <a class="button" href="assets/Simone_Govender_Web_Developer_Resume.docx" download>Resume DOCX</a>
+            <a class="button" href="https://www.credly.com/users/simone-govender.627f03de/badges#credly" target="_blank" rel="noreferrer">Badge profile</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>
+    <script src="app.js" type="module"></script>
+  </body>
+</html>

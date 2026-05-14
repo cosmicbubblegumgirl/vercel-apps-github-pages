@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DoodleDrift | Cloud Clips</title>
+  <link rel="icon" href="assets/doodledrift-icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="github-pages-api.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body data-page="clips">
+  <header class="topbar">
+    <div class="nav-inner">
+      <a class="brand" href="index.html"><img class="brand-logo" src="assets/doodledrift-logo.svg" alt="DoodleDrift"></a>
+      <nav class="nav-links" aria-label="Primary">
+        <a data-nav="home" href="index.html">Doodle Feed</a>
+        <a data-nav="canvas" href="canvas-cave.html">Canvas Cave</a>
+        <a data-nav="music" href="echo-forest.html">Echo Forest</a>
+        <a data-nav="blog" href="blog-burrow.html">Blog Burrow</a>
+        <a data-nav="mood" href="mood-meadow.html">Mood Meadow</a>
+        <a data-nav="prompts" href="prompt-potion.html">Prompt Potion</a>
+        <a data-nav="clips" href="clips.html">Cloud Clips</a>
+      </nav>
+      <div id="accountActions" class="account-actions"><button class="theme-toggle" type="button" data-theme-toggle>Dark</button></div>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <section class="page-head">
+      <div>
+        <p class="eyebrow">Cloud Clips</p>
+        <h1>Your saved inspiration sky.</h1>
+        <p class="lede">Save Doodles from other creators, sort them into Calm Clouds, Music Magic, Art Sparks, Writing Wisps, Healing Hues, and Dream Boards.</p>
+      </div>
+      <a class="button secondary" href="index.html">Find Doodles</a>
+    </section>
+
+    <section class="feed-toolbar">
+      <div class="segmented">
+        <button class="active" type="button" data-filter="all">All Clouds</button>
+        <button type="button" data-filter="art">Art</button>
+        <button type="button" data-filter="music">Music</button>
+        <button type="button" data-filter="blog">Writing</button>
+      </div>
+    </section>
+    <section id="clipGrid" class="clip-grid" aria-live="polite"></section>
+  </main>
+
+  <footer class="footer"><strong>A quantum cupcake creation</strong></footer>
+</body>
+</html>

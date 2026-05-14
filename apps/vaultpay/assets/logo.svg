@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="VaultPay logo">
+  <defs>
+    <linearGradient id="bg" x1="20" y1="18" x2="176" y2="182">
+      <stop offset="0" stop-color="#1F3550"/>
+      <stop offset="0.48" stop-color="#0F766E"/>
+      <stop offset="1" stop-color="#0B1220"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="58" y1="42" x2="144" y2="154">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="0.48" stop-color="#D9F4F1"/>
+      <stop offset="1" stop-color="#39B8AD"/>
+    </linearGradient>
+    <filter id="drop" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="13" flood-color="#0f172a" flood-opacity=".3"/>
+    </filter>
+  </defs>
+  <rect x="16" y="16" width="168" height="168" rx="48" fill="url(#bg)" filter="url(#drop)"/>
+  <rect x="27" y="27" width="146" height="146" rx="38" fill="none" stroke="#ffffff" stroke-width="5" opacity=".7"/>
+  <circle cx="100" cy="100" r="58" fill="none" stroke="rgba(255,255,255,.38)" stroke-width="10"/>
+  <circle cx="100" cy="100" r="39" fill="rgba(11,18,32,.18)" stroke="url(#glass)" stroke-width="6"/>
+  <path d="M57 74l43 70 43-70h-27l-16 31-16-31H57Z" fill="url(#glass)"/>
+  <path d="M50 101h27M123 101h27M100 50v24M100 126v24" stroke="#F8FCFF" stroke-width="7" stroke-linecap="round" opacity=".9"/>
+  <circle cx="100" cy="100" r="9" fill="#ecfeff"/>
+  <path d="M63 154c23 17 51 17 74 0" fill="none" stroke="#9FE2DD" stroke-width="6" stroke-linecap="round"/>
+</svg>

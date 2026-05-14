@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" role="img" aria-label="KindStride logo">
+  <defs>
+    <linearGradient id="bg" x1="18" y1="16" x2="160" y2="164" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF8F3"/>
+      <stop offset=".48" stop-color="#F4CCD1"/>
+      <stop offset="1" stop-color="#D9E6D1"/>
+    </linearGradient>
+    <linearGradient id="mark" x1="48" y1="42" x2="132" y2="138" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4E263B"/>
+      <stop offset="1" stop-color="#8A6F3E"/>
+    </linearGradient>
+  </defs>
+  <rect x="10" y="10" width="160" height="160" rx="40" fill="url(#bg)"/>
+  <rect x="18" y="18" width="144" height="144" rx="34" fill="none" stroke="#FFFFFF" stroke-width="5" opacity=".74"/>
+  <path d="M54 113c10 20 33 30 57 22 19-7 31-25 28-45-4-28-32-46-59-36-20 8-31 28-25 47" fill="none" stroke="url(#mark)" stroke-width="12" stroke-linecap="round"/>
+  <path d="M62 101c18-3 30-11 41-30M78 112c15-2 31-10 45-23" fill="none" stroke="#4E263B" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="115" cy="55" r="11" fill="#B65F6E"/>
+  <circle cx="61" cy="126" r="8" fill="#7F9B83"/>
+</svg>

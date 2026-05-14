@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">DoodleDrift icon</title>
+  <desc id="desc">Original DoodleDrift icon showing a pastel drift cloud with a moon, pencil, and music note.</desc>
+  <defs>
+    <linearGradient id="bg" x1="8" y1="10" x2="119" y2="119" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#BFD7EA"/>
+      <stop offset=".48" stop-color="#C7E6E2"/>
+      <stop offset="1" stop-color="#E6DC8F"/>
+    </linearGradient>
+    <linearGradient id="cloud" x1="22" y1="74" x2="96" y2="111" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F8FBF1"/>
+      <stop offset="1" stop-color="#D9D0F0"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="112" height="112" rx="25" fill="url(#bg)" stroke="#28433C" stroke-width="5"/>
+  <path d="M82 24c-18 3-31 19-31 37 0 9 3 17 9 24-18-5-30-21-30-39 0-22 18-40 40-40 14 0 27 8 34 19-7-2-14-2-22-1Z" fill="#F8FBF1" stroke="#28433C" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M42 79c7-12 25-12 32 0 8-6 21-3 25 8 4 10-4 20-15 20H33c-12 0-20-11-16-21 4-10 17-13 25-7Z" fill="url(#cloud)" stroke="#28433C" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M78 54v33" fill="none" stroke="#28433C" stroke-width="7" stroke-linecap="round"/>
+  <path d="M78 56c13-6 21 0 21 8 0 9-10 14-21 9" fill="none" stroke="#28433C" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="68" cy="89" r="8" fill="#E6DC8F" stroke="#28433C" stroke-width="5"/>
+  <path d="M24 37 50 21l9 14-26 17-12 2 3-17Z" fill="#E6DC8F" stroke="#28433C" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M20 64c20 12 43 17 68 14" fill="none" stroke="#F8FBF1" stroke-width="5" stroke-linecap="round" opacity=".78"/>
+</svg>

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DoodleDrift | GlowBoard</title>
+  <link rel="icon" href="assets/doodledrift-icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="github-pages-api.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body data-page="glowboard">
+  <header class="topbar">
+    <div class="nav-inner">
+      <a class="brand" href="index.html"><img class="brand-logo" src="assets/doodledrift-logo.svg" alt="DoodleDrift"></a>
+      <nav class="nav-links" aria-label="Primary">
+        <a data-nav="home" href="index.html">Doodle Feed</a>
+        <a data-nav="canvas" href="canvas-cave.html">Canvas Cave</a>
+        <a data-nav="music" href="echo-forest.html">Echo Forest</a>
+        <a data-nav="blog" href="blog-burrow.html">Blog Burrow</a>
+        <a data-nav="mood" href="mood-meadow.html">Mood Meadow</a>
+        <a data-nav="quests" href="doodle-quests.html">Doodle Quests</a>
+        <a data-nav="clips" href="clips.html">Cloud Clips</a>
+      </nav>
+      <div id="accountActions" class="account-actions"><button class="theme-toggle" type="button" data-theme-toggle>Dark</button></div>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <section class="page-head">
+      <div>
+        <p class="eyebrow">GlowBoard</p>
+        <h1>Popular, uplifting, and most-saved Doodles.</h1>
+        <p class="lede">Weekly theme: <strong id="weeklyTheme">Soft Courage</strong></p>
+      </div>
+      <a class="button secondary" href="index.html">Back to Feed</a>
+    </section>
+
+    <section id="glowboardGrid" class="feed-grid"></section>
+  </main>
+
+  <footer class="footer"><strong>A quantum cupcake creation</strong></footer>
+</body>
+</html>

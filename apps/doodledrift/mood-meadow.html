@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DoodleDrift | Mood Meadow</title>
+  <link rel="icon" href="assets/doodledrift-icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="github-pages-api.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body data-page="mood">
+  <header class="topbar">
+    <div class="nav-inner">
+      <a class="brand" href="index.html"><img class="brand-logo" src="assets/doodledrift-logo.svg" alt="DoodleDrift"></a>
+      <nav class="nav-links" aria-label="Primary">
+        <a data-nav="home" href="index.html">Doodle Feed</a>
+        <a data-nav="canvas" href="canvas-cave.html">Canvas Cave</a>
+        <a data-nav="music" href="echo-forest.html">Echo Forest</a>
+        <a data-nav="blog" href="blog-burrow.html">Blog Burrow</a>
+        <a data-nav="mood" href="mood-meadow.html">Mood Meadow</a>
+        <a data-nav="prompts" href="prompt-potion.html">Prompt Potion</a>
+        <a data-nav="clips" href="clips.html">Cloud Clips</a>
+      </nav>
+      <div id="accountActions" class="account-actions"><button class="theme-toggle" type="button" data-theme-toggle>Dark</button></div>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <section class="page-head">
+      <div>
+        <p class="eyebrow">Mood Meadow</p>
+        <h1>Choose a mood, pick a color, receive a prompt.</h1>
+        <p class="lede">Mood Marks help you track your creative weather over time.</p>
+      </div>
+    </section>
+
+    <section class="grid-two">
+      <form id="moodForm" class="panel form-grid">
+        <input id="moodInput" name="mood" type="hidden" value="Misty">
+        <div class="mood-picks">
+          <button class="chip active" type="button" data-meadow-mood="Misty">Misty</button>
+          <button class="chip" type="button" data-meadow-mood="Sparkly">Sparkly</button>
+          <button class="chip" type="button" data-meadow-mood="Stormy">Stormy</button>
+          <button class="chip" type="button" data-meadow-mood="Floaty">Floaty</button>
+          <button class="chip" type="button" data-meadow-mood="Cozy">Cozy</button>
+          <button class="chip" type="button" data-meadow-mood="Wobbly">Wobbly</button>
+          <button class="chip" type="button" data-meadow-mood="Glowy">Glowy</button>
+          <button class="chip" type="button" data-meadow-mood="Quiet">Quiet</button>
+          <button class="chip" type="button" data-meadow-mood="Brave">Brave</button>
+          <button class="chip" type="button" data-meadow-mood="Lost in the Fog">Lost in the Fog</button>
+        </div>
+        <label>Color
+          <input id="moodColor" name="color" type="color" value="#B8DEC8">
+        </label>
+        <div id="colorRune" class="color-rune" aria-hidden="true"></div>
+        <label>Short note
+          <textarea name="note" placeholder="A few words about today's weather."></textarea>
+        </label>
+        <button class="button" type="submit">Save Mood Mark</button>
+      </form>
+
+      <aside class="panel">
+        <h2>Matching Prompt</h2>
+        <p id="matchedPrompt" class="prompt-card">Save a Mood Mark to reveal a matching prompt.</p>
+        <h2>Mood History</h2>
+        <div id="moodLogs" class="mood-logs"></div>
+      </aside>
+    </section>
+  </main>
+
+  <footer class="footer"><strong>A quantum cupcake creation</strong></footer>
+</body>
+</html>

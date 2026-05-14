@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DoodleDrift | Prompt Potion</title>
+  <link rel="icon" href="assets/doodledrift-icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="github-pages-api.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body data-page="prompts">
+  <header class="topbar">
+    <div class="nav-inner">
+      <a class="brand" href="index.html"><img class="brand-logo" src="assets/doodledrift-logo.svg" alt="DoodleDrift"></a>
+      <nav class="nav-links" aria-label="Primary">
+        <a data-nav="home" href="index.html">Doodle Feed</a>
+        <a data-nav="canvas" href="canvas-cave.html">Canvas Cave</a>
+        <a data-nav="music" href="echo-forest.html">Echo Forest</a>
+        <a data-nav="blog" href="blog-burrow.html">Blog Burrow</a>
+        <a data-nav="mood" href="mood-meadow.html">Mood Meadow</a>
+        <a data-nav="prompts" href="prompt-potion.html">Prompt Potion</a>
+        <a data-nav="clips" href="clips.html">Cloud Clips</a>
+      </nav>
+      <div id="accountActions" class="account-actions"><button class="theme-toggle" type="button" data-theme-toggle>Dark</button></div>
+    </div>
+  </header>
+
+  <main class="page-shell potion-shell">
+    <section class="page-head">
+      <div>
+        <p class="eyebrow">Prompt Potion</p>
+        <h1>Brew a creative spell for art, music, writing, reflection, or self-care.</h1>
+      </div>
+    </section>
+
+    <section class="potion-stage">
+      <div class="potion-flask" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </div>
+      <div class="panel potion-panel">
+        <label>Prompt type
+          <select id="promptCategory">
+            <option value="all">Any</option>
+            <option value="art">Art</option>
+            <option value="music">Music</option>
+            <option value="writing">Writing</option>
+            <option value="reflection">Reflection</option>
+            <option value="self-care">Self-care</option>
+          </select>
+        </label>
+        <div id="potionPrompt" class="potion-prompt"></div>
+        <label>Write your own prompt
+          <textarea id="customPromptText" class="potion-custom-input" placeholder="Type a prompt you want to keep, remix, or use for a Doodle."></textarea>
+        </label>
+        <div class="potion-actions">
+          <button id="brewPrompt" class="button" type="button">Brew a Prompt</button>
+          <button id="useCustomPrompt" class="button secondary" type="button">Use Typed Prompt</button>
+          <button id="saveCustomPrompt" class="button secondary" type="button">Save Prompt</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer"><strong>A quantum cupcake creation</strong></footer>
+</body>
+</html>

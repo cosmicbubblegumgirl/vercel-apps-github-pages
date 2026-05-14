@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#7b4f2f" />
+    <title>CodiesCatchCompass</title>
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="shortcut icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="./site.webmanifest" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="paper-grain"></div>
+    <header class="app-header">
+      <a class="brand" href="#home" aria-label="CodiesCatchCompass home">
+        <span class="brand-mark" aria-hidden="true">
+          <span class="hook"></span>
+          <span class="needle"></span>
+        </span>
+        <span>
+          <strong>CodiesCatchCompass</strong>
+          <small>Ramsgate Beach fishing map</small>
+        </span>
+      </a>
+      <nav class="top-nav" aria-label="Primary navigation">
+        <a href="#map">Map</a>
+        <a href="#hotspots">Hotspots</a>
+        <a href="#conditions">Live</a>
+        <a href="#species">Species</a>
+        <a href="#rigging">Rigs</a>
+        <a href="#learn">Learn</a>
+        <a href="#feed">Feed</a>
+        <a href="#tracker">Tracker</a>
+        <a href="#journal">Journal</a>
+      </nav>
+      <button class="locate-btn" id="locateBtn" type="button">Track me</button>
+    </header>
+
+    <main id="app"></main>
+    <footer class="site-footer">a Quantum cupcake creation</footer>
+
+
+    <template id="homePage">
+      <section class="hero map-scroll">
+        <div class="hero-copy">
+          <p class="eyebrow">KwaZulu-Natal South Coast</p>
+          <h1>Codies<wbr />Catch<wbr />Compass</h1>
+          <p>
+            A preserved treasure-map style fishing companion for Ramsgate Beach,
+            with mapped shore marks, live marine conditions, route links, a catch
+            tracker, species indicators, rigging guides, and a private journal.
+          </p>
+          <div class="hero-actions">
+            <a class="primary" href="#map">Open fishing map</a>
+            <a class="secondary" href="#conditions">Check conditions</a>
+            <a class="secondary" href="#species">Species match</a>
+          </div>
+        </div>
+        <aside class="captain-panel">
+          <span class="status-dot"></span>
+          <strong id="heroCondition">Reading the sea...</strong>
+          <small id="heroMeta">Ramsgate Main Beach: -30.8864, 30.3464</small>
+        </aside>
+      </section>
+      <section class="quick-grid" id="homeCards"></section>
+    </template>
+
+    <template id="mapPage">
+      <section class="page-title">
+        <p class="eyebrow">Exact fishing marks</p>
+        <h2>Map & directions</h2>
+      </section>
+      <section class="map-layout">
+        <div class="spot-list" id="spotList"></div>
+        <div class="map-shell">
+          <iframe id="mapFrame" title="Ramsgate fishing map" loading="lazy"></iframe>
+          <div class="map-actions">
+            <button id="nearestBtn" type="button">Nearest spot</button>
+            <a id="directionsLink" target="_blank" rel="noreferrer">Open directions</a>
+          </div>
+        </div>
+      </section>
+    </template>
+
+    <template id="hotspotsPage">
+      <section class="page-title">
+        <p class="eyebrow">Shore marks</p>
+        <h2>Best Ramsgate Beach fishing spots</h2>
+      </section>
+      <section class="hotspot-grid" id="hotspotGrid"></section>
+    </template>
+
+    <template id="conditionsPage">
+      <section class="page-title">
+        <p class="eyebrow">Live refresh</p>
+        <h2>Conditions & visual watch</h2>
+      </section>
+      <section class="conditions-grid">
+        <article class="live-card">
+          <canvas id="seaCanvas" width="900" height="520" aria-label="Live generated condition image"></canvas>
+          <div class="live-caption">
+            <strong>Live condition image</strong>
+            <span id="canvasStamp">Updating...</span>
+          </div>
+        </article>
+        <article class="condition-panel" id="conditionPanel"></article>
+      </section>
+      <section class="image-row">
+        <article>
+          <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Ramsgate%20Beach,%20KZN.jpg" alt="Ramsgate Beach, KwaZulu-Natal" />
+          <span>Ramsgate Beach location reference</span>
+        </article>
+        <article>
+          <iframe title="Wind and weather map for Ramsgate" src="https://embed.windy.com/embed2.html?lat=-30.889&lon=30.349&detailLat=-30.889&detailLon=30.349&width=650&height=450&zoom=11&level=surface&overlay=wind&product=ecmwf&menu=&message=true&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=true&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1"></iframe>
+          <span>Live weather layer over Ramsgate</span>
+        </article>
+      </section>
+    </template>
+
+    <template id="speciesPage">
+      <section class="page-title">
+        <p class="eyebrow">Condition calibration</p>
+        <h2>Species indicators</h2>
+      </section>
+      <section class="calibration-panel">
+        <label>Selected area<select id="speciesSpot"></select></label>
+        <label>Fishing style<select id="speciesMode"></select></label>
+        <div class="condition-strip" id="speciesConditionStrip"></div>
+      </section>
+      <section class="species-board" id="speciesBoard"></section>
+    </template>
+
+    <template id="riggingPage">
+      <section class="page-title">
+        <p class="eyebrow">20 interactive setups</p>
+        <h2>Rigging coach</h2>
+      </section>
+      <section class="calibration-panel">
+        <label>Target setup<select id="rigSpecies"></select></label>
+        <label>Area<select id="rigSpot"></select></label>
+        <div class="condition-strip" id="rigConditionStrip"></div>
+      </section>
+      <section class="rigging-layout">
+        <article class="rig-card" id="rigDetails"></article>
+        <aside class="rig-list" id="rigList"></aside>
+      </section>
+    </template>
+
+    <template id="feedPage">
+      <section class="page-title">
+        <p class="eyebrow">Current reading</p>
+        <h2>Fishing blog & report feed</h2>
+      </section>
+      <section class="feed-controls">
+        <button id="refreshFeed" type="button">Refresh feed</button>
+        <span id="feedStatus">Sources update from public RSS endpoints when available.</span>
+      </section>
+      <section class="feed-list" id="feedList"></section>
+    </template>
+
+    <template id="learnPage">
+      <section class="page-title">
+        <p class="eyebrow">Sourced guide</p>
+        <h2>How to fish Ramsgate Beach well</h2>
+      </section>
+      <section class="learn-layout">
+        <article class="lesson-card">
+          <span class="tag">1</span>
+          <h3>Start with the points, gutters and wave gaps</h3>
+          <p>
+            FishingReminder notes that beaches and bays are good land-based areas,
+            with twilight often strongest when it lines up with major or minor
+            fishing times. It also recommends looking at points on either side of
+            the beach and irregular breaking waves that reveal sandbanks and holes.
+          </p>
+          <a href="https://www.fishingreminder.com/ZA/charts/fishing_times/Ramsgate" target="_blank" rel="noreferrer">Source: FishingReminder Ramsgate</a>
+        </article>
+        <article class="lesson-card">
+          <span class="tag">2</span>
+          <h3>Use Ramsgate's compact structure</h3>
+          <p>
+            Ramsgate Beach is a short, fine-sand beach with a gentle bottom, lagoon,
+            tidal pool, rocks and nearby whale deck. That means you can scout several
+            water types quickly before committing to a cast.
+          </p>
+          <a href="https://beaches-searcher.com/en/beach/710201207/ramsgate-beach" target="_blank" rel="noreferrer">Source: Beaches Searcher</a>
+        </article>
+        <article class="lesson-card">
+          <span class="tag">3</span>
+          <h3>Fish safely around swimmers and facilities</h3>
+          <p>
+            Local Ramsgate guides identify the main beach as Blue Flag, lifeguarded,
+            shark-netted and popular for swimming, surfing, snorkelling, lagoon
+            activities and fishing. Cast away from swim zones and choose quieter
+            edges when the beach is busy.
+          </p>
+          <a href="https://www.margate.co.za/beaches-lagoons/southcoast-beaches-route3/ramsgate/" target="_blank" rel="noreferrer">Source: Margate.co.za Ramsgate</a>
+        </article>
+        <article class="lesson-card">
+          <span class="tag">4</span>
+          <h3>Use the tidal pool rocks as a cautious scout mark</h3>
+          <p>
+            Ramsgate.co.za describes Noel Quarry Tidal Pool on the right side of
+            Ramsgate main Blue Flag Beach and says the area has great fishing spots.
+            Treat the rocks as tide-dependent and avoid exposed ledges in rough swell.
+          </p>
+          <a href="https://www.ramsgate.co.za/listing/noel-quarry-tidal-pool/" target="_blank" rel="noreferrer">Source: Ramsgate.co.za</a>
+        </article>
+        <article class="lesson-card">
+          <span class="tag">5</span>
+          <h3>Match bait to conditions</h3>
+          <p>
+            On clean, gentle surf, start with spoons or small paddletails to search.
+            In foamy or working water, switch to sardine, chokka, mussel or prawn
+            around gutters and rock edges. Keep one rod mobile instead of anchoring
+            yourself to dead water.
+          </p>
+          <a href="#conditions">Use the live conditions page</a>
+        </article>
+        <article class="lesson-card">
+          <span class="tag">6</span>
+          <h3>Keep a local pattern journal</h3>
+          <p>
+            Ramsgate is small enough that a few logged trips can reveal useful
+            patterns: wind direction, water colour, bite time, bait, swell height and
+            which exact mark produced. Add every session, including blanks.
+          </p>
+          <a href="#journal">Open your journal</a>
+        </article>
+      </section>
+    </template>
+
+    <template id="trackerPage">
+      <section class="page-title">
+        <p class="eyebrow">Progress</p>
+        <h2>Catch tracker</h2>
+      </section>
+      <section class="tracker-layout">
+        <article class="progress-card">
+          <div class="ring" id="progressRing"><span>0%</span></div>
+          <h3>Ramsgate mission</h3>
+          <p id="trackerSummary">Log target species and completed beach checks.</p>
+        </article>
+        <form class="tracker-list" id="trackerForm"></form>
+      </section>
+    </template>
+
+    <template id="journalPage">
+      <section class="page-title">
+        <p class="eyebrow">Private logbook</p>
+        <h2>Fishing journal</h2>
+      </section>
+      <section class="journal-layout">
+        <form class="journal-form" id="journalForm">
+          <label>Date<input name="date" type="date" required /></label>
+          <label>Time<input name="time" type="time" required /></label>
+          <label>Spot<select name="spot"></select></label>
+          <label>Species<select name="species"></select></label>
+          <label>Catch result<select name="result"><option>Caught</option><option>Hooked and lost</option><option>Bites only</option><option>Blank session</option></select></label>
+          <label>Bait / lure<input name="bait" placeholder="Sardine, chokka, spoon..." /></label>
+          <label>Method<select name="method"><option>Bait</option><option>Spoon</option><option>Soft plastic</option><option>Live bait</option><option>Scratch bait</option></select></label>
+          <label>Length cm<input name="length" type="number" min="0" step="0.1" placeholder="Optional" /></label>
+          <label>Weight kg<input name="weight" type="number" min="0" step="0.1" placeholder="Optional" /></label>
+          <div class="snapshot-card" id="journalSnapshot">No condition snapshot captured yet.</div>
+          <button class="secondary" id="captureConditions" type="button">Capture exact time, GPS & conditions</button>
+          <label>Notes<textarea name="notes" rows="5" placeholder="Tide, water colour, wind, bite time..."></textarea></label>
+          <button class="primary" type="submit">Add journal entry</button>
+        </form>
+        <div class="journal-entries" id="journalEntries"></div>
+      </section>
+    </template>
+
+    <script src="./client.js" type="module"></script>
+  </body>
+</html>
+

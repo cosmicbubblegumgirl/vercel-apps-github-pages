@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jens Interior Decor & Construction PTY CO</title>
+    <meta
+      name="description"
+      content="Jens Interior Decor & Construction PTY CO creates refined residential, commercial and hospitality spaces across decor, renovations and construction."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header" data-header>
+      <a class="brand" href="#top" aria-label="Jens Interior Decor and Construction home">
+        <span class="brand-mark">J</span>
+        <span>
+          <strong>Jens</strong>
+          <small>Interior Decor & Construction</small>
+        </span>
+      </a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="#services">Services</a>
+        <a href="#projects">Projects</a>
+        <a href="#process">Process</a>
+        <a href="#reviews">Reviews</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <a class="header-cta" href="tel:+27789609182">Call 078 960 9182</a>
+      <button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" data-menu-toggle>
+        <span></span>
+        <span></span>
+      </button>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-label="Jens Interior Decor and Construction">
+        <div class="hero-slides" aria-hidden="true">
+          <img class="hero-slide active" src="assets/photos/dry-stack-hero.jpg" alt="" />
+          <img class="hero-slide" src="assets/photos/bathroom-marble.jpg" alt="" />
+          <img class="hero-slide" src="assets/photos/new-build-shell.jpg" alt="" />
+        </div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <p class="eyebrow">PTY CO · Decor · Renovation · Construction</p>
+          <h1>Jens Interior Decor & Construction</h1>
+          <p class="hero-copy">
+            Transforming spaces, empowering communities and building legacies through tailored design,
+            trusted project management and fine construction detail.
+          </p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#projects">View Projects</a>
+            <a class="btn glass" href="#contact">Start an Enquiry</a>
+          </div>
+        </div>
+        <aside class="hero-panel" aria-label="Company highlights">
+          <div>
+            <strong data-count="100">0</strong>
+            <span>projects completed</span>
+          </div>
+          <div>
+            <strong data-count="95">0</strong>
+            <span>on-time delivery</span>
+          </div>
+          <div>
+            <strong data-count="40">0</strong>
+            <span>referral-led work</span>
+          </div>
+        </aside>
+      </section>
+
+      <section class="intro reveal" aria-label="Company introduction">
+        <div class="intro-copy">
+          <p class="eyebrow dark">Professional from inception to completion</p>
+          <h2>Design sensitivity with construction discipline.</h2>
+        </div>
+        <p>
+          Led by Jenny Padayachee, JIDC brings interior decorating, renovations and construction into one
+          coordinated service. The team works across homes, commercial properties and hospitality spaces,
+          aligning the client vision with craftsmanship, schedules and trusted trades.
+        </p>
+      </section>
+
+      <section class="services section" id="services">
+        <div class="section-heading reveal">
+          <p class="eyebrow dark">What we do</p>
+          <h2>One team for the full transformation.</h2>
+        </div>
+        <div class="service-grid">
+          <article class="service-card reveal" style="--delay: 0ms">
+            <span class="service-icon">01</span>
+            <h3>Interior Decor</h3>
+            <p>Paint techniques, murals, finishes, styling and design choices shaped around practical living.</p>
+          </article>
+          <article class="service-card reveal" style="--delay: 80ms">
+            <span class="service-icon">02</span>
+            <h3>Renovations</h3>
+            <p>Bathrooms, kitchens, wall removals, ceilings, rooms and upgrades managed from plan to handover.</p>
+          </article>
+          <article class="service-card reveal" style="--delay: 160ms">
+            <span class="service-icon">03</span>
+            <h3>Construction</h3>
+            <p>New builds, boundary walls, dry stack walls, structural changes and coordinated site delivery.</p>
+          </article>
+          <article class="service-card reveal" style="--delay: 240ms">
+            <span class="service-icon">04</span>
+            <h3>Commercial & Hospitality</h3>
+            <p>Polished spaces for offices, guest houses, lodges, boutique hotels and returning business clients.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="project-showcase section" id="projects">
+        <div class="section-heading reveal">
+          <p class="eyebrow dark">Selected work</p>
+          <h2>Built spaces with texture, structure and restraint.</h2>
+        </div>
+        <div class="filter-bar reveal" role="tablist" aria-label="Filter project gallery">
+          <button class="filter-btn active" type="button" data-filter="all">All</button>
+          <button class="filter-btn" type="button" data-filter="renovation">Renovations</button>
+          <button class="filter-btn" type="button" data-filter="bathroom">Bathrooms</button>
+          <button class="filter-btn" type="button" data-filter="construction">Construction</button>
+          <button class="filter-btn" type="button" data-filter="finishes">Finishes</button>
+        </div>
+        <div class="gallery" data-gallery>
+          <button class="project-tile tall reveal" type="button" data-category="finishes construction" data-title="Dry Stack Boundary Wall" data-src="assets/photos/dry-stack-hero.jpg">
+            <img src="assets/photos/dry-stack-hero.jpg" alt="Dry stack stone wall project by JIDC" />
+            <span>Dry Stack Boundary Wall</span>
+          </button>
+          <button class="project-tile reveal" type="button" data-category="bathroom renovation" data-title="Bathroom Renovation" data-src="assets/photos/bathroom-marble.jpg">
+            <img src="assets/photos/bathroom-marble.jpg" alt="Modern bathroom renovation with stone-look tile" />
+            <span>Bathroom Renovation</span>
+          </button>
+          <button class="project-tile wide reveal" type="button" data-category="construction" data-title="New House Build" data-src="assets/photos/new-build-shell.jpg">
+            <img src="assets/photos/new-build-shell.jpg" alt="New house build in progress" />
+            <span>New House Build</span>
+          </button>
+          <button class="project-tile reveal" type="button" data-category="renovation" data-title="House Renovation" data-src="assets/photos/renovation-kitchen.jpg">
+            <img src="assets/photos/renovation-kitchen.jpg" alt="Residential renovation works by JIDC" />
+            <span>House Renovation</span>
+          </button>
+          <button class="project-tile reveal" type="button" data-category="finishes" data-title="Aluminium Stack Doors" data-src="assets/photos/doors-aluminium.jpg">
+            <img src="assets/photos/doors-aluminium.jpg" alt="Aluminium stack doors installation" />
+            <span>Aluminium Stack Doors</span>
+          </button>
+          <button class="project-tile reveal" type="button" data-category="bathroom renovation" data-title="Bathroom Detail" data-src="assets/photos/bathroom-shower.jpg">
+            <img src="assets/photos/bathroom-shower.jpg" alt="Bathroom shower installation detail" />
+            <span>Bathroom Detail</span>
+          </button>
+          <button class="project-tile wide reveal" type="button" data-category="construction finishes" data-title="Wall Finish Detail" data-src="assets/photos/dry-stack-detail.jpg">
+            <img src="assets/photos/dry-stack-detail.jpg" alt="Finished dry stack wall texture" />
+            <span>Wall Finish Detail</span>
+          </button>
+          <button class="project-tile reveal" type="button" data-category="construction" data-title="Roof & Structure" data-src="assets/photos/new-build-roof.jpg">
+            <img src="assets/photos/new-build-roof.jpg" alt="Roof and structure construction progress" />
+            <span>Roof & Structure</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="process section" id="process">
+        <div class="process-media reveal">
+          <img src="assets/photos/renovation-ceiling.jpg" alt="Interior renovation work in progress" />
+        </div>
+        <div class="process-copy reveal">
+          <p class="eyebrow dark">How projects move</p>
+          <h2>Clear scope, trusted trades, visible progress.</h2>
+          <div class="timeline">
+            <button class="timeline-item active" type="button" data-step="01">
+              <strong>Consult</strong>
+              <span>Vision, space, budget and priorities are aligned before work begins.</span>
+            </button>
+            <button class="timeline-item" type="button" data-step="02">
+              <strong>Design & Plan</strong>
+              <span>Materials, flow, suppliers and schedules are shaped into a practical project path.</span>
+            </button>
+            <button class="timeline-item" type="button" data-step="03">
+              <strong>Build & Finish</strong>
+              <span>Site teams coordinate construction, decor detail, quality checks and handover.</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="reviews section" id="reviews">
+        <div class="section-heading reveal">
+          <p class="eyebrow dark">Client confidence</p>
+          <h2>Repeat work, referrals and satisfaction.</h2>
+        </div>
+        <div class="review-layout reveal">
+          <button class="review-arrow" type="button" data-review-prev aria-label="Previous review">‹</button>
+          <div class="review-frame">
+            <img class="review-image active" src="assets/photos/review-01.jpeg" alt="Client WhatsApp review screenshot" />
+            <img class="review-image" src="assets/photos/review-02.jpeg" alt="Client WhatsApp review screenshot" />
+          </div>
+          <button class="review-arrow" type="button" data-review-next aria-label="Next review">›</button>
+          <div class="review-copy">
+            <p>
+              “Clients lack time, design expertise and trustworthy contractors. JIDC bridges that gap with
+              end-to-end decor and construction management.”
+            </p>
+            <span>90%+ customer satisfaction · 95% on-time completion</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="contact section" id="contact">
+        <div class="contact-copy reveal">
+          <p class="eyebrow dark">Start the conversation</p>
+          <h2>Tell Jens what you want to transform.</h2>
+          <p>
+            Share the space, the goal and the timeline. JIDC can help with anything from a focused room
+            renovation to a complete new build or hospitality upgrade.
+          </p>
+          <div class="contact-methods">
+            <a href="tel:+27789609182">078 960 9182</a>
+            <a href="mailto:info@jensinteriordecor.co.za">info@jensinteriordecor.co.za</a>
+          </div>
+        </div>
+        <form class="enquiry reveal" action="mailto:info@jensinteriordecor.co.za" method="post" enctype="text/plain">
+          <label>
+            Name
+            <input name="name" type="text" autocomplete="name" required />
+          </label>
+          <label>
+            Phone
+            <input name="phone" type="tel" autocomplete="tel" required />
+          </label>
+          <label>
+            Project type
+            <select name="project_type" required>
+              <option value="">Select a service</option>
+              <option>Interior decor</option>
+              <option>Bathroom renovation</option>
+              <option>House renovation</option>
+              <option>New build</option>
+              <option>Commercial or hospitality project</option>
+            </select>
+          </label>
+          <label>
+            Message
+            <textarea name="message" rows="4" required></textarea>
+          </label>
+          <button class="btn primary full" type="submit">Send Enquiry</button>
+        </form>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Jens Interior Decor & Construction PTY CO</p>
+      <p>Making people’s lives better by creating spaces that are beautiful and practical.</p>
+    </footer>
+
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close" type="button" data-lightbox-close aria-label="Close project preview">×</button>
+      <img src="assets/photos/dry-stack-hero.jpg" alt="" data-lightbox-image />
+      <p data-lightbox-title>Project preview</p>
+    </dialog>
+
+    <script src="script.js"></script>
+  </body>
+</html>

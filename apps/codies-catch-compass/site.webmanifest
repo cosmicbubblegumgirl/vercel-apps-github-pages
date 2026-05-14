@@ -1,0 +1,17 @@
+{
+  "name": "CodiesCatchCompass",
+  "short_name": "CatchCompass",
+  "description": "A Ramsgate Beach fishing companion with maps, conditions, a tracker and journal.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#e7d1a5",
+  "theme_color": "#7b4f2f",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

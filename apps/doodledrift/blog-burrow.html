@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DoodleDrift | Blog Burrow</title>
+  <link rel="icon" href="assets/doodledrift-icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="github-pages-api.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body data-page="blog">
+  <header class="topbar">
+    <div class="nav-inner">
+      <a class="brand" href="index.html"><img class="brand-logo" src="assets/doodledrift-logo.svg" alt="DoodleDrift"></a>
+      <nav class="nav-links" aria-label="Primary">
+        <a data-nav="home" href="index.html">Doodle Feed</a>
+        <a data-nav="canvas" href="canvas-cave.html">Canvas Cave</a>
+        <a data-nav="music" href="echo-forest.html">Echo Forest</a>
+        <a data-nav="blog" href="blog-burrow.html">Blog Burrow</a>
+        <a data-nav="mood" href="mood-meadow.html">Mood Meadow</a>
+        <a data-nav="prompts" href="prompt-potion.html">Prompt Potion</a>
+        <a data-nav="clips" href="clips.html">Cloud Clips</a>
+      </nav>
+      <div id="accountActions" class="account-actions"><button class="theme-toggle" type="button" data-theme-toggle>Dark</button></div>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <section class="page-head">
+      <div>
+        <p class="eyebrow">Blog Burrow</p>
+        <h1>Write a Scribble, Scroll, or Wonder Entry.</h1>
+        <p class="lede">A quiet writing nook for reflections, Heart Notes, Mind Maps, and Daydream Logs.</p>
+      </div>
+    </section>
+
+    <section class="journal-stage">
+      <div class="prompt-row">
+        <div id="promptCard" class="prompt-card"></div>
+        <button id="newPrompt" class="button secondary" type="button">Summon an Idea</button>
+      </div>
+      <form id="blogDoodleForm" class="form-grid">
+        <input id="blogPrompt" name="prompt" type="hidden">
+        <div class="form-grid two">
+          <label>Title
+            <input name="title" placeholder="The forest kept my secret" required>
+          </label>
+          <label>Category
+            <select name="tags">
+              <option>healing, reflection</option>
+              <option>creativity, art</option>
+              <option>music, calm</option>
+              <option>fantasy thoughts, wonder</option>
+              <option>personal growth, brave</option>
+            </select>
+          </label>
+        </div>
+        <label>Wonder Entry
+          <textarea id="blogBody" name="body" placeholder="Start with the first honest sentence." required></textarea>
+        </label>
+        <div class="word-meter" id="wordMeter"><span></span></div>
+        <p id="wordCount" class="muted"></p>
+        <div class="form-grid two">
+          <label>Mood
+            <input name="mood" placeholder="Quiet">
+          </label>
+          <label>Visibility
+            <select name="visibility">
+              <option value="public">Open Page</option>
+              <option value="private">Secret Scribble</option>
+            </select>
+          </label>
+        </div>
+        <button class="button" type="submit">Publish Story Doodle</button>
+      </form>
+    </section>
+  </main>
+
+  <footer class="footer"><strong>A quantum cupcake creation</strong></footer>
+</body>
+</html>

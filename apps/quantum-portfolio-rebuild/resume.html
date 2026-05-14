@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Simoné Govender | Web Developer Resume</title>
+    <style>
+      :root {
+        --ink: #151827;
+        --muted: #596276;
+        --line: #dfe3ea;
+        --panel: #f7f9fc;
+        --accent: #734f96;
+        --mint: #2ebf9a;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: #eef1f6;
+        color: var(--ink);
+        font-family: Inter, Arial, sans-serif;
+        line-height: 1.45;
+      }
+
+      main {
+        width: min(100%, 920px);
+        margin: 28px auto;
+        padding: 42px;
+        background: #fff;
+        box-shadow: 0 18px 60px rgba(15, 23, 42, 0.14);
+      }
+
+      header {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 24px;
+        padding-bottom: 18px;
+        border-bottom: 3px solid var(--ink);
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+
+      h1 {
+        margin-bottom: 4px;
+        font-size: 42px;
+        line-height: 1;
+      }
+
+      .role {
+        margin-bottom: 14px;
+        color: var(--accent);
+        font-size: 17px;
+        font-weight: 800;
+      }
+
+      .links,
+      .tag-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 14px;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+      }
+
+      .links a {
+        color: var(--ink);
+        font-weight: 700;
+        text-decoration-color: var(--mint);
+        text-decoration-thickness: 2px;
+      }
+
+      .mark {
+        width: 76px;
+        height: 76px;
+        object-fit: contain;
+      }
+
+      section {
+        padding-top: 22px;
+      }
+
+      h2 {
+        margin-bottom: 12px;
+        color: var(--accent);
+        font-size: 16px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      h3 {
+        margin-bottom: 4px;
+        font-size: 17px;
+      }
+
+      .summary {
+        color: #273044;
+        font-size: 16px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .item,
+      .skill-box {
+        padding: 14px;
+        border: 1px solid var(--line);
+        background: var(--panel);
+      }
+
+      .item p,
+      .skill-box p {
+        margin-bottom: 0;
+        color: var(--muted);
+      }
+
+      .item a {
+        color: var(--accent);
+        font-weight: 800;
+      }
+
+      .tag-list li {
+        padding: 5px 9px;
+        background: rgba(46, 191, 154, 0.14);
+        color: #12624f;
+        font-size: 13px;
+        font-weight: 800;
+      }
+
+      .compact-list {
+        display: grid;
+        gap: 8px;
+        padding-left: 18px;
+        margin: 0;
+      }
+
+      .compact-list li {
+        color: var(--muted);
+      }
+
+      .compact-list strong {
+        color: var(--ink);
+      }
+
+      @media print {
+        body {
+          background: #fff;
+        }
+
+        main {
+          width: auto;
+          margin: 0;
+          padding: 0;
+          box-shadow: none;
+        }
+
+        a {
+          color: inherit;
+        }
+
+        section {
+          break-inside: avoid;
+        }
+      }
+
+      @page {
+        size: A4;
+        margin: 13mm;
+      }
+
+      @media (max-width: 720px) {
+        main {
+          margin: 0;
+          padding: 24px;
+        }
+
+        header,
+        .grid {
+          grid-template-columns: 1fr;
+        }
+
+        .mark {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <div>
+          <h1>Simoné Govender</h1>
+          <p class="role">Full-Stack Web Developer | Frontend, UX, Data-Aware Product Thinking</p>
+          <ul class="links" aria-label="Contact links">
+            <li>KZN, South Africa</li>
+            <li><a href="mailto:simon3m3ll3m@gmail.com">simon3m3ll3m@gmail.com</a></li>
+            <li><a href="https://quantum-portfolio-rebuild.vercel.app/">Portfolio</a></li>
+            <li><a href="https://za.linkedin.com/in/simone-govender-91b8b2353">LinkedIn</a></li>
+            <li><a href="https://www.credly.com/users/simone-govender.627f03de/badges#credly">Credly badges</a></li>
+          </ul>
+        </div>
+        <img class="mark" src="assets/qc-logo.svg" alt="" />
+      </header>
+
+      <section>
+        <h2>Professional Profile</h2>
+        <p class="summary">
+          Creative full-stack web developer building polished, practical web experiences with a strong eye for UX,
+          responsive design, product clarity, and evidence-led problem solving. Brings a teaching background into
+          development work: clear communication, structured thinking, helpful documentation, and interfaces that make
+          complex ideas feel usable.
+        </p>
+      </section>
+
+      <section>
+        <h2>Core Skills</h2>
+        <div class="grid">
+          <div class="skill-box">
+            <h3>Web Development</h3>
+            <ul class="tag-list">
+              <li>HTML</li>
+              <li>CSS</li>
+              <li>JavaScript</li>
+              <li>React basics</li>
+              <li>Responsive UI</li>
+              <li>Git/GitHub</li>
+            </ul>
+          </div>
+          <div class="skill-box">
+            <h3>Full-Stack Growth</h3>
+            <ul class="tag-list">
+              <li>Node.js</li>
+              <li>Express</li>
+              <li>NoSQL</li>
+              <li>Microservices</li>
+              <li>Docker</li>
+              <li>Kubernetes</li>
+            </ul>
+          </div>
+          <div class="skill-box">
+            <h3>Data and Business</h3>
+            <ul class="tag-list">
+              <li>Data cleaning</li>
+              <li>Power BI</li>
+              <li>Analytics</li>
+              <li>Dashboard thinking</li>
+              <li>SAP awareness</li>
+            </ul>
+          </div>
+          <div class="skill-box">
+            <h3>UX and Delivery</h3>
+            <ul class="tag-list">
+              <li>Visual hierarchy</li>
+              <li>UX writing</li>
+              <li>Testing mindset</li>
+              <li>Documentation</li>
+              <li>Client-ready polish</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Portfolio Websites</h2>
+        <div class="grid">
+          <article class="item">
+            <h3>VaultPay</h3>
+            <p>Fintech dashboard concept focused on trust signals, account controls, and clear analytics.</p>
+            <a href="https://vaultpay-eta.vercel.app/">Open live project</a>
+          </article>
+          <article class="item">
+            <h3>TaskForge</h3>
+            <p>SaaS-style planning interface showing workflow structure, task movement, and sprint clarity.</p>
+            <a href="https://taskforge-rosy.vercel.app/">Open live project</a>
+          </article>
+          <article class="item">
+            <h3>AuraFit</h3>
+            <p>AI fitness product interface with wellbeing-focused dashboard patterns and progress cues.</p>
+            <a href="https://aurafit-pink.vercel.app/">Open live project</a>
+          </article>
+          <article class="item">
+            <h3>Mind Check</h3>
+            <p>Mental-wellbeing check-in experience with calm interaction flow and thoughtful UX copy.</p>
+            <a href="https://mind-check-swart.vercel.app/">Open live project</a>
+          </article>
+          <article class="item">
+            <h3>Nova Bite</h3>
+            <p>Restaurant web experience with polished visual hierarchy, menu discovery, and booking intent.</p>
+            <a href="https://cosmicbubblegumgirl.github.io/Nova-bite/">Open live project</a>
+          </article>
+          <article class="item">
+            <h3>Deductomatic</h3>
+            <p>Finance calculator concept that makes tax and budgeting interactions clearer and less intimidating.</p>
+            <a href="https://cosmicbubblegumgirl.github.io/deductomatic/">Open live project</a>
+          </article>
+          <article class="item">
+            <h3>Carbon Crumbs</h3>
+            <p>Sustainability tracker concept that makes carbon awareness visual, gentle, and habit-friendly.</p>
+            <a href="https://cosmicbubblegumgirl.github.io/carbon-crumbs/">Open live project</a>
+          </article>
+          <article class="item">
+            <h3>Normal Is Overrated</h3>
+            <p>Inclusive web experience with bold visual identity, supportive messaging, and expressive frontend polish.</p>
+            <a href="https://cosmicbubblegumgirl.github.io/normal_is-_overrated/">Open live project</a>
+          </article>
+          <article class="item">
+            <h3>Travel Recommendations</h3>
+            <p>Destination discovery interface with simple recommendation flow and clear visual hierarchy.</p>
+            <a href="https://cosmicbubblegumgirl.github.io/travel_recommendations/">Open live project</a>
+          </article>
+          <article class="item">
+            <h3>Codies Catch Compass</h3>
+            <p>Fishing companion web app for beach conditions, tide context, and local decision support.</p>
+            <a href="https://codies-catch-compass.vercel.app/#home">Open live project</a>
+          </article>
+          <article class="item">
+            <h3>Jens Interior Decor & Construction</h3>
+            <p>Client website with service hierarchy, photo-led portfolio evidence, and clearer business presentation.</p>
+            <a href="https://quantum-portfolio-rebuild.vercel.app/projects/jens-interior-decor-construction/">Open live project</a>
+          </article>
+        </div>
+      </section>
+
+      <section>
+        <h2>Credentials</h2>
+        <ul class="compact-list">
+          <li><strong>IBM Full-Stack JavaScript Developer Professional Certificate</strong> - IBM via Coursera</li>
+          <li><strong>Application Development using Microservices and Serverless</strong> - Credly badge</li>
+          <li><strong>Containers & Kubernetes Essentials</strong> - Credly badge</li>
+          <li><strong>Meta React Basics and Version Control</strong> - Meta via Coursera</li>
+          <li><strong>Google Data Analytics Professional Certificate</strong> - Google via Coursera</li>
+          <li><strong>Microsoft Power BI Data Analyst and PL-300 preparation</strong> - Microsoft via Coursera</li>
+          <li><strong>Google UX Design and Google Project Management</strong> - Google via Coursera</li>
+          <li><strong>SAP Technology Consultant Professional Certificate</strong> - SAP via Coursera</li>
+          <li><strong>Software Testing and Automation Specialization</strong> - University of Minnesota via Coursera</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Education</h2>
+        <article class="item">
+          <h3>Bachelor of Education</h3>
+          <p>University of KwaZulu-Natal, 2014-2018. Foundation in communication, instruction, research, and structured explanation.</p>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>
