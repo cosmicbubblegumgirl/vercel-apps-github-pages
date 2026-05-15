@@ -10,9 +10,11 @@
     echoes: 'doodledrift_static_echoes',
     moods: 'doodledrift_static_moods',
     prompts: 'doodledrift_static_prompts',
+    remoteSession: 'doodledrift_supabase_session',
   };
 
   let seedPromise;
+  let remoteConfigPromise;
   const json = (body, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
   const id = (prefix) => `${prefix}_${crypto.randomUUID ? crypto.randomUUID() : Date.now()}`;
 
@@ -21,6 +23,51 @@
   };
 
   const write = (key, value) => localStorage.setItem(key, JSON.stringify(value));
+
+  async function remoteConfig() {
+    if (!remoteConfigPromise) {
+      remoteConfigPromise = nativeFetch('supabase-config.json', { cache: 'no-store' })
+        .then((response) => response.ok ? response.json() : {})
+        .catch(() => ({}))
+        .then((fileConfig) => {
+          const inlineConfig = window.DOODLEDRIFT_SUPABASE || {};
+          const config = { ...fileConfig, ...inlineConfig };
+          const url = String(config.url || '').replace(/\/$/, '');
+          const anonKey = String(config.anonKey || '');
+          if (!url || !anonKey || url.includes('YOUR_') || anonKey.includes('YOUR_')) return null;
+          return { url, anonKey };
+        });
+    }
+    return remoteConfigPromise;
+  }
+
+  async function supabaseRequest(config, path, options = {}) {
+    const token = options.token || config.anonKey;
+    const response = await nativeFetch(`${config.url}${path}`, {
+      method: options.method || 'GET',
+      headers: {
+        apikey: config.anonKey,
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        ...(options.headers || {}),
+      },
+      body: options.body ? JSON.stringify(options.body) : undefined,
+    });
+    const body = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      throw new Error(body.error_description || body.msg || body.message || body.error || 'Hosted database request failed');
+    }
+    return body;
+  }
+
+  function session() {
+    return read(keys.remoteSession, null);
+  }
+
+  function saveSession(value) {
+    if (!value) localStorage.removeItem(keys.remoteSession);
+    else write(keys.remoteSession, value);
+  }
 
   async function seed() {
     if (!seedPromise) seedPromise = nativeFetch('data/db.json').then((response) => response.json());
@@ -111,17 +158,70 @@
     return safeUser;
   }
 
+  function remoteProfileFromUser(authUser) {
+    if (!authUser) return null;
+    const meta = authUser.user_metadata || {};
+    const username = String(meta.username || authUser.email?.split('@')[0] || 'DoodleFriend').replace(/[^a-z0-9_-]/gi, '') || 'DoodleFriend';
+    return {
+      id: authUser.id,
+      username,
+      email: authUser.email || '',
+      displayName: meta.displayName || meta.display_name || username,
+      avatar: meta.avatar || '',
+      bio: meta.bio || 'A new DoodleDen for saved art, sound, story, and mood marks.',
+      moodBadge: meta.moodBadge || 'Glowy',
+      aura: meta.aura || 'Freshly opened creative weather',
+      favoriteColors: Array.isArray(meta.favoriteColors) ? meta.favoriteColors : ['#B8DEC8', '#BFD7EA', '#E6DC8F'],
+      interests: Array.isArray(meta.interests) ? meta.interests : ['canvas doodles', 'echo notes', 'cloud clips'],
+      createdAt: authUser.created_at || new Date().toISOString(),
+      remote: true,
+    };
+  }
+
+  async function remoteCurrentUser(config) {
+    const current = session();
+    if (!config || !current?.access_token) return null;
+    try {
+      const authUser = await supabaseRequest(config, '/auth/v1/user', { token: current.access_token });
+      saveSession({ ...current, user: authUser });
+      return remoteProfileFromUser(authUser);
+    } catch {
+      saveSession(null);
+      return null;
+    }
+  }
+
+  function authMetadata(payload, existing = {}) {
+    return {
+      username: String(payload.username || existing.username || '').trim().replace(/[^a-z0-9_-]/gi, ''),
+      displayName: payload.displayName || payload.name || existing.displayName || existing.display_name || '',
+      avatar: payload.avatar || existing.avatar || '',
+      bio: payload.bio || existing.bio || '',
+      moodBadge: payload.moodBadge || existing.moodBadge || 'Glowy',
+      aura: payload.aura || existing.aura || '',
+      favoriteColors: parseTags(payload.favoriteColors || existing.favoriteColors || ['#B8DEC8', '#BFD7EA', '#E6DC8F']),
+      interests: parseTags(payload.interests || existing.interests || ['canvas doodles', 'echo notes', 'cloud clips']),
+    };
+  }
+
   window.fetch = async (input, options = {}) => {
     const url = new URL(typeof input === 'string' ? input : input.url, location.href);
     if (!url.pathname.startsWith('/api/')) return nativeFetch(input, options);
 
     const method = (options.method || 'GET').toUpperCase();
     const payload = await requestBody(options);
+    const hosted = await remoteConfig();
+    const remoteUser = hosted ? await remoteCurrentUser(hosted) : null;
     const data = await db();
-    const user = currentUser(data);
+    if (remoteUser && !data.users.some((item) => item.id === remoteUser.id)) data.users.unshift(remoteUser);
+    const user = remoteUser || currentUser(data);
 
     if (url.pathname === '/api/me') return json({ user: publicUser(user) });
     if (method === 'POST' && url.pathname === '/api/auth/logout') {
+      if (hosted && session()?.access_token) {
+        supabaseRequest(hosted, '/auth/v1/logout', { method: 'POST', token: session().access_token }).catch(() => {});
+        saveSession(null);
+      }
       localStorage.setItem(keys.user, '');
       return json({ ok: true });
     }
@@ -131,6 +231,20 @@
       const password = String(payload.password || '');
       if (!username || !email || password.length < 8) {
         return json({ error: 'Doodle Name, email, and an 8+ character password are required.' }, 400);
+      }
+      if (hosted) {
+        const result = await supabaseRequest(hosted, '/auth/v1/signup', {
+          method: 'POST',
+          body: { email, password, data: authMetadata(payload) },
+        });
+        if (result.session) saveSession(result.session);
+        const nextUser = remoteProfileFromUser(result.user);
+        return json({
+          token: result.session?.access_token || '',
+          user: result.session ? nextUser : null,
+          requiresConfirmation: !result.session,
+          message: result.session ? 'DoodleDen created.' : 'Account created. Check your email to confirm it, then sign in.',
+        }, 201);
       }
       const exists = data.users.some((item) => item.email?.toLowerCase() === email || item.username?.toLowerCase() === username.toLowerCase());
       if (exists) return json({ error: 'That Doodle Name or email is already registered.' }, 409);
@@ -158,6 +272,15 @@
     if (method === 'POST' && url.pathname === '/api/auth/login') {
       const handle = String(payload.username || payload.email || '').trim().toLowerCase();
       const password = String(payload.password || '');
+      if (hosted) {
+        if (!handle.includes('@')) return json({ error: 'Use the email address for hosted sign in.' }, 400);
+        const result = await supabaseRequest(hosted, '/auth/v1/token?grant_type=password', {
+          method: 'POST',
+          body: { email: handle, password },
+        });
+        saveSession(result);
+        return json({ token: result.access_token, user: remoteProfileFromUser(result.user) });
+      }
       const nextUser = data.users.find((item) => item.email?.toLowerCase() === handle || item.username?.toLowerCase() === handle);
       if (!nextUser || !nextUser.passwordHash || !nextUser.salt) {
         return json({ error: 'Account not found. Begin Your Drift to create one first.' }, 404);
@@ -260,6 +383,16 @@
     }
     if (url.pathname === '/api/profile' && method === 'PATCH') {
       if (!user) return json({ error: 'Enter the Den first.' }, 401);
+      if (hosted && session()?.access_token) {
+        const existing = session().user?.user_metadata || {};
+        const updatedAuthUser = await supabaseRequest(hosted, '/auth/v1/user', {
+          method: 'PUT',
+          token: session().access_token,
+          body: { data: authMetadata({ ...payload, username: user.username }, existing) },
+        });
+        saveSession({ ...session(), user: updatedAuthUser });
+        return json({ user: remoteProfileFromUser(updatedAuthUser) });
+      }
       const updated = {
         ...user,
         ...payload,

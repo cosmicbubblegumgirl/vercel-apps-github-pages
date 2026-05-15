@@ -723,10 +723,15 @@ function setupLogin() {
   register?.addEventListener("submit", async (event) => {
     event.preventDefault();
     try {
-      await api("/api/auth/register", {
+      const result = await api("/api/auth/register", {
         method: "POST",
         body: JSON.stringify(Object.fromEntries(new FormData(register)))
       });
+      if (result.requiresConfirmation) {
+        toast(result.message || "Account created. Check your email, then sign in.");
+        qs('[data-auth-tab="login"]')?.click();
+        return;
+      }
       window.location.href = "profile.html";
     } catch (error) {
       toast(error.message, true);
