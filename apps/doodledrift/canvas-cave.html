@@ -39,12 +39,90 @@
     <section class="canvas-layout">
       <div class="canvas-wrap">
         <canvas id="paintCanvas" aria-label="Canvas Cave drawing surface"></canvas>
+        <div class="palette-bank" aria-label="Canvas color palettes">
+          <button class="palette-card active" type="button" data-palette-name="Meadow Glow" data-palette="#7DBFA2,#8CB9D9,#D9D0F0,#E6DC8F,#28433C">
+            <strong>Meadow Glow</strong>
+            <span><i style="--c:#7DBFA2"></i><i style="--c:#8CB9D9"></i><i style="--c:#D9D0F0"></i><i style="--c:#E6DC8F"></i></span>
+          </button>
+          <button class="palette-card" type="button" data-palette-name="Neon Dream" data-palette="#31E9C7,#7C5CFF,#FF5E9E,#FFD166,#101916">
+            <strong>Neon Dream</strong>
+            <span><i style="--c:#31E9C7"></i><i style="--c:#7C5CFF"></i><i style="--c:#FF5E9E"></i><i style="--c:#FFD166"></i></span>
+          </button>
+          <button class="palette-card" type="button" data-palette-name="Sunset Sorbet" data-palette="#FF8C61,#F45B69,#FFD166,#8ED081,#355070">
+            <strong>Sunset Sorbet</strong>
+            <span><i style="--c:#FF8C61"></i><i style="--c:#F45B69"></i><i style="--c:#FFD166"></i><i style="--c:#8ED081"></i></span>
+          </button>
+          <button class="palette-card" type="button" data-palette-name="Ocean Ink" data-palette="#073B4C,#118AB2,#06D6A0,#CAF0F8,#FFFFFF">
+            <strong>Ocean Ink</strong>
+            <span><i style="--c:#073B4C"></i><i style="--c:#118AB2"></i><i style="--c:#06D6A0"></i><i style="--c:#CAF0F8"></i></span>
+          </button>
+          <button class="palette-card" type="button" data-palette-name="Berry Spell" data-palette="#4C1D95,#7E22CE,#C026D3,#F9A8D4,#FDF2F8">
+            <strong>Berry Spell</strong>
+            <span><i style="--c:#4C1D95"></i><i style="--c:#7E22CE"></i><i style="--c:#C026D3"></i><i style="--c:#F9A8D4"></i></span>
+          </button>
+          <button class="palette-card" type="button" data-palette-name="Earth & Ember" data-palette="#3A2E26,#8F5D3D,#D88C55,#F2D0A4,#5F8D4E">
+            <strong>Earth & Ember</strong>
+            <span><i style="--c:#3A2E26"></i><i style="--c:#8F5D3D"></i><i style="--c:#D88C55"></i><i style="--c:#F2D0A4"></i></span>
+          </button>
+        </div>
+        <div class="studio-toolbar" aria-label="Canvas studio controls">
+          <div class="segmented studio-tools" aria-label="Drawing tool">
+            <button class="active" type="button" data-paint-tool="brush">Brush</button>
+            <button type="button" data-paint-tool="marker">Marker</button>
+            <button type="button" data-paint-tool="spray">Spray</button>
+            <button type="button" data-paint-tool="stamp">Stamp</button>
+            <button type="button" data-paint-tool="eraser">Erase</button>
+          </div>
+          <label class="range-inline">Opacity <input id="brushOpacity" type="range" min="12" max="100" value="92"><span id="opacityValue">92</span></label>
+          <label class="select-inline">Blend
+            <select id="blendMode">
+              <option value="source-over">Normal</option>
+              <option value="multiply">Multiply</option>
+              <option value="screen">Screen</option>
+              <option value="overlay">Overlay</option>
+              <option value="soft-light">Soft Light</option>
+              <option value="color-dodge">Glow</option>
+            </select>
+          </label>
+        </div>
+        <div class="creative-toolbar" aria-label="Advanced canvas features">
+          <label class="color-inline">Color <input id="customPaintColor" type="color" value="#7DBFA2"></label>
+          <button id="pickCanvasColor" class="button secondary" type="button">Eyedrop</button>
+          <label class="toggle-inline"><input id="mirrorPaint" type="checkbox"> Mirror</label>
+          <input id="imageUpload" type="file" accept="image/*" hidden>
+          <button id="uploadCanvasImage" class="button secondary" type="button">Import Image</button>
+          <label class="text-inline">Text <input id="canvasText" placeholder="Add poster text"></label>
+          <button id="addCanvasText" class="button secondary" type="button">Add Text</button>
+        </div>
+        <div class="remix-toolbar" aria-label="Canvas remix controls">
+          <div id="stampTray" class="stamp-tray" aria-label="Stamp shapes">
+            <button class="active" type="button" data-stamp="spark">Spark</button>
+            <button type="button" data-stamp="moon">Moon</button>
+            <button type="button" data-stamp="heart">Heart</button>
+            <button type="button" data-stamp="leaf">Leaf</button>
+            <button type="button" data-stamp="portal">Portal</button>
+            <button type="button" data-stamp="frame">Frame</button>
+          </div>
+          <div class="canvas-actions">
+            <button id="undoCanvas" class="button secondary" type="button" disabled>Undo</button>
+            <button id="redoCanvas" class="button secondary" type="button" disabled>Redo</button>
+            <button id="fillCanvas" class="button secondary" type="button">Fill</button>
+            <button id="remixCanvas" class="button secondary" type="button">Remix</button>
+            <button class="button secondary" type="button" data-canvas-filter="glow">Glow</button>
+            <button class="button secondary" type="button" data-canvas-filter="texture">Texture</button>
+            <button class="button secondary" type="button" data-canvas-filter="blur">Blur</button>
+            <button class="button secondary" type="button" data-canvas-filter="invert">Invert</button>
+            <button id="downloadCanvas" class="button" type="button">PNG</button>
+          </div>
+        </div>
         <div class="tool-row">
-          <button class="swatch active" type="button" data-swatch="#7DBFA2" title="Sage"></button>
-          <button class="swatch" type="button" data-swatch="#8CB9D9" title="Moon blue"></button>
-          <button class="swatch" type="button" data-swatch="#D9D0F0" title="Lavender"></button>
-          <button class="swatch" type="button" data-swatch="#E6DC8F" title="Butterlight"></button>
-          <button class="swatch" type="button" data-swatch="#28433C" title="Deep moss"></button>
+          <div id="swatchTray" class="swatch-tray" aria-label="Active palette colors">
+            <button class="swatch active" type="button" data-swatch="#7DBFA2" title="Sage"></button>
+            <button class="swatch" type="button" data-swatch="#8CB9D9" title="Moon blue"></button>
+            <button class="swatch" type="button" data-swatch="#D9D0F0" title="Lavender"></button>
+            <button class="swatch" type="button" data-swatch="#E6DC8F" title="Butterlight"></button>
+            <button class="swatch" type="button" data-swatch="#28433C" title="Deep moss"></button>
+          </div>
           <label class="range-inline">Brush <input id="brushSize" type="range" min="2" max="34" value="10"><span id="brushValue">10</span></label>
           <button id="clearCanvas" class="button secondary" type="button">Clear</button>
         </div>

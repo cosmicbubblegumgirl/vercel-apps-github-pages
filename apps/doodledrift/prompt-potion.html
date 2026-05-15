@@ -35,8 +35,40 @@
     </section>
 
     <section class="potion-stage">
-      <div class="potion-flask" aria-hidden="true">
-        <span></span><span></span><span></span>
+      <div id="potionLab" class="potion-lab">
+        <div class="beaker-row" aria-label="Prompt ingredients">
+          <label class="beaker-card">
+            <span class="beaker-visual mood" aria-hidden="true"><i></i></span>
+            <strong>Mood</strong>
+            <input id="ingredientMood" data-ingredient placeholder="calm neon rain">
+          </label>
+          <label class="beaker-card">
+            <span class="beaker-visual subject" aria-hidden="true"><i></i></span>
+            <strong>Subject</strong>
+            <input id="ingredientSubject" data-ingredient placeholder="moon garden robot">
+          </label>
+          <label class="beaker-card">
+            <span class="beaker-visual style" aria-hidden="true"><i></i></span>
+            <strong>Style</strong>
+            <input id="ingredientStyle" data-ingredient placeholder="sticker collage">
+          </label>
+        </div>
+        <div class="brew-channel" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <div class="potion-flask" aria-live="polite">
+          <div class="flask-neck"></div>
+          <div class="flask-body">
+            <div class="flask-liquid"></div>
+            <div id="potionPrompt" class="potion-prompt">
+              <span>Ready</span>
+              <strong>Type three ingredients, then brew a Doodle prompt.</strong>
+            </div>
+          </div>
+          <span class="bubble one"></span>
+          <span class="bubble two"></span>
+          <span class="bubble three"></span>
+        </div>
       </div>
       <div class="panel potion-panel">
         <label>Prompt type
@@ -49,15 +81,15 @@
             <option value="self-care">Self-care</option>
           </select>
         </label>
-        <div id="potionPrompt" class="potion-prompt"></div>
-        <label>Write your own prompt
+        <label>Optional extra note
           <textarea id="customPromptText" class="potion-custom-input" placeholder="Type a prompt you want to keep, remix, or use for a Doodle."></textarea>
         </label>
         <div class="potion-actions">
-          <button id="brewPrompt" class="button" type="button">Brew a Prompt</button>
-          <button id="useCustomPrompt" class="button secondary" type="button">Use Typed Prompt</button>
+          <button id="brewPrompt" class="button" type="button">Brew Generator</button>
+          <button id="useCustomPrompt" class="button secondary" type="button">Use Note</button>
           <button id="saveCustomPrompt" class="button secondary" type="button">Save Prompt</button>
         </div>
+        <p class="notice">Try short ingredients like "restless", "tiny city", and "glitter ink". The flask will blend them into a fresh Doodle prompt.</p>
       </div>
     </section>
   </main>

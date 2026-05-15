@@ -740,14 +740,25 @@ function setupPainter() {
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
   let drawing = false;
+  let lastPoint = null;
+  let historyIndex = -1;
+  const history = [];
+  let activePalette = ["#7DBFA2", "#8CB9D9", "#D9D0F0", "#E6DC8F", "#28433C"];
+  let activeStamp = "spark";
+  let didInitialHistory = false;
+
+  state.paintTool = "brush";
+  state.brushOpacity = 0.92;
+  state.blendMode = "source-over";
+  state.mirrorPaint = false;
 
   function drawCanvasBackdrop() {
     const width = canvas.width;
     const height = canvas.height;
     const bg = ctx.createLinearGradient(0, 0, width, height);
-    bg.addColorStop(0, "#edf8f4");
-    bg.addColorStop(0.52, "#cfe5ea");
-    bg.addColorStop(1, "#f5f0c7");
+    bg.addColorStop(0, activePalette[3] || "#edf8f4");
+    bg.addColorStop(0.52, activePalette[1] || "#cfe5ea");
+    bg.addColorStop(1, "#f8fbf1");
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, width, height);
 
@@ -756,7 +767,7 @@ function setupPainter() {
     const cssWidth = width / devicePixelRatio;
     const cssHeight = height / devicePixelRatio;
     ctx.globalAlpha = 0.34;
-    ctx.strokeStyle = "#28433c";
+    ctx.strokeStyle = activePalette[4] || "#28433c";
     ctx.lineWidth = 1;
     for (let y = 42; y < cssHeight; y += 48) {
       ctx.beginPath();
@@ -771,13 +782,41 @@ function setupPainter() {
     ctx.arc(cssWidth * 0.18, cssHeight * 0.23, 42, 0, Math.PI * 2);
     ctx.fill();
     ctx.globalAlpha = 0.56;
-    ctx.fillStyle = "#28433c";
+    ctx.fillStyle = activePalette[4] || "#28433c";
     ctx.font = "700 18px Inter, sans-serif";
     ctx.fillText("Canvas Cave", 24, 32);
     ctx.globalAlpha = 0.45;
     ctx.font = "500 13px Inter, sans-serif";
     ctx.fillText("Draw your weather today", 24, 54);
     ctx.restore();
+  }
+
+  function updateHistoryButtons() {
+    const undo = qs("#undoCanvas");
+    const redo = qs("#redoCanvas");
+    if (undo) undo.disabled = historyIndex <= 0;
+    if (redo) redo.disabled = historyIndex >= history.length - 1;
+  }
+
+  function pushHistory() {
+    if (!canvas.width || !canvas.height) return;
+    history.splice(historyIndex + 1);
+    history.push(canvas.toDataURL("image/png"));
+    if (history.length > 24) history.shift();
+    historyIndex = history.length - 1;
+    updateHistoryButtons();
+  }
+
+  function restoreHistory(index) {
+    if (index < 0 || index >= history.length) return;
+    const image = new Image();
+    image.onload = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+      historyIndex = index;
+      updateHistoryButtons();
+    };
+    image.src = history[index];
   }
 
   function resizeCanvas() {
@@ -791,6 +830,10 @@ function setupPainter() {
     canvas.height = rect.width * 0.75 * devicePixelRatio;
     drawCanvasBackdrop();
     if (hadDrawing) ctx.drawImage(snapshot, 0, 0, canvas.width, canvas.height);
+    if (!didInitialHistory) {
+      didInitialHistory = true;
+      pushHistory();
+    }
   }
 
   function pointer(event) {
@@ -798,35 +841,355 @@ function setupPainter() {
     return { x: (event.clientX - rect.left) * devicePixelRatio, y: (event.clientY - rect.top) * devicePixelRatio };
   }
 
-  function start(event) {
-    drawing = true;
-    const p = pointer(event);
+  function mirrorPoint(point) {
+    return { x: canvas.width - point.x, y: point.y };
+  }
+
+  function applyPaintStyle() {
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.globalAlpha = state.brushOpacity;
+    ctx.globalCompositeOperation = state.paintTool === "eraser" ? "destination-out" : state.blendMode;
+    ctx.strokeStyle = state.paintColor;
+    ctx.fillStyle = state.paintColor;
+    ctx.lineWidth = state.brushSize * devicePixelRatio;
+
+    if (state.paintTool === "marker") {
+      ctx.globalAlpha = Math.max(0.18, state.brushOpacity * 0.48);
+      ctx.globalCompositeOperation = state.blendMode === "source-over" ? "multiply" : state.blendMode;
+      ctx.lineWidth = state.brushSize * 1.85 * devicePixelRatio;
+    }
+
+    if (state.paintTool === "eraser") {
+      ctx.globalAlpha = 1;
+      ctx.lineWidth = state.brushSize * 1.55 * devicePixelRatio;
+    }
+  }
+
+  function drawSegment(from, to) {
     ctx.beginPath();
-    ctx.moveTo(p.x, p.y);
+    ctx.moveTo(from.x, from.y);
+    ctx.lineTo(to.x, to.y);
+    ctx.stroke();
+    if (state.mirrorPaint) {
+      const mirroredFrom = mirrorPoint(from);
+      const mirroredTo = mirrorPoint(to);
+      ctx.beginPath();
+      ctx.moveTo(mirroredFrom.x, mirroredFrom.y);
+      ctx.lineTo(mirroredTo.x, mirroredTo.y);
+      ctx.stroke();
+    }
+  }
+
+  function sprayAt(point) {
+    ctx.save();
+    applyPaintStyle();
+    const radius = state.brushSize * 1.9 * devicePixelRatio;
+    const dots = Math.max(18, Math.round(state.brushSize * 2.4));
+    for (let i = 0; i < dots; i += 1) {
+      const angle = Math.random() * Math.PI * 2;
+      const distance = Math.random() * radius;
+      const x = point.x + Math.cos(angle) * distance;
+      const y = point.y + Math.sin(angle) * distance;
+      ctx.beginPath();
+      ctx.arc(x, y, Math.max(1.2, Math.random() * 2.8) * devicePixelRatio, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  function starPath(size) {
+    ctx.beginPath();
+    for (let i = 0; i < 10; i += 1) {
+      const angle = -Math.PI / 2 + (Math.PI / 5) * i;
+      const radius = i % 2 === 0 ? size : size * 0.45;
+      const x = Math.cos(angle) * radius;
+      const y = Math.sin(angle) * radius;
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+  }
+
+  function drawStamp(point) {
+    const size = Math.max(14, state.brushSize * 2.8) * devicePixelRatio;
+    ctx.save();
+    ctx.translate(point.x, point.y);
+    ctx.globalAlpha = state.brushOpacity;
+    ctx.globalCompositeOperation = state.blendMode;
+    ctx.fillStyle = state.paintColor;
+    ctx.strokeStyle = activePalette[4] || "#28433c";
+    ctx.lineWidth = Math.max(2, state.brushSize * 0.28) * devicePixelRatio;
+
+    if (activeStamp === "moon") {
+      ctx.beginPath();
+      ctx.arc(0, 0, size * 0.72, 0, Math.PI * 2);
+      ctx.arc(size * 0.32, -size * 0.18, size * 0.72, Math.PI * 2, 0, true);
+      ctx.fill("evenodd");
+    } else if (activeStamp === "heart") {
+      ctx.beginPath();
+      ctx.moveTo(0, size * 0.48);
+      ctx.bezierCurveTo(-size, -size * 0.12, -size * 0.5, -size * 0.75, 0, -size * 0.35);
+      ctx.bezierCurveTo(size * 0.5, -size * 0.75, size, -size * 0.12, 0, size * 0.48);
+      ctx.fill();
+    } else if (activeStamp === "leaf") {
+      ctx.beginPath();
+      ctx.ellipse(0, 0, size * 0.42, size * 0.9, Math.PI / 4, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(-size * 0.32, size * 0.44);
+      ctx.lineTo(size * 0.34, -size * 0.46);
+      ctx.stroke();
+    } else if (activeStamp === "portal") {
+      ctx.beginPath();
+      ctx.ellipse(0, 0, size * 0.7, size * 0.96, 0, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.globalAlpha *= 0.62;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, size * 0.42, size * 0.68, 0, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (activeStamp === "frame") {
+      ctx.strokeRect(-size * 0.7, -size * 0.48, size * 1.4, size * 0.96);
+      ctx.globalAlpha *= 0.55;
+      ctx.fillRect(-size * 0.52, -size * 0.3, size * 1.04, size * 0.6);
+    } else {
+      starPath(size * 0.72);
+      ctx.fill();
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function drawStampSet(point) {
+    drawStamp(point);
+    if (state.mirrorPaint) drawStamp(mirrorPoint(point));
+  }
+
+  function start(event) {
+    event.preventDefault();
+    const p = pointer(event);
+    if (state.paintTool === "stamp") {
+      drawStampSet(p);
+      pushHistory();
+      return;
+    }
+    if (state.paintTool === "spray") {
+      drawing = true;
+      sprayAt(p);
+      if (state.mirrorPaint) sprayAt(mirrorPoint(p));
+      return;
+    }
+    drawing = true;
+    lastPoint = p;
+    ctx.save();
+    applyPaintStyle();
   }
 
   function move(event) {
     if (!drawing) return;
+    event.preventDefault();
     const p = pointer(event);
-    ctx.lineWidth = state.brushSize * devicePixelRatio;
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
-    ctx.strokeStyle = state.paintColor;
-    ctx.lineTo(p.x, p.y);
-    ctx.stroke();
+    if (state.paintTool === "spray") {
+      sprayAt(p);
+      if (state.mirrorPaint) sprayAt(mirrorPoint(p));
+      return;
+    }
+    drawSegment(lastPoint || p, p);
+    lastPoint = p;
+  }
+
+  function finishDrawing() {
+    if (!drawing) return;
+    drawing = false;
+    lastPoint = null;
+    if (state.paintTool !== "spray") ctx.restore();
+    pushHistory();
+  }
+
+  function bindSwatches() {
+    qsa("[data-swatch]").forEach((button) => {
+      button.style.background = button.dataset.swatch;
+      button.addEventListener("click", () => {
+        state.paintColor = button.dataset.swatch;
+        const customColor = qs("#customPaintColor");
+        if (customColor) customColor.value = state.paintColor;
+        qsa("[data-swatch]").forEach((item) => item.classList.toggle("active", item === button));
+      });
+    });
+  }
+
+  function renderSwatches(colors) {
+    const tray = qs("#swatchTray");
+    if (!tray) return;
+    tray.innerHTML = colors.map((color, index) => `
+      <button class="swatch ${index === 0 ? "active" : ""}" type="button" data-swatch="${escapeHtml(color)}" style="background:${escapeHtml(color)}" title="${escapeHtml(color)}"></button>
+    `).join("");
+    state.paintColor = colors[0];
+    const customColor = qs("#customPaintColor");
+    if (customColor) customColor.value = colors[0];
+    bindSwatches();
+  }
+
+  function remixCanvas() {
+    const snapshot = document.createElement("canvas");
+    snapshot.width = canvas.width;
+    snapshot.height = canvas.height;
+    snapshot.getContext("2d").drawImage(canvas, 0, 0);
+
+    ctx.save();
+    ctx.globalCompositeOperation = "screen";
+    ctx.globalAlpha = 0.18;
+    ctx.drawImage(snapshot, 8 * devicePixelRatio, -6 * devicePixelRatio);
+    ctx.globalCompositeOperation = "multiply";
+    ctx.globalAlpha = 0.13;
+    ctx.drawImage(snapshot, -10 * devicePixelRatio, 8 * devicePixelRatio);
+    ctx.globalCompositeOperation = "source-over";
+    for (let i = 0; i < 7; i += 1) {
+      ctx.strokeStyle = activePalette[i % activePalette.length];
+      ctx.globalAlpha = 0.24;
+      ctx.lineWidth = (2 + i * 0.45) * devicePixelRatio;
+      ctx.beginPath();
+      const y = canvas.height * (0.18 + i * 0.1);
+      ctx.moveTo(canvas.width * 0.08, y);
+      ctx.bezierCurveTo(canvas.width * 0.32, y - 42 * devicePixelRatio, canvas.width * 0.64, y + 42 * devicePixelRatio, canvas.width * 0.92, y - 10 * devicePixelRatio);
+      ctx.stroke();
+    }
+    ctx.restore();
+    pushHistory();
+  }
+
+  function addTexture() {
+    ctx.save();
+    ctx.globalCompositeOperation = "overlay";
+    for (let i = 0; i < 180; i += 1) {
+      ctx.globalAlpha = Math.random() * 0.16 + 0.04;
+      ctx.fillStyle = activePalette[i % activePalette.length] || state.paintColor;
+      ctx.beginPath();
+      ctx.arc(Math.random() * canvas.width, Math.random() * canvas.height, (Math.random() * 2.8 + 0.8) * devicePixelRatio, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 0.12;
+    ctx.strokeStyle = activePalette[4] || "#28433c";
+    ctx.lineWidth = 1 * devicePixelRatio;
+    for (let y = 0; y < canvas.height; y += 18 * devicePixelRatio) {
+      ctx.beginPath();
+      ctx.moveTo(0, y + Math.random() * 8 * devicePixelRatio);
+      ctx.lineTo(canvas.width, y + Math.random() * 8 * devicePixelRatio);
+      ctx.stroke();
+    }
+    ctx.restore();
+    pushHistory();
+  }
+
+  function filterCanvas(type) {
+    if (type === "texture") {
+      addTexture();
+      return;
+    }
+    if (type === "invert") {
+      const image = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < image.data.length; i += 4) {
+        image.data[i] = 255 - image.data[i];
+        image.data[i + 1] = 255 - image.data[i + 1];
+        image.data[i + 2] = 255 - image.data[i + 2];
+      }
+      ctx.putImageData(image, 0, 0);
+      pushHistory();
+      return;
+    }
+    const snapshot = document.createElement("canvas");
+    snapshot.width = canvas.width;
+    snapshot.height = canvas.height;
+    snapshot.getContext("2d").drawImage(canvas, 0, 0);
+    ctx.save();
+    if (type === "blur") ctx.filter = "blur(2.2px) saturate(1.08)";
+    if (type === "glow") {
+      ctx.filter = "blur(7px) saturate(1.35)";
+      ctx.globalCompositeOperation = "screen";
+      ctx.globalAlpha = 0.42;
+    }
+    ctx.drawImage(snapshot, 0, 0);
+    ctx.restore();
+    pushHistory();
+  }
+
+  function addPosterText() {
+    const input = qs("#canvasText");
+    const text = input?.value.trim();
+    if (!text) {
+      input?.focus();
+      return toast("Type text before adding it to the canvas.", true);
+    }
+    const maxWidth = canvas.width * 0.78;
+    const words = text.split(/\s+/);
+    const lines = [];
+    let line = "";
+    ctx.save();
+    ctx.globalAlpha = state.brushOpacity;
+    ctx.globalCompositeOperation = state.blendMode;
+    ctx.fillStyle = state.paintColor;
+    ctx.strokeStyle = "rgba(248, 251, 241, 0.78)";
+    ctx.lineWidth = 5 * devicePixelRatio;
+    ctx.font = `800 ${Math.max(24, state.brushSize * 3.2) * devicePixelRatio}px Inter, sans-serif`;
+    words.forEach((word) => {
+      const test = `${line} ${word}`.trim();
+      if (ctx.measureText(test).width > maxWidth && line) {
+        lines.push(line);
+        line = word;
+      } else {
+        line = test;
+      }
+    });
+    if (line) lines.push(line);
+    const startY = canvas.height * 0.52 - (lines.length - 1) * 22 * devicePixelRatio;
+    lines.slice(0, 4).forEach((textLine, index) => {
+      const x = canvas.width * 0.12;
+      const y = startY + index * 44 * devicePixelRatio;
+      ctx.strokeText(textLine, x, y);
+      ctx.fillText(textLine, x, y);
+    });
+    ctx.restore();
+    pushHistory();
+  }
+
+  function importImage(file) {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const image = new Image();
+      image.onload = () => {
+        const scale = Math.min(canvas.width / image.width, canvas.height / image.height);
+        const width = image.width * scale;
+        const height = image.height * scale;
+        const x = (canvas.width - width) / 2;
+        const y = (canvas.height - height) / 2;
+        ctx.save();
+        ctx.globalAlpha = 0.9;
+        ctx.drawImage(image, x, y, width, height);
+        ctx.restore();
+        pushHistory();
+      };
+      image.src = reader.result;
+    };
+    reader.readAsDataURL(file);
   }
 
   resizeCanvas();
   window.addEventListener("resize", resizeCanvas);
   canvas.addEventListener("pointerdown", start);
   canvas.addEventListener("pointermove", move);
-  window.addEventListener("pointerup", () => { drawing = false; });
+  canvas.addEventListener("pointerleave", finishDrawing);
+  window.addEventListener("pointerup", finishDrawing);
 
-  qsa("[data-swatch]").forEach((button) => {
-    button.style.background = button.dataset.swatch;
+  bindSwatches();
+
+  qsa("[data-palette]").forEach((button) => {
     button.addEventListener("click", () => {
-      state.paintColor = button.dataset.swatch;
-      qsa("[data-swatch]").forEach((item) => item.classList.toggle("active", item === button));
+      activePalette = button.dataset.palette.split(",").map((color) => color.trim());
+      qsa("[data-palette]").forEach((item) => item.classList.toggle("active", item === button));
+      renderSwatches(activePalette);
+      toast(`${button.dataset.paletteName || "Palette"} loaded.`);
     });
   });
 
@@ -835,8 +1198,81 @@ function setupPainter() {
     qs("#brushValue").textContent = state.brushSize;
   });
 
+  qs("#brushOpacity")?.addEventListener("input", (event) => {
+    state.brushOpacity = Number(event.target.value) / 100;
+    qs("#opacityValue").textContent = event.target.value;
+  });
+
+  qs("#blendMode")?.addEventListener("change", (event) => {
+    state.blendMode = event.target.value;
+  });
+
+  qs("#customPaintColor")?.addEventListener("input", (event) => {
+    state.paintColor = event.target.value;
+    qsa("[data-swatch]").forEach((item) => item.classList.remove("active"));
+  });
+
+  qs("#pickCanvasColor")?.addEventListener("click", async () => {
+    if (!window.EyeDropper) return toast("Eyedropper is not available in this browser.", true);
+    try {
+      const result = await new window.EyeDropper().open();
+      state.paintColor = result.sRGBHex;
+      const customColor = qs("#customPaintColor");
+      if (customColor) customColor.value = result.sRGBHex;
+      qsa("[data-swatch]").forEach((item) => item.classList.remove("active"));
+    } catch {
+      toast("Eyedropper cancelled.");
+    }
+  });
+
+  qs("#mirrorPaint")?.addEventListener("change", (event) => {
+    state.mirrorPaint = event.target.checked;
+  });
+
+  qsa("[data-paint-tool]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.paintTool = button.dataset.paintTool;
+      qsa("[data-paint-tool]").forEach((item) => item.classList.toggle("active", item === button));
+    });
+  });
+
+  qsa("[data-stamp]").forEach((button) => {
+    button.addEventListener("click", () => {
+      activeStamp = button.dataset.stamp;
+      qsa("[data-stamp]").forEach((item) => item.classList.toggle("active", item === button));
+      state.paintTool = "stamp";
+      qsa("[data-paint-tool]").forEach((item) => item.classList.toggle("active", item.dataset.paintTool === "stamp"));
+    });
+  });
+
   qs("#clearCanvas")?.addEventListener("click", () => {
     drawCanvasBackdrop();
+    pushHistory();
+  });
+
+  qs("#fillCanvas")?.addEventListener("click", () => {
+    drawCanvasBackdrop();
+    pushHistory();
+  });
+
+  qs("#remixCanvas")?.addEventListener("click", remixCanvas);
+
+  qsa("[data-canvas-filter]").forEach((button) => {
+    button.addEventListener("click", () => filterCanvas(button.dataset.canvasFilter));
+  });
+
+  qs("#undoCanvas")?.addEventListener("click", () => restoreHistory(historyIndex - 1));
+  qs("#redoCanvas")?.addEventListener("click", () => restoreHistory(historyIndex + 1));
+
+  qs("#uploadCanvasImage")?.addEventListener("click", () => qs("#imageUpload")?.click());
+  qs("#imageUpload")?.addEventListener("change", (event) => importImage(event.target.files?.[0]));
+  qs("#addCanvasText")?.addEventListener("click", addPosterText);
+
+  qs("#downloadCanvas")?.addEventListener("click", () => {
+    const link = document.createElement("a");
+    link.download = `doodledrift-canvas-${Date.now()}.png`;
+    link.href = canvas.toDataURL("image/png");
+    link.click();
   });
 
   qsa("[data-art-prompt]").forEach((button) => {
@@ -867,10 +1303,13 @@ function audioContext() {
   return state.audio;
 }
 
-function playTone(freq, duration = 0.35, when = 0) {
+function playTone(freq, duration = 0.35, when = 0, options = {}) {
   const ctx = audioContext();
   ctx.resume?.();
   const start = ctx.currentTime + when;
+  const echoAmount = Number.isFinite(options.echo) ? options.echo : 0.22;
+  const filterAmount = Number.isFinite(options.filter) ? options.filter : 0.54;
+  const gainAmount = Number.isFinite(options.gain) ? options.gain : 0.13;
   const gain = ctx.createGain();
   const filter = ctx.createBiquadFilter();
   const delay = ctx.createDelay();
@@ -878,15 +1317,15 @@ function playTone(freq, duration = 0.35, when = 0) {
   const wet = ctx.createGain();
 
   filter.type = "lowpass";
-  filter.frequency.setValueAtTime(820, start);
-  filter.frequency.exponentialRampToValueAtTime(1800, start + 0.08);
-  filter.frequency.exponentialRampToValueAtTime(640, start + duration);
-  delay.delayTime.value = 0.18;
-  feedback.gain.value = 0.22;
-  wet.gain.value = 0.08;
+  filter.frequency.setValueAtTime(520 + filterAmount * 720, start);
+  filter.frequency.exponentialRampToValueAtTime(1200 + filterAmount * 1800, start + 0.08);
+  filter.frequency.exponentialRampToValueAtTime(420 + filterAmount * 760, start + duration);
+  delay.delayTime.value = 0.12 + echoAmount * 0.22;
+  feedback.gain.value = Math.min(0.5, echoAmount * 0.52);
+  wet.gain.value = Math.min(0.24, echoAmount * 0.2);
   gain.gain.setValueAtTime(0.0001, start);
-  gain.gain.exponentialRampToValueAtTime(0.13, start + 0.05);
-  gain.gain.linearRampToValueAtTime(0.1, start + Math.max(0.06, duration * 0.5));
+  gain.gain.exponentialRampToValueAtTime(gainAmount, start + 0.05);
+  gain.gain.linearRampToValueAtTime(gainAmount * 0.72, start + Math.max(0.06, duration * 0.5));
   gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
 
   gain.connect(filter);
@@ -898,8 +1337,8 @@ function playTone(freq, duration = 0.35, when = 0) {
   wet.connect(ctx.destination);
 
   [
-    { type: "sine", frequency: freq, detune: -4 },
-    { type: "triangle", frequency: freq * 2, detune: 3 }
+    { type: options.wave || "sine", frequency: freq, detune: -4 },
+    { type: options.overtone || "triangle", frequency: freq * 2, detune: 3 }
   ].forEach((voice) => {
     const osc = ctx.createOscillator();
     osc.type = voice.type;
@@ -911,9 +1350,9 @@ function playTone(freq, duration = 0.35, when = 0) {
   });
 }
 
-function playSequence(tempo = 72, tones = [261.63, 329.63, 392, 523.25, 440, 349.23]) {
+function playSequence(tempo = 72, tones = [261.63, 329.63, 392, 523.25, 440, 349.23], options = {}) {
   const beat = 60 / tempo;
-  tones.forEach((freq, index) => playTone(freq, beat * 0.72, index * beat * 0.55));
+  tones.forEach((freq, index) => playTone(freq, beat * 0.72, index * beat * 0.55, options));
   return tones.length * beat * 0.55 + beat;
 }
 
@@ -936,6 +1375,80 @@ async function setupMusic() {
   });
 
   qs("#playPattern")?.addEventListener("click", () => playSequence(Number(tempo?.value || 72)));
+
+  function djValue(id, fallback) {
+    const value = Number(qs(id)?.value);
+    return Number.isFinite(value) ? value : fallback;
+  }
+
+  function updateDjOutputs() {
+    [
+      ["#deckATempo", "#deckATempoValue"],
+      ["#deckBTempo", "#deckBTempoValue"],
+      ["#djCrossfade", "#djCrossfadeValue"],
+      ["#djEcho", "#djEchoValue"],
+      ["#djFilter", "#djFilterValue"]
+    ].forEach(([inputId, outputId]) => {
+      const input = qs(inputId);
+      const output = qs(outputId);
+      if (input && output) output.textContent = input.value;
+    });
+  }
+
+  function deckGain(deck) {
+    const crossfade = djValue("#djCrossfade", 50) / 100;
+    if (deck === "A") return 0.18 * (1 - crossfade + 0.2);
+    if (deck === "B") return 0.18 * (crossfade + 0.2);
+    return 0.13;
+  }
+
+  function playDjTrigger(button, delay = 0) {
+    const deck = button.dataset.deck || "mix";
+    const tempoId = deck === "A" ? "#deckATempo" : deck === "B" ? "#deckBTempo" : null;
+    const tempoValue = tempoId ? djValue(tempoId, Number(button.dataset.tempo || 90)) : Number(button.dataset.tempo || 90);
+    const tones = button.dataset.tones.split(",").map(Number).filter(Boolean);
+    const beat = 60 / tempoValue;
+    const seconds = tones.length * beat * 0.55 + beat;
+    const run = () => {
+      playSequence(tempoValue, tones, {
+        gain: deckGain(deck),
+        echo: djValue("#djEcho", 38) / 100,
+        filter: djValue("#djFilter", 54) / 100,
+        wave: deck === "B" ? "triangle" : "sine",
+        overtone: deck === "B" ? "sawtooth" : "triangle"
+      });
+      qsa(".dj-deck, .dj-mixer").forEach((item) => item.classList.remove("is-cued"));
+      button.closest(".dj-deck, .dj-mixer")?.classList.add("is-cued");
+      button.classList.add("is-playing");
+      qs(".dj-console")?.classList.add("is-live");
+      setTimeout(() => {
+        button.classList.remove("is-playing");
+        qs(".dj-console")?.classList.remove("is-live");
+      }, seconds * 1000);
+    };
+    if (delay > 0) setTimeout(run, delay * 1000);
+    else run();
+    return seconds;
+  }
+
+  qsa(".dj-slider input").forEach((input) => input.addEventListener("input", updateDjOutputs));
+  updateDjOutputs();
+
+  qsa("[data-dj-trigger]").forEach((button) => {
+    button.addEventListener("click", () => playDjTrigger(button));
+  });
+
+  qs("#playDjSet")?.addEventListener("click", () => {
+    const triggers = qsa("[data-dj-trigger]");
+    const a = triggers.find((button) => button.dataset.deck === "A");
+    const mix = triggers.find((button) => button.dataset.deck === "mix");
+    const b = triggers.find((button) => button.dataset.deck === "B");
+    let next = 0;
+    [a, mix, b].filter(Boolean).forEach((button) => {
+      const seconds = playDjTrigger(button, next);
+      next += Math.max(1.4, seconds * 0.58);
+    });
+  });
 
   const playlistTarget = qs("#playlistGrid");
   if (playlistTarget) {
@@ -1240,39 +1753,104 @@ async function setupPromptPotion() {
   const card = qs("#potionPrompt");
   const category = qs("#promptCategory");
   const custom = qs("#customPromptText");
+  const lab = qs("#potionLab");
+  const ingredients = qsa("[data-ingredient]");
   let currentPrompt = null;
+  let brewTimer = null;
+
+  const fallbackIngredients = {
+    mood: ["calm", "electric", "misty", "brave", "dreamy", "restless"],
+    subject: ["tiny city", "moon garden", "forest doorway", "floating notebook", "friendly robot", "cloud kitchen"],
+    style: ["sticker collage", "ink sketch", "soft watercolor", "pixel poster", "album cover", "comic panel"]
+  };
+
+  const categoryDetails = {
+    art: ["color contrast", "hidden symbols", "shape language", "negative space"],
+    music: ["rhythm marks", "sound waves", "bass texture", "quiet-to-loud movement"],
+    writing: ["one secret sentence", "a strange narrator", "three sensory clues", "a tiny plot twist"],
+    reflection: ["a boundary", "a soft truth", "a next step", "a self-kindness note"],
+    "self-care": ["a recovery ritual", "a comfort object", "a slower pace", "a small reset"]
+  };
+
+  function pick(items) {
+    return items[Math.floor(Math.random() * items.length)];
+  }
+
+  function ingredientValue(id, fallbackKey) {
+    const value = qs(id)?.value.trim();
+    return value || pick(fallbackIngredients[fallbackKey]);
+  }
+
+  function categoryValue() {
+    if (!category || category.value === "all") return pick(["art", "music", "writing", "reflection", "self-care"]);
+    return category.value;
+  }
+
+  function generatedPrompt() {
+    const mood = ingredientValue("#ingredientMood", "mood");
+    const subject = ingredientValue("#ingredientSubject", "subject");
+    const style = ingredientValue("#ingredientStyle", "style");
+    const type = categoryValue();
+    const detail = pick(categoryDetails[type] || categoryDetails.art);
+    const note = custom?.value.trim();
+    const templates = [
+      `Create a ${style} Doodle of ${subject} that feels ${mood}. Build the scene around ${detail}, then add one tiny mark that only future-you would understand.`,
+      `Draw ${subject} as if it has been brewed with ${mood} energy. Use ${style} techniques, exaggerate ${detail}, and leave one quiet corner for a secret symbol.`,
+      `Turn ${mood}, ${subject}, and ${style} into a Doodle spell. Make ${detail} the main visual clue, then add three small textures that change the mood.`,
+      `Design a ${style} poster where ${subject} is trying to explain ${mood}. Include ${detail}, a repeated shape, and one unexpected color choice.`
+    ];
+    const text = `${pick(templates)}${note ? ` Extra note: ${note}` : ""}`;
+    return { category: type, text };
+  }
 
   function showPrompt(prompt) {
     currentPrompt = prompt;
+    if (!card) return;
     card.innerHTML = `<span>${escapeHtml(prompt.category)}</span><strong>${escapeHtml(prompt.text)}</strong>`;
   }
 
-  async function brew() {
-    const data = await api(`/api/prompt?category=${encodeURIComponent(category.value)}&mood=${encodeURIComponent(state.mood)}`);
-    showPrompt(data.prompt);
+  function brew() {
+    window.clearTimeout(brewTimer);
+    lab?.classList.add("is-brewing");
+    if (card) {
+      card.innerHTML = `<span>Brewing</span><strong>Combining your three beakers into a fresh Doodle prompt...</strong>`;
+    }
+    brewTimer = window.setTimeout(() => {
+      showPrompt(generatedPrompt());
+      lab?.classList.remove("is-brewing");
+    }, 860);
   }
 
   qs("#brewPrompt")?.addEventListener("click", brew);
-  category?.addEventListener("change", brew);
+  category?.addEventListener("change", () => {
+    if (currentPrompt) brew();
+  });
+  ingredients.forEach((input) => {
+    input.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        brew();
+      }
+    });
+  });
   qs("#useCustomPrompt")?.addEventListener("click", () => {
     const text = custom?.value.trim();
     if (!text) {
       custom?.focus();
-      return toast("Type a prompt first, then pour it into the potion.", true);
+      return toast("Type an extra note first, then pour it into the potion.", true);
     }
     showPrompt({ category: category?.value === "all" ? "custom" : category.value, text });
   });
   qs("#saveCustomPrompt")?.addEventListener("click", async () => {
-    const text = custom?.value.trim();
+    const text = currentPrompt?.text || custom?.value.trim();
     if (!text) {
-      custom?.focus();
-      return toast("Type a prompt before saving it.", true);
+      return toast("Brew or type a prompt before saving it.", true);
     }
     if (!state.user) return toast("Enter the Den to save custom prompts.", true);
     try {
       const data = await api("/api/prompts", {
         method: "POST",
-        body: JSON.stringify({ category: category?.value === "all" ? "reflection" : category.value, text })
+        body: JSON.stringify({ category: currentPrompt?.category || (category?.value === "all" ? "reflection" : category.value), text })
       });
       showPrompt(data.prompt);
       toast("Custom Prompt saved to the Potion shelf.");
@@ -1286,7 +1864,6 @@ async function setupPromptPotion() {
       qs("#useCustomPrompt")?.click();
     }
   });
-  await brew();
 }
 
 async function setupQuests() {

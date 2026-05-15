@@ -83,6 +83,74 @@
         </form>
       </aside>
     </section>
+
+    <section class="dj-console" aria-label="Embedded Echo Forest DJ setup">
+      <div class="dj-heading">
+        <div>
+          <p class="eyebrow">Forest DJ Booth</p>
+          <h2>Blend two decks, trigger pads, and run a tiny set.</h2>
+        </div>
+        <button id="playDjSet" class="button" type="button">Run DJ Set</button>
+      </div>
+      <div class="dj-grid">
+        <div class="dj-deck" data-deck-panel="A">
+          <div class="deck-top">
+            <span>Deck A</span>
+            <strong>Canopy Pulse</strong>
+          </div>
+          <button class="deck-platter" type="button" data-dj-trigger data-deck="A" data-tempo="82" data-tones="196,246.94,293.66,392,293.66,246.94">
+            <span>Drop A</span>
+          </button>
+          <div class="deck-pads">
+            <button type="button" data-dj-trigger data-deck="A" data-tempo="76" data-tones="196,293.66,392">Moss</button>
+            <button type="button" data-dj-trigger data-deck="A" data-tempo="88" data-tones="246.94,329.63,440">Bloom</button>
+            <button type="button" data-dj-trigger data-deck="A" data-tempo="96" data-tones="293.66,392,523.25">Firefly</button>
+            <button type="button" data-dj-trigger data-deck="A" data-tempo="72" data-tones="174.61,220,261.63">Drift</button>
+          </div>
+          <label class="dj-slider">Deck A tempo
+            <input id="deckATempo" type="range" min="58" max="128" value="82">
+            <output id="deckATempoValue">82</output>
+          </label>
+        </div>
+
+        <div class="dj-mixer">
+          <div class="mixer-vu" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+          <label class="dj-slider">Crossfade
+            <input id="djCrossfade" type="range" min="0" max="100" value="50">
+            <output id="djCrossfadeValue">50</output>
+          </label>
+          <label class="dj-slider">Echo send
+            <input id="djEcho" type="range" min="0" max="100" value="38">
+            <output id="djEchoValue">38</output>
+          </label>
+          <label class="dj-slider">Forest filter
+            <input id="djFilter" type="range" min="0" max="100" value="54">
+            <output id="djFilterValue">54</output>
+          </label>
+          <button class="button secondary full" type="button" data-dj-trigger data-deck="mix" data-tempo="90" data-tones="130.81,196,261.63,392,523.25">Bass Bloom</button>
+        </div>
+
+        <div class="dj-deck" data-deck-panel="B">
+          <div class="deck-top">
+            <span>Deck B</span>
+            <strong>Moonlit Arp</strong>
+          </div>
+          <button class="deck-platter alt" type="button" data-dj-trigger data-deck="B" data-tempo="94" data-tones="329.63,392,493.88,659.25,493.88,392">
+            <span>Drop B</span>
+          </button>
+          <div class="deck-pads">
+            <button type="button" data-dj-trigger data-deck="B" data-tempo="90" data-tones="329.63,440,659.25">Moon</button>
+            <button type="button" data-dj-trigger data-deck="B" data-tempo="104" data-tones="392,523.25,783.99">Spark</button>
+            <button type="button" data-dj-trigger data-deck="B" data-tempo="86" data-tones="293.66,369.99,554.37">Rain</button>
+            <button type="button" data-dj-trigger data-deck="B" data-tempo="110" data-tones="440,587.33,880">Star</button>
+          </div>
+          <label class="dj-slider">Deck B tempo
+            <input id="deckBTempo" type="range" min="58" max="132" value="94">
+            <output id="deckBTempoValue">94</output>
+          </label>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer class="footer"><strong>A quantum cupcake creation</strong></footer>
