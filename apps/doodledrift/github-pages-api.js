@@ -43,7 +43,7 @@
 
   function currentUser(data) {
     const stored = localStorage.getItem(keys.user);
-    const userId = stored === null ? 'usr_001' : stored;
+    const userId = stored || '';
     if (!userId) return null;
     return data.users.find((user) => user.id === userId) || null;
   }
@@ -86,7 +86,7 @@
   function profileFor(data, user) {
     const doodles = data.doodles.filter((doodle) => doodle.authorId === user.id).map((doodle) => enrichDoodle(data, doodle));
     return {
-      profile: user,
+      profile: publicUser(user),
       doodles,
       cloudClips: visibleClips(data).filter((clip) => clip.userId === user.id).length,
       glows: data.glows.filter((glow) => doodles.some((doodle) => doodle.id === glow.doodleId)).length,
@@ -99,6 +99,18 @@
     write(keys.users, [user, ...without]);
   }
 
+  async function hashPassword(password, salt) {
+    const input = new TextEncoder().encode(`${salt}:${password}`);
+    const digest = await crypto.subtle.digest('SHA-256', input);
+    return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
+  }
+
+  function publicUser(user) {
+    if (!user) return null;
+    const { passwordHash, salt, ...safeUser } = user;
+    return safeUser;
+  }
+
   window.fetch = async (input, options = {}) => {
     const url = new URL(typeof input === 'string' ? input : input.url, location.href);
     if (!url.pathname.startsWith('/api/')) return nativeFetch(input, options);
@@ -108,31 +120,52 @@
     const data = await db();
     const user = currentUser(data);
 
-    if (url.pathname === '/api/me') return json({ user });
+    if (url.pathname === '/api/me') return json({ user: publicUser(user) });
     if (method === 'POST' && url.pathname === '/api/auth/logout') {
       localStorage.setItem(keys.user, '');
       return json({ ok: true });
     }
-    if (method === 'POST' && ['/api/auth/login', '/api/auth/register'].includes(url.pathname)) {
-      let nextUser = data.users.find((item) => item.email === payload.email || item.username === payload.username);
-      if (!nextUser) {
-        const username = payload.username || String(payload.email || 'DoodleFriend').split('@')[0].replace(/[^a-z0-9_-]/gi, '') || 'DoodleFriend';
-        nextUser = {
-          id: id('usr'),
-          username,
-          email: payload.email || `${username}@doodledrift.local`,
-          displayName: payload.displayName || payload.name || username,
-          bio: 'A new DoodleDen for saved art, sound, story, and mood marks.',
-          moodBadge: 'Glowy',
-          aura: 'Freshly opened creative weather',
-          favoriteColors: ['#B8DEC8', '#BFD7EA', '#E6DC8F'],
-          interests: ['canvas doodles', 'echo notes', 'cloud clips'],
-          createdAt: new Date().toISOString(),
-        };
-        saveCustomUser(nextUser);
+    if (method === 'POST' && url.pathname === '/api/auth/register') {
+      const username = String(payload.username || '').trim().replace(/[^a-z0-9_-]/gi, '');
+      const email = String(payload.email || '').trim().toLowerCase();
+      const password = String(payload.password || '');
+      if (!username || !email || password.length < 8) {
+        return json({ error: 'Doodle Name, email, and an 8+ character password are required.' }, 400);
       }
+      const exists = data.users.some((item) => item.email?.toLowerCase() === email || item.username?.toLowerCase() === username.toLowerCase());
+      if (exists) return json({ error: 'That Doodle Name or email is already registered.' }, 409);
+
+      const salt = id('salt');
+      const nextUser = {
+        id: id('usr'),
+        username,
+        email,
+        displayName: payload.displayName || payload.name || username,
+        passwordHash: await hashPassword(password, salt),
+        salt,
+        bio: 'A new DoodleDen for saved art, sound, story, and mood marks.',
+        moodBadge: 'Glowy',
+        aura: 'Freshly opened creative weather',
+        favoriteColors: ['#B8DEC8', '#BFD7EA', '#E6DC8F'],
+        interests: ['canvas doodles', 'echo notes', 'cloud clips'],
+        createdAt: new Date().toISOString(),
+      };
+      saveCustomUser(nextUser);
       localStorage.setItem(keys.user, nextUser.id);
-      return json({ token: id('session'), user: nextUser }, url.pathname.endsWith('register') ? 201 : 200);
+      return json({ token: id('session'), user: publicUser(nextUser) }, 201);
+    }
+
+    if (method === 'POST' && url.pathname === '/api/auth/login') {
+      const handle = String(payload.username || payload.email || '').trim().toLowerCase();
+      const password = String(payload.password || '');
+      const nextUser = data.users.find((item) => item.email?.toLowerCase() === handle || item.username?.toLowerCase() === handle);
+      if (!nextUser || !nextUser.passwordHash || !nextUser.salt) {
+        return json({ error: 'Account not found. Begin Your Drift to create one first.' }, 404);
+      }
+      const passwordHash = await hashPassword(password, nextUser.salt);
+      if (passwordHash !== nextUser.passwordHash) return json({ error: 'That password does not match this DoodleDen.' }, 401);
+      localStorage.setItem(keys.user, nextUser.id);
+      return json({ token: id('session'), user: publicUser(nextUser) });
     }
     if (url.pathname === '/api/doodles' && method === 'GET') {
       const doodles = data.doodles.map((doodle) => enrichDoodle(data, doodle)).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -235,7 +268,7 @@
       };
       saveCustomUser(updated);
       localStorage.setItem(keys.user, updated.id);
-      return json({ user: updated });
+      return json({ user: publicUser(updated) });
     }
 
     if (url.pathname === '/api/mood-logs' && method === 'GET') {

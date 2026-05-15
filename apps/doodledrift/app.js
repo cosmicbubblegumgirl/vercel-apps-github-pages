@@ -714,7 +714,7 @@ function setupLogin() {
         method: "POST",
         body: JSON.stringify(Object.fromEntries(new FormData(login)))
       });
-      window.location.href = "/index.html";
+      window.location.href = "index.html";
     } catch (error) {
       toast(error.message, true);
     }
@@ -727,7 +727,7 @@ function setupLogin() {
         method: "POST",
         body: JSON.stringify(Object.fromEntries(new FormData(register)))
       });
-      window.location.href = "/profile.html";
+      window.location.href = "profile.html";
     } catch (error) {
       toast(error.message, true);
     }
