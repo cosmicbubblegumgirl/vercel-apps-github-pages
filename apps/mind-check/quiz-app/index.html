@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Moonbeam Mind</title>
+  <meta name="description" content="A dynamic self-reflection web app with 55 questions, live visuals, and private journaling.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <canvas id="fx" aria-hidden="true"></canvas>
+
+  <header class="hero wrap">
+    <section class="glass hero-copy">
+      <p class="eyebrow">Whimsical self-reflection app</p>
+      <h1>Moonbeam Mind</h1>
+      <p class="lead">
+        A gentle check-in space with <strong>55 reflection questions</strong>, live visuals, and a private area to write
+        why certain patterns feel familiar in your daily life. It can help you organize your thoughts, but it is
+        <strong>not</strong> a diagnosis.
+      </p>
+      <div class="hero-actions">
+        <a class="btn primary" href="#assessment">Start check-in</a>
+        <a class="btn ghost" href="#reflection">Share your story</a>
+      </div>
+      <div class="hero-stats">
+        <div><strong>55</strong><span>questions</span></div>
+        <div><strong>7</strong><span>pattern areas</span></div>
+        <div><strong>Live</strong><span>feedback</span></div>
+      </div>
+    </section>
+
+    <section class="glass hero-meter">
+      <p class="meter-label">Completion</p>
+      <div id="progressRing" class="ring" role="img" aria-label="Question progress">
+        <span id="progressPercent">0%</span>
+      </div>
+      <p id="progressText" class="muted">0 of 55 answered</p>
+      <p id="heroInsight" class="hero-insight">Answer a few questions to reveal your strongest current pattern.</p>
+    </section>
+  </header>
+
+  <main class="wrap layout">
+    <section id="assessment" class="glass panel">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Assessment</p>
+          <h2>Questionnaire</h2>
+        </div>
+        <span id="focusLabel" class="pill">Showing all questions</span>
+      </div>
+
+      <div class="toolbar">
+        <label class="filter">
+          <span>Filter</span>
+          <select id="categoryFilter"></select>
+        </label>
+        <div class="toolbar-buttons">
+          <button id="focusBtn" class="btn ghost" type="button">Focus mode: Off</button>
+          <button id="prevBtn" class="btn ghost" type="button">Previous</button>
+          <button id="nextBtn" class="btn ghost" type="button">Next</button>
+        </div>
+      </div>
+
+      <div class="legend" aria-label="Response scale">
+        <span>0 = Never</span>
+        <span>1 = Rarely</span>
+        <span>2 = Sometimes</span>
+        <span>3 = Often</span>
+        <span>4 = Very often</span>
+      </div>
+
+      <div id="questionList" class="question-list"></div>
+
+      <div class="actions">
+        <button id="summaryBtn" class="btn primary" type="button">View summary</button>
+        <button id="resetBtn" class="btn ghost" type="button">Reset</button>
+      </div>
+    </section>
+
+    <aside class="glass panel side-panel">
+      <div class="section-head compact">
+        <div>
+          <p class="eyebrow">Live insight</p>
+          <h2>Your progress</h2>
+        </div>
+      </div>
+
+      <div class="metric-grid">
+        <article class="metric-card">
+          <p class="metric-label">Answered</p>
+          <p id="answeredMetric" class="metric-value">0 / 55</p>
+        </article>
+        <article class="metric-card">
+          <p class="metric-label">Average</p>
+          <p id="averageMetric" class="metric-value">0.0 / 4.0</p>
+        </article>
+      </div>
+
+      <article class="metric-card">
+        <div class="mini-head">
+          <p class="metric-label">Pattern snapshot</p>
+          <span class="muted">Updates live</span>
+        </div>
+        <div id="liveBars" class="bars"></div>
+      </article>
+
+      <article class="metric-card">
+        <div class="mini-head">
+          <p class="metric-label">Answer trail</p>
+          <span class="muted">Jump to any question</span>
+        </div>
+        <div id="trail" class="trail"></div>
+      </article>
+
+      <article class="metric-card">
+        <div class="mini-head">
+          <p class="metric-label">Dynamic insight</p>
+          <span class="muted">Changes as you answer</span>
+        </div>
+        <p id="dynamicInsight" class="muted">
+          As you answer, this will highlight which area seems to stand out most right now.
+        </p>
+      </article>
+    </aside>
+
+    <section id="results" class="glass panel">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Results</p>
+          <h2>Reflection summary</h2>
+        </div>
+        <span id="summaryBadge" class="pill neutral">Complete the questionnaire</span>
+      </div>
+
+      <p id="summaryText" class="lead muted">
+        Finish some questions and this section will summarize broad themes that appear strongest for you right now.
+      </p>
+
+      <div id="summaryBars" class="bars"></div>
+
+      <div class="notice">
+        <strong>Important:</strong>
+        <span>This app supports reflection and validation. It does not diagnose a mental health or neurodevelopmental condition.</span>
+      </div>
+    </section>
+
+    <section id="reflection" class="glass panel full-width">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Your voice</p>
+          <h2>Share your experience</h2>
+        </div>
+        <span class="pill">Saved privately in your browser</span>
+      </div>
+
+      <p class="lead">
+        Use this space to explain why you think these patterns or disorders may fit your experience,
+        how you live day to day, and whether this app helped you feel understood or validated.
+      </p>
+
+      <div class="story-meter">
+        <div class="mini-head">
+          <p class="metric-label">Reflection depth</p>
+          <span id="storyMeterLabel" class="muted">0% complete</span>
+        </div>
+        <div class="meter-track"><div id="storyMeterFill" class="meter-fill"></div></div>
+      </div>
+
+      <div class="story-grid">
+        <label class="field">
+          <span>Why do you think these patterns fit your experience?</span>
+          <textarea id="whyInput" rows="5" placeholder="Describe what feels familiar, when you started noticing it, and what stands out."></textarea>
+          <small id="whyCount" class="muted">0 characters</small>
+        </label>
+
+        <label class="field">
+          <span>How do these experiences affect your day-to-day life?</span>
+          <textarea id="dayInput" rows="5" placeholder="Describe routines, work or school, relationships, focus, energy, sensory stress, or burnout."></textarea>
+          <small id="dayCount" class="muted">0 characters</small>
+        </label>
+
+        <label class="field field-wide">
+          <span>Has this app helped you feel validated or more ready to seek support?</span>
+          <textarea id="helpInput" rows="4" placeholder="Write what felt accurate, what felt helpful, and what you still want clarity on."></textarea>
+          <small id="helpCount" class="muted">0 characters</small>
+        </label>
+      </div>
+
+      <div class="actions">
+        <button id="saveReflectionBtn" class="btn primary" type="button">Save reflection</button>
+        <button id="downloadBtn" class="btn ghost" type="button">Download reflection</button>
+      </div>
+
+      <p id="saveStatus" class="muted">Drafts auto-save as you type.</p>
+
+      <div class="section-head compact saved-head">
+        <div>
+          <p class="eyebrow">Saved entries</p>
+          <h3>Your local reflection board</h3>
+        </div>
+      </div>
+      <div id="savedBoard" class="saved-board"></div>
+    </section>
+  </main>
+
+  <footer class="wrap footer muted">
+    Moonbeam Mind is a private browser-based reflection tool. To use it on GitHub Pages, upload these 3 files to your repository root (or /docs).
+  </footer>
+
+  <script src="scripts.js"></script>
+</body>
+</html>

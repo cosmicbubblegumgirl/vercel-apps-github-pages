@@ -10,5 +10,9 @@ Static GitHub Pages launch bundle for the workspace Vercel apps.
 - AuraFit / KindStride: `apps/aurafit/`
 - TaskForge / SprintSmith: `apps/taskforge/`
 - VaultPay: `apps/vaultpay/`
+- NovaBite: `apps/novabite/`
+- Mind Check / Moonbeam Mind: `apps/mind-check/`
+- Deductomatic: https://cosmicbubblegumgirl.github.io/deductomatic/
+- Carbon Crumbs: https://cosmicbubblegumgirl.github.io/carbon-crumbs/
 
 The apps that previously used Vercel functions now include small browser-side adapters for GitHub Pages. Interactive data is saved in `localStorage`.

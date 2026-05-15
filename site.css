@@ -10,6 +10,9 @@
   --green: #557a37;
   --gold: #a87418;
   --plum: #69486f;
+  --rose: #a53b62;
+  --lime: #4b7d32;
+  --violet: #6f46a3;
 }
 
 * {
@@ -38,9 +41,16 @@ a {
   height: auto;
 }
 
-.eyebrow,
-.app-card span {
+.eyebrow {
   margin: 0 0 10px;
+  font-size: 0.76rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 800;
+}
+
+.app-card span {
+  margin: 0;
   font-size: 0.76rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -69,12 +79,12 @@ h1 {
 }
 
 .app-card {
-  min-height: 260px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  gap: 10px;
-  padding: 24px;
+  justify-content: flex-start;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 8px;
   text-decoration: none;
@@ -88,10 +98,29 @@ h1 {
   box-shadow: 0 22px 55px rgba(23, 32, 31, 0.16);
 }
 
+.app-shot {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  object-position: top center;
+  border-bottom: 1px solid var(--line);
+  background: #eef0ea;
+}
+
+.app-card-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px 24px 24px;
+}
+
 .app-card h2 {
   margin: 0;
   font-size: 1.55rem;
   letter-spacing: 0;
+  line-height: 1.15;
 }
 
 .app-card p {
@@ -106,6 +135,10 @@ h1 {
 .fitness span { color: var(--green); }
 .work span { color: var(--gold); }
 .finance span { color: var(--teal); }
+.restaurant span { color: var(--rose); }
+.tax span { color: var(--blue); }
+.carbon span { color: var(--lime); }
+.mind span { color: var(--violet); }
 
 @media (max-width: 900px) {
   .app-grid {
