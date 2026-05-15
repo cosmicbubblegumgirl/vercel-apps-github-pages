@@ -1,0 +1,24 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Mind Check / Moonbeam Mind icon</title>
+  <desc id="desc">A moonlit mind with a calm check mark.</desc>
+  <defs>
+    <linearGradient id="bg" x1="18" y1="12" x2="110" y2="118" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#17203b"/>
+      <stop offset=".55" stop-color="#6f46a3"/>
+      <stop offset="1" stop-color="#2cb7a6"/>
+    </linearGradient>
+    <linearGradient id="moon" x1="34" y1="28" x2="74" y2="78" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fff9d6"/>
+      <stop offset="1" stop-color="#c7f7ff"/>
+    </linearGradient>
+  </defs>
+  <rect x="10" y="10" width="108" height="108" rx="28" fill="url(#bg)"/>
+  <path d="M75 29c-20 7-31 28-24 48 6 18 23 29 41 28-8 8-20 13-33 13-26 0-47-21-47-47s21-47 47-47c6 0 11 1 16 5Z" fill="url(#moon)"/>
+  <path d="M39 71c10-13 25-14 34-3 8-11 24-10 34 3" fill="none" stroke="#f8fafc" stroke-linecap="round" stroke-width="6" opacity=".9"/>
+  <path d="M48 87l11 11 24-31" fill="none" stroke="#34f5cf" stroke-linecap="round" stroke-linejoin="round" stroke-width="8"/>
+  <g fill="#fff9d6">
+    <circle cx="91" cy="31" r="4"/>
+    <circle cx="102" cy="47" r="3"/>
+    <circle cx="82" cy="50" r="2"/>
+  </g>
+</svg>

@@ -1,0 +1,24 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Carbon Crumbs icon</title>
+  <desc id="desc">A green leaf with crumb dots and a small carbon path.</desc>
+  <defs>
+    <linearGradient id="bg" x1="16" y1="12" x2="112" y2="116" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#eff7d5"/>
+      <stop offset="1" stop-color="#88b657"/>
+    </linearGradient>
+    <linearGradient id="leaf" x1="39" y1="32" x2="94" y2="95" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#74c365"/>
+      <stop offset="1" stop-color="#1f6f43"/>
+    </linearGradient>
+  </defs>
+  <rect x="10" y="10" width="108" height="108" rx="28" fill="url(#bg)"/>
+  <path d="M32 77c6-31 32-50 69-51-2 35-19 62-50 68-12 2-19-4-19-17Z" fill="url(#leaf)"/>
+  <path d="M38 88c15-19 34-33 58-43" fill="none" stroke="#f8fff0" stroke-linecap="round" stroke-width="7"/>
+  <g fill="#234c2f">
+    <circle cx="33" cy="41" r="7"/>
+    <circle cx="46" cy="28" r="5"/>
+    <circle cx="72" cy="99" r="6"/>
+    <circle cx="91" cy="88" r="4"/>
+  </g>
+  <path d="M27 101c21 8 45 8 70-1" fill="none" stroke="#234c2f" stroke-linecap="round" stroke-width="7" opacity=".65"/>
+</svg>

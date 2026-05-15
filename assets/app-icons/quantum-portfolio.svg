@@ -1,0 +1,24 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">QuantumCupCakeCreations logo</title>
+  <desc id="desc">A whimsical cupcake with an orbit ring and code spark.</desc>
+  <defs>
+    <linearGradient id="cup" x1="24" y1="26" x2="106" y2="112" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#42d7ad"/>
+      <stop offset="0.48" stop-color="#69aeea"/>
+      <stop offset="1" stop-color="#ec5d91"/>
+    </linearGradient>
+    <linearGradient id="cake" x1="32" y1="34" x2="96" y2="88" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fff7df"/>
+      <stop offset="1" stop-color="#f2c14e"/>
+    </linearGradient>
+  </defs>
+  <rect x="10" y="10" width="108" height="108" rx="24" fill="#131827"/>
+  <path d="M27 68c17-29 56-44 79-33 17 8 12 27-9 43-25 19-64 22-78 8-7-7-4-14 8-18Z" fill="none" stroke="#f8f5ef" stroke-width="5"/>
+  <path d="M73 29c9 2 15 10 14 18 8 1 14 8 14 17 0 10-8 18-18 18H45c-10 0-18-8-18-18 0-9 7-17 16-18 2-11 12-19 23-17 2-1 5-1 7 0Z" fill="url(#cake)"/>
+  <path d="M37 77h54l-8 29H45l-8-29Z" fill="url(#cup)"/>
+  <path d="M47 82l4 20M64 82v20M81 82l-4 20" stroke="#131827" stroke-width="4" stroke-linecap="round" opacity=".75"/>
+  <path d="M36 58h13M79 58h13M53 50l-7 8 7 8M75 50l7 8-7 8" stroke="#131827" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="102" cy="37" r="7" fill="#42d7ad"/>
+  <circle cx="29" cy="77" r="5" fill="#ec5d91"/>
+  <path d="M101 21v12M95 27h12" stroke="#f2c14e" stroke-width="4" stroke-linecap="round"/>
+</svg>
