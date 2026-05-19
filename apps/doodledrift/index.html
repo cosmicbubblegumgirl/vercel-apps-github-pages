@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>DoodleDrift | Doodle Feed</title>
+  <title>DoodleFlow | Doodle Feed</title>
   <link rel="icon" href="assets/doodledrift-icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
   <script defer src="github-pages-api.js"></script>
@@ -12,8 +12,8 @@
 <body data-page="home">
   <header class="topbar">
     <div class="nav-inner">
-      <a class="brand" href="index.html" aria-label="DoodleDrift home">
-        <img class="brand-logo" src="assets/doodledrift-logo.svg" alt="DoodleDrift">
+      <a class="brand" href="index.html" aria-label="DoodleFlow home">
+        <img class="brand-logo" src="assets/doodledrift-logo.svg" alt="DoodleFlow">
       </a>
       <nav class="nav-links" aria-label="Primary">
         <a data-nav="home" href="index.html">Doodle Feed</a>
@@ -29,13 +29,49 @@
   </header>
 
   <main class="page-shell">
-    <section class="page-head">
-      <div>
-        <p class="eyebrow">DoodleDrift</p>
-        <h1>Drift into art, music, and mindful expression.</h1>
-        <p class="lede">A whimsical therapy-inspired community for Canvas Doodles, Echo Doodles, Story Doodles, Glows, Echoes, and saved Cloud Clips.</p>
+    <section class="flow-hero" aria-label="DoodleFlow creative dashboard">
+      <div class="flow-copy">
+        <p class="eyebrow">DoodleFlow</p>
+        <h1>Flow through art, music, and mindful expression.</h1>
+        <p class="lede">A softer creative community for Canvas Doodles, Echo Doodles, Story Doodles, Glows, Echoes, and saved Cloud Clips.</p>
+        <div class="hero-actions">
+          <a class="button" href="login.html">Begin Your Flow</a>
+          <button class="button secondary" type="button" data-flow-fill>Draft a Tiny Doodle</button>
+        </div>
       </div>
-      <a class="button" href="login.html">Begin Your Drift</a>
+      <div class="flow-tuner" aria-label="Interactive Flow Tuner">
+        <div class="flow-lines" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="flow-tuner-head">
+          <div>
+            <p class="eyebrow">Flow Tuner</p>
+            <h2>Shape the feed vibe.</h2>
+          </div>
+          <button class="button secondary" type="button" data-flow-randomize>Mix Flow</button>
+        </div>
+        <div class="flow-controls">
+          <label>Energy
+            <input id="flowEnergy" type="range" min="1" max="5" value="3" data-flow-control="energy">
+          </label>
+          <label>Pace
+            <input id="flowPace" type="range" min="1" max="5" value="2" data-flow-control="pace">
+          </label>
+          <label>Focus
+            <select id="flowFocus" data-flow-control="focus">
+              <option value="blog">Writing</option>
+              <option value="art">Art</option>
+              <option value="music">Music</option>
+              <option value="mood">Mood</option>
+            </select>
+          </label>
+        </div>
+        <p id="flowSuggestion" class="flow-suggestion">A gentle writing flow with misty prompts and a calm discovery pace.</p>
+      </div>
     </section>
 
     <section class="dashboard-grid">
@@ -44,7 +80,7 @@
           <canvas id="moodCanvas" aria-label="Animated Mood Meadow preview"></canvas>
         </div>
         <div class="mood-controls">
-          <h2>Mood Drift</h2>
+          <h2>Mood Flow</h2>
           <button class="chip active" type="button" data-mood="Misty">Misty</button>
           <button class="chip" type="button" data-mood="Sparkly">Sparkly</button>
           <button class="chip" type="button" data-mood="Floaty">Floaty</button>
@@ -61,8 +97,19 @@
     </section>
 
     <section class="grid-two">
-      <form id="quickDoodleForm" class="panel form-grid">
-        <h2>Post a Tiny Doodle</h2>
+      <form id="quickDoodleForm" class="panel form-grid composer-panel">
+        <div class="composer-head">
+          <div>
+            <p class="eyebrow">Flow Composer</p>
+            <h2>Post a Tiny Doodle</h2>
+          </div>
+          <span id="quickDoodleCount" class="composer-count">0 words</span>
+        </div>
+        <div class="quick-prompts" aria-label="Quick prompt starters">
+          <button type="button" data-quick-prompt="Today feels like a soft color shift because">Soft Shift</button>
+          <button type="button" data-quick-prompt="A small sound I want to carry into the day is">Sound Note</button>
+          <button type="button" data-quick-prompt="The creative mark I need right now is">Mark Maker</button>
+        </div>
         <label>Kind
           <select name="type">
             <option value="blog">Tiny Doodle</option>
@@ -84,16 +131,18 @@
             <input name="tags" placeholder="healing, forest, calm">
           </label>
         </div>
+        <div class="word-meter" aria-hidden="true"><span id="quickDoodleMeter"></span></div>
+        <p id="quickDoodleHint" class="muted composer-hint">Start small. A few clear words are enough.</p>
         <button class="button" type="submit">Post Doodle</button>
       </form>
 
       <aside class="panel">
-        <h2>Drift Stats</h2>
+        <h2>Flow Stats</h2>
         <div id="homeStats" class="stat-grid"></div>
       </aside>
     </section>
 
-    <section class="feature-rail" aria-label="DoodleDrift features">
+    <section class="feature-rail" aria-label="DoodleFlow features">
       <a href="prompt-potion.html">
         <strong>Prompt Potion</strong>
         <span>Brew art, music, writing, reflection, and self-care prompts.</span>
@@ -104,7 +153,7 @@
       </a>
       <a href="glowboard.html">
         <strong>GlowBoard</strong>
-        <span>Most-saved and most-Glowed inspiration from the Drift.</span>
+        <span>Most-saved and most-Glowed inspiration from the Flow.</span>
       </a>
     </section>
 
@@ -116,7 +165,7 @@
       <div class="feed-controls">
         <input id="feedSearch" type="search" placeholder="Search mood, creator, tag">
         <select id="feedSort" aria-label="Sort Doodles">
-          <option value="fresh">Fresh Drift</option>
+          <option value="fresh">Fresh Flow</option>
           <option value="glows">Most Glowed</option>
           <option value="clouds">Most Cloud Clipped</option>
           <option value="echoes">Most Echoed</option>

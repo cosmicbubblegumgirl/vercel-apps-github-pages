@@ -18,7 +18,7 @@ const savedTheme = (() => {
   const requested = new URLSearchParams(window.location.search).get("theme");
   if (requested === "dark" || requested === "light") return requested;
   try {
-    return localStorage.getItem("doodledrift-theme") || "light";
+    return localStorage.getItem("doodleflow-theme") || localStorage.getItem("doodledrift-theme") || "light";
   } catch {
     return "light";
   }
@@ -71,7 +71,7 @@ function toast(message, error = false) {
 }
 
 function initials(user) {
-  const source = user?.displayName || user?.username || "DD";
+  const source = user?.displayName || user?.username || "DF";
   return source.split(/\s+/).map((part) => part[0]).join("").slice(0, 2).toUpperCase();
 }
 
@@ -100,7 +100,7 @@ function avatar(user, size = "") {
 function setTheme(theme) {
   document.documentElement.dataset.theme = theme;
   try {
-    localStorage.setItem("doodledrift-theme", theme);
+    localStorage.setItem("doodleflow-theme", theme);
   } catch {}
   qsa("[data-theme-toggle]").forEach((button) => {
     button.textContent = theme === "dark" ? "Light" : "Dark";
@@ -674,9 +674,157 @@ function setupMoodCanvas() {
   });
 }
 
+function quickDoodleWordCount(form) {
+  const body = form?.elements?.body?.value || "";
+  return body.trim() ? body.trim().split(/\s+/).length : 0;
+}
+
+function updateQuickDoodleMeter(form) {
+  const count = quickDoodleWordCount(form);
+  const meter = qs("#quickDoodleMeter");
+  const countNode = qs("#quickDoodleCount");
+  const hint = qs("#quickDoodleHint");
+  if (meter) meter.style.width = `${Math.min(100, Math.round(count / 52 * 100))}%`;
+  if (countNode) countNode.textContent = `${count} ${count === 1 ? "word" : "words"}`;
+  if (!hint) return;
+  if (count === 0) hint.textContent = "Start small. A few clear words are enough.";
+  else if (count < 12) hint.textContent = "Nice beginning. Add one sensory detail to give it shape.";
+  else if (count < 36) hint.textContent = "This has a good flow. A mood tag will make it easier to find.";
+  else hint.textContent = "Strong little piece. Keep it focused and let it breathe.";
+}
+
+function primeQuickDoodleFromFlow(values) {
+  const form = qs("#quickDoodleForm");
+  if (!form) return;
+  const presets = {
+    blog: {
+      type: "blog",
+      title: "A small flowing note",
+      body: "Today feels like a soft shift: one color, one sound, and one brave thought moving together.",
+      mood: "Misty",
+      tags: "writing, calm, flow"
+    },
+    art: {
+      type: "art",
+      title: "Color current sketch",
+      body: "A visual Doodle built from layered lines, quiet color, and one bright mark that keeps moving.",
+      mood: "Sparkly",
+      tags: "canvas, color, flow"
+    },
+    music: {
+      type: "music",
+      title: "Low light loop",
+      body: "A tiny Echo Doodle with soft pulses, warm tempo, and a little shimmer tucked underneath.",
+      mood: "Floaty",
+      tags: "music, echo, flow"
+    },
+    mood: {
+      type: "blog",
+      title: "Mood check in motion",
+      body: "Right now my mood is changing shape slowly, and I want to notice the part that feels easier.",
+      mood: "Brave",
+      tags: "mood, reflection, flow"
+    }
+  };
+  const preset = presets[values.focus] || presets.blog;
+  const energyNote = values.energy >= 4 ? " high-energy" : values.energy <= 2 ? " gentle" : " balanced";
+  form.elements.type.value = preset.type;
+  form.elements.title.value = preset.title;
+  form.elements.body.value = `${preset.body} This one has a${energyNote} pace.`;
+  form.elements.mood.value = preset.mood;
+  form.elements.tags.value = preset.tags;
+  form.classList.add("is-primed");
+  setTimeout(() => form.classList.remove("is-primed"), 1400);
+  updateQuickDoodleMeter(form);
+  form.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+function setupFlowTuner() {
+  const hero = qs(".flow-hero");
+  if (!hero) return;
+  const suggestion = qs("#flowSuggestion");
+  const focusControl = qs("#flowFocus");
+  const palettes = {
+    blog: ["#c7e6e2", "#e6dc8f"],
+    art: ["#f5c2e7", "#b8dec8"],
+    music: ["#bfd7ea", "#d9d0f0"],
+    mood: ["#d7e8ba", "#f5c2e7"]
+  };
+  const focusCopy = {
+    blog: "writing flow",
+    art: "visual flow",
+    music: "sound flow",
+    mood: "mood-check flow"
+  };
+  let lastFocus = "";
+
+  function values() {
+    return {
+      energy: Number(qs("#flowEnergy")?.value || 3),
+      pace: Number(qs("#flowPace")?.value || 2),
+      focus: focusControl?.value || "blog"
+    };
+  }
+
+  function syncFeedFocus(focus) {
+    if (focus === lastFocus) return;
+    lastFocus = focus;
+    state.filter = ["art", "music", "blog"].includes(focus) ? focus : "all";
+    qsa("[data-filter]").forEach((item) => item.classList.toggle("active", item.dataset.filter === state.filter));
+    renderDoodles();
+  }
+
+  function render() {
+    const next = values();
+    const palette = palettes[next.focus] || palettes.blog;
+    const pace = next.pace <= 2 ? "calm discovery" : next.pace >= 4 ? "quick discovery" : "steady discovery";
+    const energy = next.energy <= 2 ? "gentle" : next.energy >= 4 ? "bright" : "balanced";
+    hero.style.setProperty("--flow-a", palette[0]);
+    hero.style.setProperty("--flow-b", palette[1]);
+    hero.style.setProperty("--flow-lift", `${next.energy * 11}px`);
+    hero.style.setProperty("--flow-lift-strong", `${next.energy * 13}px`);
+    hero.style.setProperty("--flow-lift-bright", `${next.energy * 17}px`);
+    hero.style.setProperty("--flow-lift-soft", `${next.energy * 9}px`);
+    hero.style.setProperty("--flow-speed", `${Math.max(3, 9 - next.pace)}s`);
+    if (suggestion) {
+      suggestion.textContent = `A ${energy} ${focusCopy[next.focus]} with ${pace} and fewer distractions.`;
+    }
+    syncFeedFocus(next.focus);
+  }
+
+  qsa("[data-flow-control]").forEach((control) => {
+    control.addEventListener("input", render);
+    control.addEventListener("change", render);
+  });
+
+  qs("[data-flow-randomize]")?.addEventListener("click", () => {
+    const focusOptions = ["blog", "art", "music", "mood"];
+    qs("#flowEnergy").value = String(1 + Math.floor(Math.random() * 5));
+    qs("#flowPace").value = String(1 + Math.floor(Math.random() * 5));
+    focusControl.value = focusOptions[Math.floor(Math.random() * focusOptions.length)];
+    render();
+  });
+
+  qsa("[data-flow-fill]").forEach((button) => {
+    button.addEventListener("click", () => primeQuickDoodleFromFlow(values()));
+  });
+
+  render();
+}
+
 function setupQuickDoodle() {
   const form = qs("#quickDoodleForm");
   if (!form) return;
+  qsa("[data-quick-prompt]", form).forEach((button) => {
+    button.addEventListener("click", () => {
+      form.elements.body.value = `${button.dataset.quickPrompt} `;
+      form.elements.body.focus();
+      updateQuickDoodleMeter(form);
+    });
+  });
+  form.elements.body?.addEventListener("input", () => updateQuickDoodleMeter(form));
+  form.elements.title?.addEventListener("input", () => updateQuickDoodleMeter(form));
+  updateQuickDoodleMeter(form);
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (!state.user) return toast("Enter the Den to post a Doodle.", true);
@@ -687,7 +835,8 @@ function setupQuickDoodle() {
         body: JSON.stringify({ ...data, tags: data.tags || "check-in", color: "#B8DEC8" })
       });
       form.reset();
-      toast("Your Doodle drifted into the feed.");
+      updateQuickDoodleMeter(form);
+      toast("Your Doodle flowed into the feed.");
       await loadDoodles();
     } catch (error) {
       toast(error.message, true);
@@ -1296,7 +1445,7 @@ function setupPainter() {
         body: JSON.stringify({ ...data, type: "art", artDataUrl: canvas.toDataURL("image/png"), color: state.paintColor })
       });
       form.reset();
-      toast("Your Canvas Doodle joined the Drift.");
+      toast("Your Canvas Doodle joined the Flow.");
     } catch (error) {
       toast(error.message, true);
     }
@@ -1487,7 +1636,7 @@ async function setupMusic() {
       form.reset();
       tempo.value = 72;
       tempoValue.textContent = "72";
-      toast("Your Echo Doodle joined the Drift.");
+      toast("Your Echo Doodle joined the Flow.");
     } catch (error) {
       toast(error.message, true);
     }
@@ -1536,7 +1685,7 @@ function setupBlog() {
       form.reset();
       newPrompt();
       updateWords();
-      toast("Your Story Doodle joined the Drift.");
+      toast("Your Story Doodle joined the Flow.");
     } catch (error) {
       toast(error.message, true);
     }
@@ -1911,6 +2060,7 @@ async function init() {
     setupMoodCanvas();
     setupFilters();
     setupFeedControls();
+    setupFlowTuner();
     setupQuickDoodle();
   }
   if (page === "login") setupLogin();

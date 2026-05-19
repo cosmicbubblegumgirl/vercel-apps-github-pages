@@ -1,136 +1,193 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Portfolio Applications</title>
-    <link rel="icon" href="assets/portfolio-logo.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="site.css" />
-  </head>
-  <body>
-    <header class="hero" aria-label="Portfolio applications banner">
-      <img
-        src="assets/portfolio-applications-banner.png"
-        alt="QuantumCupCakeCreations. Available for creative web builds: websites, dashboards, UX polish, and product prototypes. Simone Govender."
-      />
-    </header>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DoodleFlow | Creative Community</title>
+  <base href="apps/doodledrift/">
+  <meta name="description" content="DoodleFlow is a creative community webapp for art, music, story posts, mood tracking, prompts, and saved inspiration clips.">
+  <link rel="icon" href="assets/doodledrift-icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="github-pages-api.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body data-page="home">
+  <header class="topbar">
+    <div class="nav-inner">
+      <a class="brand" href="../../" aria-label="DoodleFlow home">
+        <img class="brand-logo" src="assets/doodledrift-logo.svg" alt="DoodleFlow">
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a data-nav="home" href="../../">Doodle Feed</a>
+        <a data-nav="canvas" href="canvas-cave.html">Canvas Cave</a>
+        <a data-nav="music" href="echo-forest.html">Echo Forest</a>
+        <a data-nav="blog" href="blog-burrow.html">Blog Burrow</a>
+        <a data-nav="mood" href="mood-meadow.html">Mood Meadow</a>
+        <a data-nav="prompts" href="prompt-potion.html">Prompt Potion</a>
+        <a data-nav="clips" href="clips.html">Cloud Clips</a>
+      </nav>
+      <div id="accountActions" class="account-actions"><button class="theme-toggle" type="button" data-theme-toggle>Dark</button></div>
+    </div>
+  </header>
 
-    <section class="brand-strip" aria-label="Portfolio Applications">
-      <img src="assets/portfolio-logo.svg" alt="QuantumCupCakeCreations logo" />
-      <strong>Portfolio Applications</strong>
+  <main class="page-shell">
+    <section class="flow-hero" aria-label="DoodleFlow creative dashboard">
+      <div class="flow-copy">
+        <p class="eyebrow">DoodleFlow</p>
+        <h1>Flow through art, music, and mindful expression.</h1>
+        <p class="lede">A softer creative community for Canvas Doodles, Echo Doodles, Story Doodles, Glows, Echoes, and saved Cloud Clips.</p>
+        <div class="hero-actions">
+          <a class="button" href="login.html">Begin Your Flow</a>
+          <button class="button secondary" type="button" data-flow-fill>Draft a Tiny Doodle</button>
+        </div>
+      </div>
+      <div class="flow-tuner" aria-label="Interactive Flow Tuner">
+        <div class="flow-lines" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="flow-tuner-head">
+          <div>
+            <p class="eyebrow">Flow Tuner</p>
+            <h2>Shape the feed vibe.</h2>
+          </div>
+          <button class="button secondary" type="button" data-flow-randomize>Mix Flow</button>
+        </div>
+        <div class="flow-controls">
+          <label>Energy
+            <input id="flowEnergy" type="range" min="1" max="5" value="3" data-flow-control="energy">
+          </label>
+          <label>Pace
+            <input id="flowPace" type="range" min="1" max="5" value="2" data-flow-control="pace">
+          </label>
+          <label>Focus
+            <select id="flowFocus" data-flow-control="focus">
+              <option value="blog">Writing</option>
+              <option value="art">Art</option>
+              <option value="music">Music</option>
+              <option value="mood">Mood</option>
+            </select>
+          </label>
+        </div>
+        <p id="flowSuggestion" class="flow-suggestion">A gentle writing flow with misty prompts and a calm discovery pace.</p>
+      </div>
     </section>
 
-    <main id="apps" class="app-grid">
-      <a class="app-card fishing" href="apps/codies-catch-compass/">
-        <img class="app-shot" src="assets/app-shots/codies-catch-compass.png" alt="CodiesCatchCompass homepage screenshot" loading="lazy" />
-        <div class="app-card-body">
-          <span>Fishing Companion</span>
-          <div class="app-title">
-            <img class="app-icon" src="assets/app-icons/codies-catch-compass.svg" alt="" aria-hidden="true" />
-            <h2>CodiesCatchCompass</h2>
-          </div>
-          <p>Ramsgate Beach fishing map, conditions, catch tracker, species guide, and private journal.</p>
+    <section class="dashboard-grid">
+      <div class="panel mood-board">
+        <div class="mood-canvas-wrap">
+          <canvas id="moodCanvas" aria-label="Animated Mood Meadow preview"></canvas>
         </div>
-      </a>
-      <a class="app-card doodle" href="apps/doodledrift/">
-        <img class="app-shot" src="assets/app-shots/doodledrift.png" alt="DoodleDrift homepage screenshot" loading="lazy" />
-        <div class="app-card-body">
-          <span>Creative Community</span>
-          <div class="app-title">
-            <img class="app-icon" src="assets/app-icons/doodledrift.svg" alt="" aria-hidden="true" />
-            <h2>DoodleDrift</h2>
-          </div>
-          <p>Art, music, story posts, cloud clips, profiles, prompts, mood meadow, and generated doodles.</p>
+        <div class="mood-controls">
+          <h2>Mood Flow</h2>
+          <button class="chip active" type="button" data-mood="Misty">Misty</button>
+          <button class="chip" type="button" data-mood="Sparkly">Sparkly</button>
+          <button class="chip" type="button" data-mood="Floaty">Floaty</button>
+          <button class="chip" type="button" data-mood="Brave">Brave</button>
+          <a class="button secondary" href="mood-meadow.html">Open Mood Meadow</a>
         </div>
-      </a>
-      <a class="app-card portfolio" href="apps/quantum-portfolio-rebuild/">
-        <img class="app-shot" src="assets/app-shots/quantum-portfolio.png" alt="Quantum Portfolio homepage screenshot" loading="lazy" />
-        <div class="app-card-body">
-          <span>Portfolio</span>
-          <div class="app-title">
-            <img class="app-icon" src="assets/app-icons/quantum-portfolio.svg" alt="" aria-hidden="true" />
-            <h2>Quantum Portfolio</h2>
+      </div>
+
+      <aside class="panel">
+        <h2>GlowBoard Spark</h2>
+        <div id="spotlightDoodle"></div>
+        <a class="button secondary full" href="glowboard.html">Visit GlowBoard</a>
+      </aside>
+    </section>
+
+    <section class="grid-two">
+      <form id="quickDoodleForm" class="panel form-grid composer-panel">
+        <div class="composer-head">
+          <div>
+            <p class="eyebrow">Flow Composer</p>
+            <h2>Post a Tiny Doodle</h2>
           </div>
-          <p>Interactive proof-first portfolio with filters, build logs, resume downloads, and project demos.</p>
+          <span id="quickDoodleCount" class="composer-count">0 words</span>
         </div>
-      </a>
-      <a class="app-card fitness" href="apps/aurafit/">
-        <img class="app-shot" src="assets/app-shots/aurafit.png" alt="KindStride homepage screenshot" loading="lazy" />
-        <div class="app-card-body">
-          <span>Wellness</span>
-          <div class="app-title">
-            <img class="app-icon" src="assets/app-icons/aurafit.svg" alt="" aria-hidden="true" />
-            <h2>KindStride</h2>
-          </div>
-          <p>Gentle planning, calorie estimate tools, progress board, private messages, and support flow.</p>
+        <div class="quick-prompts" aria-label="Quick prompt starters">
+          <button type="button" data-quick-prompt="Today feels like a soft color shift because">Soft Shift</button>
+          <button type="button" data-quick-prompt="A small sound I want to carry into the day is">Sound Note</button>
+          <button type="button" data-quick-prompt="The creative mark I need right now is">Mark Maker</button>
         </div>
-      </a>
-      <a class="app-card work" href="apps/taskforge/">
-        <img class="app-shot" src="assets/app-shots/taskforge.png" alt="SprintSmith homepage screenshot" loading="lazy" />
-        <div class="app-card-body">
-          <span>Product Ops</span>
-          <div class="app-title">
-            <img class="app-icon" src="assets/app-icons/taskforge.svg" alt="" aria-hidden="true" />
-            <h2>SprintSmith</h2>
-          </div>
-          <p>Product board, todo sync, Pomodoro tools, plan cards, workspace reports, and activity data.</p>
+        <label>Kind
+          <select name="type">
+            <option value="blog">Tiny Doodle</option>
+            <option value="art">Canvas Doodle</option>
+            <option value="music">Echo Doodle</option>
+          </select>
+        </label>
+        <label>Title
+          <input name="title" placeholder="A small brave thing" required>
+        </label>
+        <label>Body
+          <textarea name="body" placeholder="Share a color, feeling, lyric, ritual, or reflection." required></textarea>
+        </label>
+        <div class="form-grid two">
+          <label>Mood
+            <input name="mood" placeholder="Glowy">
+          </label>
+          <label>Tags
+            <input name="tags" placeholder="healing, forest, calm">
+          </label>
         </div>
+        <div class="word-meter" aria-hidden="true"><span id="quickDoodleMeter"></span></div>
+        <p id="quickDoodleHint" class="muted composer-hint">Start small. A few clear words are enough.</p>
+        <button class="button" type="submit">Post Doodle</button>
+      </form>
+
+      <aside class="panel">
+        <h2>Flow Stats</h2>
+        <div id="homeStats" class="stat-grid"></div>
+      </aside>
+    </section>
+
+    <section class="feature-rail" aria-label="DoodleFlow features">
+      <a href="prompt-potion.html">
+        <strong>Prompt Potion</strong>
+        <span>Brew art, music, writing, reflection, and self-care prompts.</span>
       </a>
-      <a class="app-card finance" href="apps/vaultpay/">
-        <img class="app-shot" src="assets/app-shots/vaultpay.png" alt="VaultPay homepage screenshot" loading="lazy" />
-        <div class="app-card-body">
-          <span>Fintech</span>
-          <div class="app-title">
-            <img class="app-icon" src="assets/app-icons/vaultpay.svg" alt="" aria-hidden="true" />
-            <h2>VaultPay</h2>
-          </div>
-          <p>Account dashboard, card controls, risk lab, transfer flow, vault sliders, and shopping CSV export.</p>
+      <a href="doodle-quests.html">
+        <strong>Doodle Quests</strong>
+        <span>Daily creative challenges for gentle momentum.</span>
+      </a>
+      <a href="glowboard.html">
+        <strong>GlowBoard</strong>
+        <span>Most-saved and most-Glowed inspiration from the Flow.</span>
+      </a>
+    </section>
+
+    <section class="feed-toolbar">
+      <div>
+        <p class="eyebrow">Community</p>
+        <h2>Doodle Feed</h2>
+      </div>
+      <div class="feed-controls">
+        <input id="feedSearch" type="search" placeholder="Search mood, creator, tag">
+        <select id="feedSort" aria-label="Sort Doodles">
+          <option value="fresh">Fresh Flow</option>
+          <option value="glows">Most Glowed</option>
+          <option value="clouds">Most Cloud Clipped</option>
+          <option value="echoes">Most Echoed</option>
+        </select>
+        <button class="button secondary" type="button" data-view-mode="cozy">Cozy View</button>
+        <button id="surpriseDoodle" class="button secondary" type="button">Surprise Me</button>
+        <div class="segmented">
+          <button class="active" type="button" data-filter="all">All</button>
+          <button type="button" data-filter="art">Art</button>
+          <button type="button" data-filter="music">Music</button>
+          <button type="button" data-filter="blog">Writing</button>
+          <button type="button" data-filter="saved">Cloud Clips</button>
         </div>
-      </a>
-      <a class="app-card restaurant" href="apps/novabite/">
-        <img class="app-shot" src="assets/app-shots/novabite.png" alt="NovaBite homepage screenshot" loading="lazy" />
-        <div class="app-card-body">
-          <span>Restaurant</span>
-          <div class="app-title">
-            <img class="app-icon" src="assets/app-icons/novabite.svg" alt="" aria-hidden="true" />
-            <h2>NovaBite</h2>
-          </div>
-          <p>Fine-dining menu discovery, custom menu builder, booking flow, account state, and polished launch content.</p>
-        </div>
-      </a>
-      <a class="app-card tax" href="https://cosmicbubblegumgirl.github.io/deductomatic/">
-        <img class="app-shot" src="assets/app-shots/deductomatic.png" alt="Deductomatic homepage screenshot" loading="lazy" />
-        <div class="app-card-body">
-          <span>Tax Tools</span>
-          <div class="app-title">
-            <img class="app-icon" src="assets/app-icons/deductomatic.svg" alt="" aria-hidden="true" />
-            <h2>Deductomatic</h2>
-          </div>
-          <p>South African tax, budgeting, deduction, and planning tools with a clear calculator-first workflow.</p>
-        </div>
-      </a>
-      <a class="app-card carbon" href="https://cosmicbubblegumgirl.github.io/carbon-crumbs/">
-        <img class="app-shot" src="assets/app-shots/carbon-crumbs.png" alt="Carbon Crumbs homepage screenshot" loading="lazy" />
-        <div class="app-card-body">
-          <span>Sustainability</span>
-          <div class="app-title">
-            <img class="app-icon" src="assets/app-icons/carbon-crumbs.svg" alt="" aria-hidden="true" />
-            <h2>Carbon Crumbs</h2>
-          </div>
-          <p>Habit-friendly carbon tracking, local saved state, visual insights, and gentle sustainability nudges.</p>
-        </div>
-      </a>
-      <a class="app-card mind" href="apps/mind-check/">
-        <img class="app-shot" src="assets/app-shots/mind-check.png" alt="Mind Check and Moonbeam Mind homepage screenshot" loading="lazy" />
-        <div class="app-card-body">
-          <span>Reflection UX</span>
-          <div class="app-title">
-            <img class="app-icon" src="assets/app-icons/mind-check.svg" alt="" aria-hidden="true" />
-            <h2>Mind Check / Moonbeam Mind</h2>
-          </div>
-          <p>Calm check-in flows, reflection tools, inspiration prompts, and a private browser-based quiz app.</p>
-        </div>
-      </a>
-    </main>
-  </body>
+      </div>
+    </section>
+
+    <section id="doodleGrid" class="feed-grid" aria-live="polite"></section>
+    <button id="loadMoreDoodles" class="button secondary full load-more" type="button">Load more Doodles</button>
+  </main>
+
+  <footer class="footer"><strong>A quantum cupcake creation</strong></footer>
+</body>
 </html>

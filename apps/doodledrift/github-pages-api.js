@@ -283,7 +283,7 @@
       }
       const nextUser = data.users.find((item) => item.email?.toLowerCase() === handle || item.username?.toLowerCase() === handle);
       if (!nextUser || !nextUser.passwordHash || !nextUser.salt) {
-        return json({ error: 'Account not found. Begin Your Drift to create one first.' }, 404);
+        return json({ error: 'Account not found. Begin Your Flow to create one first.' }, 404);
       }
       const passwordHash = await hashPassword(password, nextUser.salt);
       if (passwordHash !== nextUser.passwordHash) return json({ error: 'That password does not match this DoodleDen.' }, 401);

@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 210" role="img" aria-labelledby="title desc">
-  <title id="title">DoodleDrift logo</title>
-  <desc id="desc">Original DoodleDrift logo with a drifting cloud, moon, pencil, music note, and hand-lettered wordmark.</desc>
+  <title id="title">DoodleFlow logo</title>
+  <desc id="desc">Original DoodleFlow logo with a flowing cloud, moon, pencil, music note, and hand-lettered wordmark.</desc>
   <defs>
     <linearGradient id="sky" x1="18" y1="18" x2="188" y2="177" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="#BFD7EA"/>
@@ -24,7 +24,7 @@
   </g>
   <g fill="#28433C">
     <text x="254" y="102" font-size="72" font-family="Trebuchet MS, Verdana, sans-serif" font-weight="900" letter-spacing="0">Doodle</text>
-    <text x="254" y="164" font-size="72" font-family="Trebuchet MS, Verdana, sans-serif" font-weight="900" letter-spacing="0">Drift</text>
+    <text x="254" y="164" font-size="72" font-family="Trebuchet MS, Verdana, sans-serif" font-weight="900" letter-spacing="0">Flow</text>
   </g>
   <g fill="none" stroke-linecap="round" stroke-width="8">
     <path d="M258 28c44-13 93-12 144 2" stroke="#B8DEC8"/>

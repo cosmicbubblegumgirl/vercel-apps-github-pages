@@ -1,6 +1,6 @@
-# DoodleDrift Supabase Setup
+# DoodleFlow Supabase Setup
 
-DoodleDrift is a static GitHub Pages app, so it cannot safely keep private database credentials in the repo. The app is wired for Supabase Auth with the public anon key, which lets real visitors create accounts, sign in, and store profile metadata in Supabase's hosted auth database.
+DoodleFlow is a static GitHub Pages app, so it cannot safely keep private database credentials in the repo. The app is wired for Supabase Auth with the public anon key, which lets real visitors create accounts, sign in, and store profile metadata in Supabase's hosted auth database.
 
 ## Activate Hosted Accounts
 
@@ -23,4 +23,4 @@ DoodleDrift is a static GitHub Pages app, so it cannot safely keep private datab
 
 Do not commit a service role key. Only the anon/public key belongs in this static app.
 
-When `supabase-config.json` is blank, DoodleDrift keeps using its local browser-storage fallback so the static demo still works.
+When `supabase-config.json` is blank, DoodleFlow keeps using its local browser-storage fallback so the static demo still works.

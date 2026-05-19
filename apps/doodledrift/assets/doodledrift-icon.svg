@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
-  <title id="title">DoodleDrift icon</title>
-  <desc id="desc">Original DoodleDrift icon showing a pastel drift cloud with a moon, pencil, and music note.</desc>
+  <title id="title">DoodleFlow icon</title>
+  <desc id="desc">Original DoodleFlow icon showing a pastel flow cloud with a moon, pencil, and music note.</desc>
   <defs>
     <linearGradient id="bg" x1="8" y1="10" x2="119" y2="119" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="#BFD7EA"/>
