@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Cupboard Companion app icon</title>
+  <desc id="desc">A cozy cupboard icon with a smart plate badge.</desc>
+  <defs>
+    <linearGradient id="bg" x1="74" y1="54" x2="438" y2="458" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#163f3a"/>
+      <stop offset="0.52" stop-color="#326f96"/>
+      <stop offset="1" stop-color="#2f8a5f"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <rect x="114" y="118" width="284" height="282" rx="34" fill="#fff7df"/>
+  <path d="M142 152h105v214H142zM265 152h105v214H265z" fill="#e0a529"/>
+  <path d="M256 152v214" stroke="#163f3a" stroke-width="16" stroke-linecap="round"/>
+  <path d="M196 256h18M298 256h18" stroke="#163f3a" stroke-width="20" stroke-linecap="round"/>
+  <circle cx="256" cy="256" r="70" fill="#e4f4ff" stroke="#163f3a" stroke-width="16"/>
+  <path d="M256 206l14 31 34 4-26 23 8 33-30-17-30 17 8-33-26-23 34-4z" fill="#e2624f"/>
+  <path d="M377 91c39 4 65 33 68 76-42-5-67-34-68-76zM67 379c48-9 87 11 113 58-50 9-89-11-113-58z" fill="#dff4e8"/>
+</svg>

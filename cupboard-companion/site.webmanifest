@@ -1,0 +1,17 @@
+{
+  "name": "Cupboard Companion",
+  "short_name": "Cupboard",
+  "description": "Animated grocery tracking, recipes for two, meal prep, shopping, savings, login, and local database storage.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#fbfdf8",
+  "theme_color": "#163f3a",
+  "icons": [
+    {
+      "src": "./assets/app-icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

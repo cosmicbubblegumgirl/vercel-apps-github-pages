@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Cupboard Companion | Grocery Tracker For Two</title>
+    <meta
+      name="description"
+      content="Cupboard Companion is an animated grocery tracking web app with smart cupboards, recipes for two, meal prep tools, shopping lists, and savings insights."
+    />
+    <meta name="theme-color" content="#163f3a" />
+    <link rel="icon" href="./assets/app-icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./assets/app-icon.svg" />
+    <link rel="manifest" href="./site.webmanifest" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <a class="brand" href="./" aria-label="Cupboard Companion home">
+        <img src="./assets/logo.svg" alt="Cupboard Companion logo" />
+        <span>Cupboard Companion</span>
+      </a>
+      <nav class="app-nav" aria-label="Primary">
+        <button class="nav-button active" type="button" data-view-target="home">Kitchen</button>
+        <button class="nav-button" type="button" data-view-target="cupboards">Cupboards</button>
+        <button class="nav-button" type="button" data-view-target="recipes">Recipes</button>
+        <button class="nav-button" type="button" data-view-target="prep">Meal Prep</button>
+        <button class="nav-button" type="button" data-view-target="shopping">Shopping</button>
+        <button class="nav-button" type="button" data-view-target="savings">Savings</button>
+      </nav>
+      <div class="account-area">
+        <button class="account-pill" type="button" data-open-auth>
+          <span id="accountInitial">CC</span>
+          <strong id="accountName">Guest kitchen</strong>
+        </button>
+        <button class="primary-action" type="button" data-open-add>New item</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="view active" id="view-home" data-view="home">
+        <div class="hero-layout">
+          <section class="kitchen-stage" aria-label="Animated kitchen inventory">
+            <div class="stage-toolbar">
+              <div>
+                <p class="eyebrow">Live kitchen</p>
+                <h1>Tap a cupboard. Cook what you already own.</h1>
+              </div>
+              <button class="cook-button" type="button" data-smart-cook>What can I cook?</button>
+            </div>
+            <div class="kitchen-illustration" id="kitchenGrid"></div>
+          </section>
+
+          <aside class="command-panel">
+            <div class="assistant">
+              <div class="assistant-orb" aria-hidden="true">
+                <span></span>
+              </div>
+              <div>
+                <p class="eyebrow">Basil Bot</p>
+                <h2 id="assistantMessage">Spinach is asking for a rescue dinner.</h2>
+              </div>
+            </div>
+
+            <section class="quick-stack" aria-label="Quick grocery add">
+              <div class="section-title">
+                <h2>Quick add</h2>
+                <button class="ghost-action" type="button" data-reset-demo>Reset demo</button>
+              </div>
+              <div class="quick-add-grid" id="quickAddGrid"></div>
+            </section>
+
+            <section class="dinner-wheel-panel" aria-label="Dinner wheel">
+              <div class="section-title">
+                <h2>Dinner wheel</h2>
+                <button class="ghost-action" type="button" data-spin-wheel>Spin</button>
+              </div>
+              <div class="wheel-wrap">
+                <div class="wheel-pointer" aria-hidden="true"></div>
+                <div class="dinner-wheel" id="dinnerWheel">
+                  <span>Pasta</span>
+                  <span>Rice bowl</span>
+                  <span>Stir-fry</span>
+                  <span>Soup</span>
+                  <span>Wraps</span>
+                  <span>Leftovers</span>
+                </div>
+              </div>
+              <p class="wheel-result" id="wheelResult">Ready for a no-shop dinner.</p>
+            </section>
+          </aside>
+        </div>
+
+        <section class="dashboard-row">
+          <article class="metric-card">
+            <span>Use soon</span>
+            <strong id="useSoonCount">0</strong>
+            <p>items need attention this week</p>
+          </article>
+          <article class="metric-card">
+            <span>Meals ready</span>
+            <strong id="readyMealsCount">0</strong>
+            <p>recipes can be cooked now</p>
+          </article>
+          <article class="metric-card">
+            <span>Potential savings</span>
+            <strong id="savingsEstimate">R0</strong>
+            <p>by cooking pantry-first</p>
+          </article>
+          <article class="metric-card">
+            <span>Shopping gaps</span>
+            <strong id="shoppingGapCount">0</strong>
+            <p>items to plan around</p>
+          </article>
+        </section>
+      </section>
+
+      <section class="view" id="view-cupboards" data-view="cupboards">
+        <div class="workspace">
+          <aside class="storage-sidebar">
+            <div class="section-title">
+              <h1>My Cupboards</h1>
+              <button class="icon-action" type="button" data-open-add aria-label="Add grocery item">+</button>
+            </div>
+            <div class="storage-list" id="storageList"></div>
+          </aside>
+          <section class="inventory-panel">
+            <div class="inventory-head">
+              <div>
+                <p class="eyebrow">Selected storage</p>
+                <h2 id="selectedStorageTitle">Pantry cupboard</h2>
+              </div>
+              <div class="inventory-controls">
+                <input id="inventorySearch" type="search" placeholder="Search groceries" />
+                <select id="categoryFilter" aria-label="Filter category">
+                  <option value="all">All categories</option>
+                </select>
+              </div>
+            </div>
+            <div class="shelf-layout" id="shelfLayout"></div>
+            <div class="item-grid" id="itemGrid"></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="view" id="view-recipes" data-view="recipes">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">Recipes for two</p>
+            <h1>Smart dinners from your current kitchen.</h1>
+          </div>
+          <div class="recipe-filters" id="recipeFilters">
+            <button class="filter-chip active" type="button" data-filter="all">All</button>
+            <button class="filter-chip" type="button" data-filter="ready">Make now</button>
+            <button class="filter-chip" type="button" data-filter="one">One missing</button>
+            <button class="filter-chip" type="button" data-filter="soon">Use soon</button>
+            <button class="filter-chip" type="button" data-filter="cheap">Budget</button>
+            <button class="filter-chip" type="button" data-filter="lazy">Lazy</button>
+          </div>
+        </div>
+        <div class="recipe-spotlight" id="recipeSpotlight"></div>
+        <div class="recipe-grid" id="recipeGrid"></div>
+      </section>
+
+      <section class="view" id="view-prep" data-view="prep">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">Meal prep</p>
+            <h1>Cook once, eat twice without mystery containers.</h1>
+          </div>
+          <button class="primary-action" type="button" data-add-container>Add container</button>
+        </div>
+        <div class="prep-layout">
+          <section class="planner" id="weeklyPlanner"></section>
+          <aside class="prep-stack">
+            <section class="plain-panel">
+              <div class="section-title">
+                <h2>Use it before you lose it</h2>
+                <button class="ghost-action" type="button" data-view-target="recipes">Open recipes</button>
+              </div>
+              <div id="useSoonList"></div>
+            </section>
+            <section class="plain-panel">
+              <div class="section-title">
+                <h2>Prepared containers</h2>
+                <span id="containerCount">0</span>
+              </div>
+              <div class="container-list" id="containerList"></div>
+            </section>
+          </aside>
+        </div>
+      </section>
+
+      <section class="view" id="view-shopping" data-view="shopping">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">Smart shopping</p>
+            <h1>Buy the gaps, skip the duplicates.</h1>
+          </div>
+          <button class="primary-action" type="button" data-generate-list>Generate list</button>
+        </div>
+        <div class="shopping-layout">
+          <section class="shopping-list-panel">
+            <div class="list-toolbar">
+              <select id="shoppingSort" aria-label="Sort shopping list">
+                <option value="priority">Priority</option>
+                <option value="reason">Reason</option>
+                <option value="price">Price</option>
+              </select>
+              <button class="ghost-action" type="button" data-clear-checked>Clear checked</button>
+            </div>
+            <div id="shoppingList"></div>
+          </section>
+          <aside class="plain-panel pantry-first">
+            <p class="eyebrow">Pantry-first check</p>
+            <h2 id="pantryFirstTitle">You may not need pasta sauce.</h2>
+            <p id="pantryFirstBody">Canned tomatoes, garlic, onion, and herbs are already in your kitchen.</p>
+            <button class="secondary-action" type="button" data-make-sauce>Plan homemade sauce</button>
+          </aside>
+        </div>
+      </section>
+
+      <section class="view" id="view-savings" data-view="savings">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">Savings</p>
+            <h1>Food spend, waste, and clever substitutions.</h1>
+          </div>
+          <button class="primary-action" type="button" data-log-waste>Log waste</button>
+        </div>
+        <div class="savings-grid">
+          <article class="savings-card accent-green">
+            <span>This month</span>
+            <strong id="monthlySaved">R0 saved</strong>
+            <p>estimated by cooking at home and using expiring groceries</p>
+          </article>
+          <article class="savings-card accent-coral">
+            <span>Waste tracker</span>
+            <strong id="wasteValue">R0 wasted</strong>
+            <p id="wasteNote">No waste logged in this demo yet.</p>
+          </article>
+          <article class="savings-card accent-blue">
+            <span>Price memory</span>
+            <strong>Eggs: R24</strong>
+            <p>You usually pay R18. Add them only if they are a must-buy.</p>
+          </article>
+          <article class="savings-card accent-gold">
+            <span>Bulk-buy warning</span>
+            <strong>Carrots look risky</strong>
+            <p>Five kilograms is cheaper per kg, but your usage pattern suggests spoilage.</p>
+          </article>
+        </div>
+        <section class="rescue-panel">
+          <div class="section-title">
+            <h2>Leftover rescue</h2>
+            <span>Small bits, useful endings</span>
+          </div>
+          <div class="rescue-grid" id="rescueGrid"></div>
+        </section>
+      </section>
+    </main>
+
+    <dialog class="app-dialog" id="itemDialog">
+      <form method="dialog" class="item-form" id="itemForm">
+        <div class="dialog-head">
+          <div>
+            <p class="eyebrow">Inventory</p>
+            <h2 id="dialogTitle">Add grocery</h2>
+          </div>
+          <button class="icon-action" type="button" data-close-dialog aria-label="Close">x</button>
+        </div>
+        <input type="hidden" name="id" />
+        <div class="form-grid">
+          <label>
+            Item name
+            <input name="name" required placeholder="Milk" />
+          </label>
+          <label>
+            Quantity
+            <input name="quantity" type="number" min="0" step="0.1" required />
+          </label>
+          <label>
+            Unit
+            <select name="unit">
+              <option>kg</option>
+              <option>g</option>
+              <option>litre</option>
+              <option>bottle</option>
+              <option>tin</option>
+              <option>packet</option>
+              <option>portion</option>
+              <option>item</option>
+            </select>
+          </label>
+          <label>
+            Location
+            <select name="location" id="locationSelect"></select>
+          </label>
+          <label>
+            Section
+            <input name="section" placeholder="Dry goods" />
+          </label>
+          <label>
+            Category
+            <input name="category" placeholder="Grains" />
+          </label>
+          <label>
+            Purchase date
+            <input name="purchaseDate" type="date" />
+          </label>
+          <label>
+            Expiry date
+            <input name="expiryDate" type="date" />
+          </label>
+          <label>
+            Estimated price
+            <input name="price" type="number" min="0" step="0.5" />
+          </label>
+          <label class="wide">
+            Notes
+            <textarea name="notes" rows="3" placeholder="Bought on special, freeze half, partner prefers this brand"></textarea>
+          </label>
+        </div>
+        <div class="dialog-actions">
+          <button class="secondary-action" type="button" data-delete-item>Delete</button>
+          <button class="primary-action" type="submit">Save item</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="app-dialog auth-dialog" id="authDialog">
+      <form method="dialog" class="auth-form" id="authForm">
+        <div class="dialog-head">
+          <div>
+            <p class="eyebrow">Cupboard account</p>
+            <h2>Sign in to your kitchen</h2>
+          </div>
+          <button class="icon-action" type="button" data-close-auth aria-label="Close">x</button>
+        </div>
+        <div class="auth-tabs" role="tablist" aria-label="Account mode">
+          <button class="active" type="button" data-auth-mode="signin">Sign in</button>
+          <button type="button" data-auth-mode="signup">Create account</button>
+        </div>
+        <label>
+          Display name
+          <input name="displayName" placeholder="Simone" />
+        </label>
+        <label>
+          Email
+          <input name="email" type="email" required placeholder="you@example.com" />
+        </label>
+        <label>
+          PIN
+          <input name="pin" type="password" inputmode="numeric" minlength="4" required placeholder="Four digits or more" />
+        </label>
+        <p class="auth-status" id="authStatus" aria-live="polite"></p>
+        <div class="dialog-actions">
+          <button class="secondary-action" type="button" data-sign-out>Sign out</button>
+          <button class="primary-action" type="submit" id="authSubmit">Sign in</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="app-dialog cooking-dialog" id="cookingDialog">
+      <section class="cooking-mode">
+        <div class="dialog-head">
+          <div>
+            <p class="eyebrow">Cooking mode</p>
+            <h2 id="cookingTitle">Tomato garlic pasta for two</h2>
+          </div>
+          <button class="icon-action" type="button" data-close-cooking aria-label="Close">x</button>
+        </div>
+        <div class="cook-meta" id="cookMeta"></div>
+        <div class="cook-grid">
+          <div>
+            <h3>Ingredients</h3>
+            <div id="cookIngredients"></div>
+          </div>
+          <div>
+            <h3>Steps</h3>
+            <ol id="cookSteps"></ol>
+          </div>
+        </div>
+        <div class="timer-strip">
+          <button class="secondary-action" type="button" data-timer="5">5 min</button>
+          <button class="secondary-action" type="button" data-timer="10">10 min</button>
+          <button class="secondary-action" type="button" data-timer="20">20 min</button>
+          <strong id="timerDisplay">Timer idle</strong>
+        </div>
+        <div class="dialog-actions">
+          <button class="secondary-action" type="button" data-save-leftovers>Save leftovers</button>
+          <button class="primary-action" type="button" data-finish-cooking>I used this</button>
+        </div>
+      </section>
+    </dialog>
+
+    <footer class="app-footer">
+      <img src="./assets/app-icon.svg" alt="" aria-hidden="true" />
+      <span>A Quantumcupcake creation</span>
+    </footer>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
