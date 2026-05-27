@@ -146,16 +146,29 @@
       <section class="view" id="view-recipes" data-view="recipes">
         <div class="page-heading">
           <div>
-            <p class="eyebrow">Recipes for two</p>
+            <p class="eyebrow">Recipes</p>
             <h1>Smart dinners from your current kitchen.</h1>
           </div>
-          <div class="recipe-filters" id="recipeFilters">
-            <button class="filter-chip active" type="button" data-filter="all">All</button>
-            <button class="filter-chip" type="button" data-filter="ready">Make now</button>
-            <button class="filter-chip" type="button" data-filter="one">One missing</button>
-            <button class="filter-chip" type="button" data-filter="soon">Use soon</button>
-            <button class="filter-chip" type="button" data-filter="cheap">Budget</button>
-            <button class="filter-chip" type="button" data-filter="lazy">Lazy</button>
+          <div class="recipe-actions-bar">
+            <label class="serving-control">
+              Meals for
+              <select id="servingSelect" aria-label="Number of people">
+                <option value="1">1 person</option>
+                <option value="2" selected>2 people</option>
+                <option value="3">3 people</option>
+                <option value="4">4 people</option>
+                <option value="5">5 people</option>
+                <option value="6">6 people</option>
+              </select>
+            </label>
+            <div class="recipe-filters" id="recipeFilters">
+              <button class="filter-chip active" type="button" data-filter="all">All</button>
+              <button class="filter-chip" type="button" data-filter="ready">Make now</button>
+              <button class="filter-chip" type="button" data-filter="one">One missing</button>
+              <button class="filter-chip" type="button" data-filter="soon">Use soon</button>
+              <button class="filter-chip" type="button" data-filter="cheap">Budget</button>
+              <button class="filter-chip" type="button" data-filter="lazy">Lazy</button>
+            </div>
           </div>
         </div>
         <div class="recipe-spotlight" id="recipeSpotlight"></div>
@@ -397,6 +410,7 @@
     <footer class="app-footer">
       <img src="./assets/app-icon.svg" alt="" aria-hidden="true" />
       <span>A Quantumcupcake creation</span>
+      <a href="https://github.com/cosmicbubblegumgirl/vercel-apps-github-pages/tree/main/ios/CupboardCompanion" target="_blank" rel="noopener">iOS wrapper</a>
     </footer>
 
     <script src="./app.js"></script>

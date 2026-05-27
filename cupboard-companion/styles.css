@@ -550,6 +550,10 @@ h3 {
   gap: 0.85rem;
 }
 
+.dinner-wheel-panel {
+  padding: 0.2rem 0.35rem 0.35rem;
+}
+
 .quick-add-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -578,7 +582,9 @@ h3 {
   position: relative;
   display: grid;
   place-items: center;
-  min-height: 15rem;
+  min-height: 18rem;
+  padding: 1.5rem 0.6rem 1rem;
+  overflow: visible;
 }
 
 .wheel-pointer {
@@ -596,18 +602,24 @@ h3 {
   position: relative;
   display: grid;
   place-items: center;
-  width: 13rem;
-  height: 13rem;
+  width: min(14.5rem, 100%);
+  height: min(14.5rem, calc(100vw - 4rem));
   border: 8px solid white;
   border-radius: 50%;
   background: conic-gradient(
-    from -20deg,
-    #e2624f 0 16.6%,
-    #e0a529 16.6% 33.2%,
-    #2f8a5f 33.2% 49.8%,
-    #326f96 49.8% 66.4%,
-    #60435f 66.4% 83%,
-    #9bbf5b 83% 100%
+    from -15deg,
+    #e2624f 0 8.33%,
+    #e0a529 8.33% 16.66%,
+    #2f8a5f 16.66% 25%,
+    #326f96 25% 33.33%,
+    #60435f 33.33% 41.66%,
+    #9bbf5b 41.66% 50%,
+    #f08a58 50% 58.33%,
+    #23746d 58.33% 66.66%,
+    #7d5d91 66.66% 75%,
+    #c39b2b 75% 83.33%,
+    #3d7f52 83.33% 91.66%,
+    #2b6387 91.66% 100%
   );
   box-shadow: var(--shadow);
   transition: transform 1.2s cubic-bezier(0.16, 0.86, 0.22, 1);
@@ -625,20 +637,16 @@ h3 {
 .dinner-wheel span {
   position: absolute;
   z-index: 2;
-  max-width: 4.5rem;
+  width: 3.8rem;
   color: white;
-  font-size: 0.65rem;
+  font-size: 0.54rem;
   font-weight: 950;
+  line-height: 1;
   text-align: center;
   text-transform: uppercase;
+  transform: rotate(calc(var(--i) * 30deg)) translateY(-5.55rem) rotate(calc(var(--i) * -30deg));
+  overflow-wrap: break-word;
 }
-
-.dinner-wheel span:nth-child(1) { transform: translateY(-5.1rem); }
-.dinner-wheel span:nth-child(2) { transform: rotate(60deg) translateY(-5.1rem) rotate(-60deg); }
-.dinner-wheel span:nth-child(3) { transform: rotate(120deg) translateY(-5.1rem) rotate(-120deg); }
-.dinner-wheel span:nth-child(4) { transform: rotate(180deg) translateY(-5.1rem) rotate(-180deg); }
-.dinner-wheel span:nth-child(5) { transform: rotate(240deg) translateY(-5.1rem) rotate(-240deg); }
-.dinner-wheel span:nth-child(6) { transform: rotate(300deg) translateY(-5.1rem) rotate(-300deg); }
 
 .wheel-result {
   margin: 0;
@@ -732,11 +740,31 @@ h3 {
 }
 
 .inventory-controls,
+.recipe-actions-bar,
 .recipe-filters {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
   justify-content: flex-end;
+}
+
+.recipe-actions-bar {
+  align-items: center;
+}
+
+.serving-control {
+  display: grid;
+  grid-template-columns: auto minmax(8.5rem, 1fr);
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--teal);
+  font-size: 0.82rem;
+  font-weight: 950;
+}
+
+.serving-control select {
+  min-height: 2.45rem;
+  padding: 0.35rem 0.6rem;
 }
 
 input,
@@ -1220,12 +1248,22 @@ label {
 
 .app-footer {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
   gap: 0.6rem;
   padding: 2rem 1rem 2.5rem;
   color: var(--teal);
   font-weight: 950;
+}
+
+.app-footer a {
+  min-height: 2rem;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid rgba(22, 63, 58, 0.16);
+  border-radius: 8px;
+  color: var(--teal);
+  text-decoration: none;
 }
 
 .app-footer img {

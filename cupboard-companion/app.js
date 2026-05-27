@@ -31,6 +31,21 @@
     ["Cheese", "fridge", "Dairy", "g", 250, 48]
   ];
 
+  const wheelOptions = [
+    "Pasta",
+    "Rice bowl",
+    "Stir-fry",
+    "Soup",
+    "Wraps",
+    "Curry",
+    "Tray bake",
+    "Breakfast",
+    "Pizza",
+    "Snack board",
+    "Leftovers",
+    "One-pan"
+  ];
+
   const recipes = [
     {
       id: "tomato-garlic-pasta",
@@ -141,6 +156,109 @@
     }
   ];
 
+  function recipeSlug(value) {
+    return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  }
+
+  function ingredientMeasure(name) {
+    const lookup = {
+      "Pasta": [0.5, "packet"],
+      "Rice": [0.3, "kg"],
+      "Canned tomatoes": [1, "tin"],
+      "Onion": [1, "item"],
+      "Garlic": [1, "item"],
+      "Milk": [0.25, "litre"],
+      "Cheese": [80, "g"],
+      "Spinach": [1, "packet"],
+      "Carrots": [2, "item"],
+      "Chicken": [0.4, "kg"],
+      "Frozen vegetables": [1, "packet"],
+      "Soy sauce": [1, "portion"],
+      "Curry powder": [1, "portion"],
+      "Flour": [0.4, "kg"],
+      "Oats": [0.2, "kg"],
+      "Tuna": [1, "tin"],
+      "Eggs": [2, "item"],
+      "Bread": [4, "slice"],
+      "Potatoes": [4, "item"],
+      "Beans": [1, "tin"],
+      "Chickpeas": [1, "tin"],
+      "Lentils": [1, "packet"],
+      "Peanut butter": [2, "tbsp"],
+      "Noodles": [1, "packet"],
+      "Mushrooms": [1, "packet"],
+      "Wraps": [4, "item"],
+      "Coconut milk": [1, "tin"],
+      "Parmesan": [40, "g"],
+      "Basil": [1, "portion"],
+      "Yoghurt": [0.25, "tub"],
+      "Paprika": [1, "portion"],
+      "Mince": [0.4, "kg"],
+      "Cabbage": [0.5, "head"],
+      "Peas": [1, "cup"],
+      "Stock": [1, "cube"],
+      "Lemon": [1, "item"],
+      "Cucumber": [1, "item"],
+      "Apple": [1, "item"],
+      "Banana": [1, "item"]
+    };
+    const [amount, unit] = lookup[name] || [1, "portion"];
+    return { name, amount, unit };
+  }
+
+  const recipeTwists = [
+    { suffix: "", tags: ["classic"], ingredients: [], time: 0, cost: 0, difficulty: "Easy", leftover: "Best for two portions.", step: "Serve as soon as it tastes balanced." },
+    { suffix: " With Fresh Veg", tags: ["soon", "healthy"], ingredients: ["Spinach", "Carrots"], time: 4, cost: 14, difficulty: "Easy", leftover: "One lunch portion if bulked with rice.", step: "Fold in the fresh veg near the end." },
+    { suffix: " Batch Prep", tags: ["batch", "leftovers"], ingredients: ["Rice", "Frozen vegetables"], time: 8, cost: 18, difficulty: "Easy", leftover: "Two planned leftover portions.", step: "Cook a little extra and portion it before serving." },
+    { suffix: " Date-Night Style", tags: ["date", "fancy"], ingredients: ["Cheese", "Basil"], time: 6, cost: 24, difficulty: "Medium", leftover: "Small lunch portion if you save a scoop.", step: "Plate neatly and finish with cheese or herbs." },
+    { suffix: " Pantry-First", tags: ["cheap", "no-shop"], ingredients: ["Canned tomatoes", "Onion", "Garlic"], time: 3, cost: 8, difficulty: "Easy", leftover: "None unless doubled.", step: "Lean on pantry seasoning instead of buying extras." }
+  ];
+
+  const extraRecipeFamilies = [
+    { title: "Peanut Butter Noodles For Two", tags: ["cheap", "lazy"], time: 12, cost: 28, ingredients: ["Noodles", "Peanut butter", "Soy sauce", "Garlic"], steps: ["Boil noodles.", "Whisk peanut butter, soy sauce, and garlic.", "Toss noodles through the sauce.", "Loosen with hot water if needed."], tip: "Peanut butter makes a fast sauce without takeout prices." },
+    { title: "Shakshuka For Two", tags: ["cheap", "breakfast"], time: 24, cost: 38, ingredients: ["Eggs", "Canned tomatoes", "Onion", "Paprika", "Bread"], steps: ["Cook onion with paprika.", "Add tomatoes and simmer.", "Crack eggs into the sauce.", "Serve with toast."], tip: "Eggs stretch a tomato tin into a full dinner." },
+    { title: "Lentil Bolognese For Two", tags: ["cheap", "pasta"], time: 32, cost: 44, ingredients: ["Lentils", "Pasta", "Canned tomatoes", "Onion", "Garlic"], steps: ["Cook onion and garlic.", "Add lentils and tomatoes.", "Simmer until thick.", "Serve over pasta."], tip: "Lentils replace mince when the budget is tight." },
+    { title: "Chickpea Curry For Two", tags: ["cheap", "curry"], time: 24, cost: 40, ingredients: ["Chickpeas", "Canned tomatoes", "Curry powder", "Rice", "Onion"], steps: ["Cook onion with curry powder.", "Add chickpeas and tomatoes.", "Simmer until glossy.", "Serve with rice."], tip: "Canned chickpeas are a low-effort protein." },
+    { title: "Tuna Pasta Bake For Two", tags: ["comfort", "pasta"], time: 30, cost: 52, ingredients: ["Tuna", "Pasta", "Milk", "Cheese", "Frozen vegetables"], steps: ["Cook pasta.", "Make a quick milk and cheese sauce.", "Fold in tuna and vegetables.", "Bake until bubbling."], tip: "Use frozen veg to avoid fresh waste." },
+    { title: "Loaded Baked Potatoes For Two", tags: ["cheap", "comfort"], time: 38, cost: 36, ingredients: ["Potatoes", "Cheese", "Beans", "Onion"], steps: ["Bake or microwave potatoes.", "Warm beans with onion.", "Split potatoes open.", "Top with beans and cheese."], tip: "Potatoes are a filling base when the fridge is light." },
+    { title: "Savory Oats For Two", tags: ["breakfast", "cheap"], time: 10, cost: 20, ingredients: ["Oats", "Eggs", "Cheese", "Soy sauce"], steps: ["Cook oats with water or milk.", "Season with soy sauce.", "Top with egg.", "Finish with cheese."], tip: "Oats work as dinner when treated like rice." },
+    { title: "Tomato Bean Stew For Two", tags: ["soup", "cheap"], time: 26, cost: 34, ingredients: ["Beans", "Canned tomatoes", "Carrots", "Onion", "Stock"], steps: ["Cook onion and carrots.", "Add beans, tomatoes, and stock.", "Simmer until thick.", "Serve with bread or rice."], tip: "Beans and tomatoes make a no-shop stew." },
+    { title: "Chicken Wraps For Two", tags: ["wraps", "leftovers"], time: 18, cost: 58, ingredients: ["Chicken", "Wraps", "Carrots", "Yoghurt", "Cucumber"], steps: ["Cook chicken strips.", "Mix yoghurt with garlic.", "Slice vegetables.", "Roll everything into wraps."], tip: "Wraps turn small chicken portions into a full meal." },
+    { title: "Vegetable Fried Rice For Two", tags: ["rice bowl", "lazy"], time: 14, cost: 28, ingredients: ["Rice", "Eggs", "Frozen vegetables", "Soy sauce", "Garlic"], steps: ["Fry garlic and rice.", "Add vegetables.", "Scramble eggs in the pan.", "Season with soy sauce."], tip: "Use cold rice for the best texture." },
+    { title: "Creamy Garlic Chicken For Two", tags: ["date", "comfort"], time: 28, cost: 74, ingredients: ["Chicken", "Garlic", "Milk", "Cheese", "Rice"], steps: ["Brown chicken.", "Add garlic.", "Make a quick creamy sauce with milk and cheese.", "Serve over rice."], tip: "Milk and cheese keep it creamy without buying cream." },
+    { title: "Potato Hash For Two", tags: ["breakfast", "one-pan"], time: 22, cost: 30, ingredients: ["Potatoes", "Onion", "Eggs", "Paprika"], steps: ["Dice potatoes small.", "Fry with onion and paprika.", "Make two spaces in the pan.", "Crack in eggs and cover."], tip: "Small potato cubes cook faster and use less oil." },
+    { title: "Egg Tomato Toast For Two", tags: ["lazy", "breakfast"], time: 11, cost: 24, ingredients: ["Eggs", "Bread", "Canned tomatoes", "Garlic"], steps: ["Toast bread.", "Warm tomatoes with garlic.", "Scramble or fry eggs.", "Pile eggs and sauce on toast."], tip: "Toast turns a small sauce into dinner." },
+    { title: "Pantry Minestrone For Two", tags: ["soup", "no-shop"], time: 29, cost: 36, ingredients: ["Pasta", "Beans", "Canned tomatoes", "Carrots", "Stock"], steps: ["Simmer tomatoes, carrots, beans, and stock.", "Add pasta.", "Cook until tender.", "Season and serve."], tip: "Tiny pasta amounts make soup feel bigger." },
+    { title: "Mushroom Rice For Two", tags: ["rice bowl", "comfort"], time: 27, cost: 46, ingredients: ["Rice", "Mushrooms", "Onion", "Garlic", "Cheese"], steps: ["Cook onion, garlic, and mushrooms.", "Add rice and water.", "Simmer until rice is tender.", "Finish with cheese."], tip: "A little cheese gives risotto energy without special rice." },
+    { title: "Bean Quesadillas For Two", tags: ["wraps", "cheap"], time: 16, cost: 35, ingredients: ["Wraps", "Beans", "Cheese", "Onion", "Paprika"], steps: ["Mash beans with onion and paprika.", "Spread onto wraps.", "Add cheese.", "Toast in a dry pan."], tip: "Beans make wraps more filling than cheese alone." },
+    { title: "Spinach Omelette For Two", tags: ["soon", "breakfast"], time: 12, cost: 30, ingredients: ["Spinach", "Eggs", "Cheese", "Onion"], steps: ["Soften onion.", "Wilt spinach.", "Add beaten eggs.", "Finish with cheese."], tip: "Use wilting greens before they become waste." },
+    { title: "Chicken Soup For Two", tags: ["soup", "leftovers"], time: 34, cost: 48, ingredients: ["Chicken", "Carrots", "Onion", "Stock", "Rice"], steps: ["Simmer chicken with onion, carrots, and stock.", "Shred chicken.", "Add rice.", "Cook until cozy and thick."], tip: "Rice makes soup feel like a full dinner." },
+    { title: "Herby Tomato Pasta For Two", tags: ["pasta", "no-shop"], time: 18, cost: 32, ingredients: ["Pasta", "Canned tomatoes", "Basil", "Garlic", "Onion"], steps: ["Cook pasta.", "Simmer tomatoes with onion and garlic.", "Add basil.", "Toss pasta through the sauce."], tip: "Herbs make pantry sauce feel fresher." },
+    { title: "Breakfast Pancakes For Two", tags: ["breakfast", "comfort"], time: 20, cost: 26, ingredients: ["Flour", "Milk", "Eggs", "Banana"], steps: ["Mix flour, milk, and eggs.", "Slice banana.", "Cook pancakes in batches.", "Top with banana."], tip: "Pancakes rescue milk and eggs before shopping day." }
+  ];
+
+  recipes.push(...extraRecipeFamilies.flatMap((family, familyIndex) =>
+    recipeTwists.map((twist, twistIndex) => {
+      const title = `${family.title}${twist.suffix}`;
+      const ingredientNames = [...new Set([...family.ingredients, ...twist.ingredients])];
+      return {
+        id: `${recipeSlug(title)}-${familyIndex}-${twistIndex}`,
+        title,
+        servings: 2,
+        time: family.time + twist.time,
+        difficulty: twist.difficulty,
+        estimatedCost: family.cost + twist.cost,
+        cost: family.cost + twist.cost,
+        ingredients: ingredientNames.map(ingredientMeasure),
+        steps: [...family.steps, twist.step],
+        tags: [...new Set([...family.tags, ...twist.tags])],
+        leftover: twist.leftover,
+        leftoverPotential: twist.leftover,
+        tip: family.tip
+      };
+    })
+  ));
+
   const rescueIdeas = [
     ["Half an onion", "Omelette, fried rice, soup base"],
     ["Leftover rice", "Fried rice, rice pudding, burrito bowls"],
@@ -156,6 +274,7 @@
     selectedStorage: "pantry",
     view: "home",
     authMode: "signin",
+    servings: 2,
     items: [],
     shopping: [],
     containers: [],
@@ -170,6 +289,10 @@
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
   const areaById = (id) => storageAreas.find((area) => area.id === id) || storageAreas[0];
+  const recipeServings = (recipe) => Number(recipe.servings || 2);
+  const servingScale = (recipe) => state.servings / recipeServings(recipe);
+  const scaledCost = (recipe) => Math.round(Number(recipe.cost || recipe.estimatedCost || 0) * servingScale(recipe));
+  const scaledAmount = (recipe, ingredient) => Number(ingredient.amount || 1) * servingScale(recipe);
   const today = () => new Date(new Date().toDateString());
   const isoDay = (offset) => {
     const date = today();
@@ -177,6 +300,12 @@
     return date.toISOString().slice(0, 10);
   };
   const uid = () => Math.random().toString(36).slice(2) + Date.now().toString(36);
+
+  function formatAmount(value) {
+    const rounded = Math.round(value * 100) / 100;
+    if (Number.isInteger(rounded)) return String(rounded);
+    return String(rounded).replace(/\.?0+$/, "");
+  }
 
   function openDB() {
     return new Promise((resolve, reject) => {
@@ -426,6 +555,15 @@
     $("#quickAddGrid").innerHTML = quickAdds.map(([name]) => `<button type="button" data-quick-add="${name}">${name}</button>`).join("");
   }
 
+  function renderWheelOptions() {
+    $("#dinnerWheel").innerHTML = wheelOptions.map((label, index) => `<span style="--i:${index}">${label}</span>`).join("");
+  }
+
+  function renderServingControl() {
+    const select = $("#servingSelect");
+    if (select && Number(select.value) !== state.servings) select.value = String(state.servings);
+  }
+
   function renderStorageList() {
     $("#storageList").innerHTML = storageAreas.map((area) => {
       const count = state.items.filter((item) => item.location === area.id && item.quantity > 0).length;
@@ -533,7 +671,7 @@
       <div>
         <p class="eyebrow">Tonight's best meal</p>
         <h2>${best.recipe.title}</h2>
-        <p>Uses ${best.status.owned.slice(0, 4).join(", ") || "your pantry"}${best.status.missing.length ? `. Need to buy: ${best.status.missing.join(", ")}.` : ". No shopping needed."}</p>
+        <p>Scaled for ${state.servings} ${state.servings === 1 ? "person" : "people"} at ${currency.format(scaledCost(best.recipe))} total. Uses ${best.status.owned.slice(0, 4).join(", ") || "your pantry"}${best.status.missing.length ? `. Need to buy: ${best.status.missing.join(", ")}.` : ". No shopping needed."}</p>
       </div>
       <button class="primary-action" type="button" data-cook-recipe="${best.recipe.id}">Cook now</button>
     `;
@@ -555,7 +693,7 @@
         <header>
           <div>
             <strong>${recipe.title}</strong>
-            <p class="record-label">${currency.format(recipe.cost)} total | ${currency.format(recipe.cost / 2)} per person</p>
+            <p class="record-label">${currency.format(scaledCost(recipe))} total | ${currency.format(scaledCost(recipe) / state.servings)} per person | serves ${state.servings}</p>
           </div>
           <span class="priority ${status.canMake ? "" : status.oneMissing ? "medium" : "high"}">${status.canMake ? "Make now" : status.oneMissing ? "One missing" : `${status.missing.length} gaps`}</span>
         </header>
@@ -587,7 +725,7 @@
     const picks = rankedRecipes();
     $("#weeklyPlanner").innerHTML = days.map((day, index) => {
       const pick = picks[index % picks.length]?.recipe;
-      return `<article class="prep-day"><h3>${day}</h3><div class="prep-meal"><strong>${pick?.title || "Open slot"}</strong><span>${pick ? `${pick.time} min | ${currency.format(pick.cost)}` : "Plan a meal"}</span></div><button class="small-action" type="button" data-plan-day="${day}">Swap meal</button></article>`;
+      return `<article class="prep-day"><h3>${day}</h3><div class="prep-meal"><strong>${pick?.title || "Open slot"}</strong><span>${pick ? `${pick.time} min | ${currency.format(scaledCost(pick))} | serves ${state.servings}` : "Plan a meal"}</span></div><button class="small-action" type="button" data-plan-day="${day}">Swap meal</button></article>`;
     }).join("");
 
     const soon = state.items.filter((item) => daysUntil(item.expiryDate) <= 6 && item.quantity > 0).sort((a, b) => daysUntil(a.expiryDate) - daysUntil(b.expiryDate));
@@ -657,6 +795,8 @@
     renderAccount();
     renderKitchen();
     renderQuickAdds();
+    renderWheelOptions();
+    renderServingControl();
     renderStorageList();
     renderCategoryFilter();
     renderShelfLayout();
@@ -765,10 +905,10 @@
     if (!recipe) return;
     state.currentRecipe = recipe;
     $("#cookingTitle").textContent = recipe.title;
-    $("#cookMeta").innerHTML = `<span>${recipe.time} min</span><span>${currency.format(recipe.cost)} for two</span><span>${recipe.difficulty}</span><span>${recipe.leftover}</span>`;
+    $("#cookMeta").innerHTML = `<span>${recipe.time} min</span><span>${currency.format(scaledCost(recipe))} for ${state.servings}</span><span>${recipe.difficulty}</span><span>${recipe.leftover}</span>`;
     $("#cookIngredients").innerHTML = recipe.ingredients.map((ingredient) => {
       const owned = Boolean(findOwnedIngredient(ingredient.name));
-      return `<label><input type="checkbox" ${owned ? "checked" : ""} /> ${ingredient.amount} ${ingredient.unit} ${ingredient.name}</label>`;
+      return `<label><input type="checkbox" ${owned ? "checked" : ""} /> ${formatAmount(scaledAmount(recipe, ingredient))} ${ingredient.unit} ${ingredient.name}</label>`;
     }).join("");
     $("#cookSteps").innerHTML = recipe.steps.map((step) => `<li>${step}</li>`).join("");
     $("#timerDisplay").textContent = "Timer idle";
@@ -782,7 +922,7 @@
       const item = findOwnedIngredient(ingredient.name);
       if (!item) continue;
       const sameUnit = item.unit.toLowerCase() === ingredient.unit.toLowerCase();
-      const amount = sameUnit ? Number(ingredient.amount || 1) : Math.min(Number(item.quantity || 0), 1);
+      const amount = sameUnit ? scaledAmount(recipe, ingredient) : Math.min(Number(item.quantity || 0), Math.max(1, servingScale(recipe)));
       item.quantity = Math.max(0, Number(item.quantity || 0) - amount);
       await dbPut("groceries", item);
     }
@@ -790,7 +930,7 @@
       id: uid(),
       userEmail: state.user.email,
       name: `${recipe.title} leftovers`,
-      portions: recipe.leftover.toLowerCase().includes("none") ? 1 : 2,
+      portions: recipe.leftover.toLowerCase().includes("none") ? 1 : Math.max(1, Math.round(state.servings / 2)),
       location: "Fridge",
       eatBy: isoDay(3),
       notes: recipe.leftover
@@ -978,14 +1118,14 @@
     if (button.dataset.addMissing) {
       const recipe = recipes.find((row) => row.id === button.dataset.addMissing);
       const status = recipeStatus(recipe);
-      await Promise.all(status.missing.map((name) => addShoppingItem({ name, quantity: "1", reason: recipe.title, priority: status.missing.length === 1 ? "medium" : "low", estimatedPrice: 24 })));
+      await Promise.all(status.missing.map((name) => addShoppingItem({ name, quantity: state.servings > 2 ? `${formatAmount(servingScale(recipe))}x` : "1", reason: `${recipe.title} for ${state.servings}`, priority: status.missing.length === 1 ? "medium" : "low", estimatedPrice: 24 })));
       await loadUserData();
       setView("shopping");
       return;
     }
     if (button.dataset.planRecipe) {
       const recipe = recipes.find((row) => row.id === button.dataset.planRecipe);
-      await dbPut("containers", { id: uid(), userEmail: state.user.email, name: `${recipe.title} prep`, portions: 2, location: "Meal plan", eatBy: isoDay(5), notes: "Planned for two" });
+      await dbPut("containers", { id: uid(), userEmail: state.user.email, name: `${recipe.title} prep`, portions: state.servings, location: "Meal plan", eatBy: isoDay(5), notes: `Planned for ${state.servings}` });
       await loadUserData();
       setView("prep");
       return;
@@ -1020,11 +1160,12 @@
       return;
     }
     if (button.matches("[data-spin-wheel]")) {
-      const choices = ["Tomato Garlic Pasta", "Chicken Stir-fry Bowls", "Lentil Curry", "Egg Fried Rice", "Homemade Pizza", "Leftover Rescue"];
-      const chosen = choices[Math.floor(Math.random() * choices.length)];
-      state.wheelRotation += 720 + Math.floor(Math.random() * 360);
+      const chosenIndex = Math.floor(Math.random() * wheelOptions.length);
+      const chosen = wheelOptions[chosenIndex];
+      const segment = 360 / wheelOptions.length;
+      state.wheelRotation += 720 + (360 - chosenIndex * segment) + Math.floor(Math.random() * segment);
       $("#dinnerWheel").style.transform = `rotate(${state.wheelRotation}deg)`;
-      $("#wheelResult").textContent = chosen;
+      $("#wheelResult").textContent = `${chosen} for ${state.servings}`;
       return;
     }
     if (button.matches("[data-smart-cook]")) {
@@ -1049,7 +1190,7 @@
     }
     if (button.matches("[data-save-leftovers]")) {
       if (!state.currentRecipe) return;
-      await dbPut("containers", { id: uid(), userEmail: state.user.email, name: `${state.currentRecipe.title} leftovers`, portions: 1, location: "Fridge", eatBy: isoDay(2), notes: "Saved from cooking mode" });
+      await dbPut("containers", { id: uid(), userEmail: state.user.email, name: `${state.currentRecipe.title} leftovers`, portions: Math.max(1, Math.round(state.servings / 2)), location: "Fridge", eatBy: isoDay(2), notes: `Saved from cooking mode for ${state.servings}` });
       await loadUserData();
       renderMealPrep();
       return;
@@ -1060,6 +1201,14 @@
   }
 
   async function handleChange(event) {
+    if (event.target.id === "servingSelect") {
+      state.servings = Number(event.target.value || 2);
+      renderRecipeSpotlight();
+      renderRecipes();
+      renderMealPrep();
+      renderHomeMetrics();
+      return;
+    }
     if (event.target.id === "inventorySearch" || event.target.id === "categoryFilter") {
       renderItems();
     }
