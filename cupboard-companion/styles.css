@@ -130,6 +130,32 @@ svg {
   gap: 0.6rem;
 }
 
+.view-mode-toggle {
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.25rem;
+  padding: 0.22rem;
+  border: 1px solid rgba(22, 63, 58, 0.14);
+  border-radius: 8px;
+  background: white;
+}
+
+.view-mode-toggle button {
+  min-height: 2rem;
+  padding: 0 0.55rem;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 950;
+}
+
+.view-mode-toggle button.active {
+  background: var(--teal);
+  color: white;
+}
+
 .account-pill {
   display: inline-flex;
   align-items: center;
@@ -193,6 +219,77 @@ main {
   width: min(1480px, 100%);
   margin: 0 auto;
   padding: clamp(1rem, 3vw, 2rem);
+}
+
+body.preview-mobile {
+  background:
+    linear-gradient(135deg, rgba(22, 63, 58, 0.12), rgba(50, 111, 150, 0.14)),
+    var(--paper);
+}
+
+body.preview-mobile .app-header,
+body.preview-mobile main,
+body.preview-mobile .app-footer {
+  width: min(430px, 100%);
+  margin-right: auto;
+  margin-left: auto;
+}
+
+body.preview-mobile .app-header {
+  align-items: stretch;
+  flex-wrap: wrap;
+  border-right: 1px solid rgba(22, 63, 58, 0.12);
+  border-left: 1px solid rgba(22, 63, 58, 0.12);
+}
+
+body.preview-mobile .brand span,
+body.preview-mobile .account-pill strong {
+  display: none;
+}
+
+body.preview-mobile .app-nav {
+  order: 3;
+}
+
+body.preview-mobile main {
+  padding: 0.75rem;
+}
+
+body.preview-mobile .hero-layout,
+body.preview-mobile .workspace,
+body.preview-mobile .prep-layout,
+body.preview-mobile .shopping-layout,
+body.preview-mobile .cook-grid {
+  grid-template-columns: 1fr;
+}
+
+body.preview-mobile .kitchen-illustration,
+body.preview-mobile .dashboard-row,
+body.preview-mobile .savings-grid,
+body.preview-mobile .planner,
+body.preview-mobile .form-grid {
+  grid-template-columns: 1fr;
+}
+
+body.preview-mobile .storage-tile.large,
+body.preview-mobile .storage-tile.tall {
+  grid-column: span 1;
+  grid-row: span 1;
+}
+
+body.preview-mobile .stage-toolbar,
+body.preview-mobile .section-title,
+body.preview-mobile .inventory-head,
+body.preview-mobile .page-heading,
+body.preview-mobile .list-toolbar,
+body.preview-mobile .dialog-head {
+  align-items: flex-start;
+  flex-direction: column;
+}
+
+body.preview-mobile .item-actions,
+body.preview-mobile .recipe-actions {
+  grid-template-columns: 1fr;
 }
 
 .view {

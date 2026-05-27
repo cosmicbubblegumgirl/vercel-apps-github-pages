@@ -275,6 +275,7 @@
     view: "home",
     authMode: "signin",
     servings: 2,
+    previewMode: "web",
     items: [],
     shopping: [],
     containers: [],
@@ -530,6 +531,12 @@
     $$(".nav-button").forEach((node) => node.classList.toggle("active", node.dataset.viewTarget === view));
     window.scrollTo({ top: 0, behavior: "smooth" });
     render();
+  }
+
+  function setPreviewMode(mode) {
+    state.previewMode = mode === "mobile" ? "mobile" : "web";
+    document.body.classList.toggle("preview-mobile", state.previewMode === "mobile");
+    $$("[data-preview-mode]").forEach((button) => button.classList.toggle("active", button.dataset.previewMode === state.previewMode));
   }
 
   function renderKitchen() {
@@ -1002,6 +1009,10 @@
       setView(button.dataset.viewTarget);
       return;
     }
+    if (button.dataset.previewMode) {
+      setPreviewMode(button.dataset.previewMode);
+      return;
+    }
     if (button.dataset.storage) {
       state.selectedStorage = button.dataset.storage;
       renderKitchen();
@@ -1260,6 +1271,7 @@
     });
 
     setAuthMode("signin");
+    setPreviewMode("web");
     render();
   }
 
