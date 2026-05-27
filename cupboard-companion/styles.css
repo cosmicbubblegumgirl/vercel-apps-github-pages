@@ -285,18 +285,20 @@ h3 {
 
 .kitchen-illustration {
   display: grid;
-  grid-template-columns: repeat(6, minmax(5.6rem, 1fr));
-  grid-auto-rows: minmax(7.4rem, auto);
-  gap: 0.7rem;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  grid-auto-rows: minmax(11.2rem, auto);
+  gap: 0.85rem;
   margin-top: 1.4rem;
 }
 
 .storage-tile {
   position: relative;
   display: grid;
-  align-content: end;
-  min-height: 7.4rem;
-  padding: 0.7rem;
+  grid-template-rows: auto auto minmax(2.6rem, 1fr) auto auto;
+  align-content: start;
+  justify-items: start;
+  min-height: 11.2rem;
+  padding: 0.9rem;
   overflow: hidden;
   border: 1px solid rgba(22, 63, 58, 0.12);
   border-radius: 8px;
@@ -376,11 +378,10 @@ h3 {
 }
 
 .storage-icon {
-  position: absolute;
-  top: 0.75rem;
-  left: 0.75rem;
-  width: 2.4rem;
-  height: 2.4rem;
+  position: relative;
+  width: 2.35rem;
+  height: 2.35rem;
+  margin-bottom: 0.55rem;
   color: var(--teal);
   opacity: 0.92;
 }
@@ -399,25 +400,32 @@ h3 {
 }
 
 .storage-meta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  margin-bottom: 0.35rem;
-  font-size: 0.72rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(3.8rem, auto);
+  align-items: start;
+  gap: 0.45rem;
+  width: 100%;
+  margin-bottom: 0.45rem;
+  font-size: 0.68rem;
   font-weight: 900;
+  line-height: 1.08;
   text-transform: uppercase;
 }
 
 .status-dot {
   display: inline-flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.3rem;
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
 .status-dot::before {
+  flex: 0 0 auto;
   width: 0.55rem;
   height: 0.55rem;
+  margin-top: 0.08rem;
   border-radius: 999px;
   background: var(--green);
   content: "";
@@ -439,16 +447,26 @@ h3 {
   background: #8b9691;
 }
 
+.storage-meta > span:last-child {
+  max-width: 4.6rem;
+  text-align: right;
+  white-space: normal;
+}
+
 .storage-name {
   display: block;
+  max-width: 100%;
   font-size: 1.05rem;
   font-weight: 950;
+  line-height: 1.08;
+  overflow-wrap: break-word;
 }
 
 .storage-count {
   color: var(--muted);
   font-size: 0.82rem;
   font-weight: 800;
+  line-height: 1.15;
 }
 
 .mini-items {
@@ -457,6 +475,7 @@ h3 {
   gap: 0.25rem;
   min-height: 1.4rem;
   margin-top: 0.55rem;
+  align-self: end;
 }
 
 .mini-item {
@@ -1304,8 +1323,8 @@ label {
   }
 
   .kitchen-illustration {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-auto-rows: minmax(8rem, auto);
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    grid-auto-rows: minmax(11rem, auto);
   }
 
   .storage-tile.large,
@@ -1343,5 +1362,15 @@ label {
 
   .timer-strip strong {
     margin-left: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .kitchen-illustration {
+    grid-template-columns: 1fr;
+  }
+
+  .storage-tile {
+    min-height: 10.5rem;
   }
 }
