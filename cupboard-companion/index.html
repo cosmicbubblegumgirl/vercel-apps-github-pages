@@ -74,6 +74,14 @@
               <div class="quick-add-grid" id="quickAddGrid"></div>
             </section>
 
+            <section class="scan-panel" aria-label="Kitchen scanner">
+              <div>
+                <p class="eyebrow">Kitchen scan</p>
+                <h2>Update from photos, receipts, or PDF invoices.</h2>
+              </div>
+              <button class="secondary-action" type="button" data-open-scan>Scan kitchen</button>
+            </section>
+
             <section class="dinner-wheel-panel" aria-label="Dinner wheel">
               <div class="section-title">
                 <h2>Dinner wheel</h2>
@@ -376,6 +384,68 @@
           <button class="primary-action" type="submit" id="authSubmit">Sign in</button>
         </div>
       </form>
+    </dialog>
+
+    <dialog class="app-dialog scan-dialog" id="scanDialog">
+      <section class="scan-workflow">
+        <div class="dialog-head">
+          <div>
+            <p class="eyebrow">Kitchen scan</p>
+            <h2>Review items before they enter your database</h2>
+          </div>
+          <button class="icon-action" type="button" data-close-scan aria-label="Close">x</button>
+        </div>
+
+        <div class="scan-grid">
+          <article class="scan-source">
+            <h3>Cupboard or fridge photo</h3>
+            <label>
+              Storage location
+              <select id="scanLocationSelect"></select>
+            </label>
+            <label class="scan-drop">
+              Take or upload photo
+              <input id="kitchenPhotoInput" type="file" accept="image/*" capture="environment" data-scan-file="kitchen" />
+            </label>
+            <p>Use this after shopping or when checking what is already on a shelf.</p>
+          </article>
+
+          <article class="scan-source">
+            <h3>Receipt or invoice</h3>
+            <label>
+              Document type
+              <select id="documentTypeSelect">
+                <option value="receipt">Grocery receipt image</option>
+                <option value="invoice">PDF invoice</option>
+              </select>
+            </label>
+            <label class="scan-drop">
+              Upload receipt image or PDF
+              <input id="receiptFileInput" type="file" accept="image/*,application/pdf,.pdf" data-scan-file="document" />
+            </label>
+            <p>PDF text is scanned in-browser when possible. Image receipts create editable smart suggestions.</p>
+          </article>
+        </div>
+
+        <div class="scan-preview" id="scanPreview">
+          <strong>No scan selected yet.</strong>
+          <p>Choose a photo, receipt, or PDF invoice to generate a review list.</p>
+        </div>
+
+        <div class="scan-review-head">
+          <div>
+            <p class="eyebrow">Detected draft</p>
+            <h3 id="scanDraftTitle">Waiting for scan</h3>
+          </div>
+          <button class="ghost-action" type="button" data-clear-scan>Clear</button>
+        </div>
+        <div class="scan-review-list" id="scanReviewList"></div>
+
+        <div class="dialog-actions">
+          <button class="secondary-action" type="button" data-scan-to-shopping>Add checked to shopping</button>
+          <button class="primary-action" type="button" data-confirm-scan>Add checked to inventory</button>
+        </div>
+      </section>
     </dialog>
 
     <dialog class="app-dialog cooking-dialog" id="cookingDialog">

@@ -31,6 +31,47 @@
     ["Cheese", "fridge", "Dairy", "g", 250, 48]
   ];
 
+  const scanCatalog = [
+    ["Milk", "fridge", "Dairy", "litre", 1, 24, 7],
+    ["Eggs", "fridge", "Dairy", "item", 6, 24, 18],
+    ["Cheese", "fridge", "Dairy", "g", 250, 48, 21],
+    ["Yoghurt", "fridge", "Dairy", "tub", 1, 32, 14],
+    ["Spinach", "fridge", "Vegetables", "packet", 1, 26, 3],
+    ["Carrots", "fridge", "Vegetables", "item", 5, 18, 10],
+    ["Cucumber", "fridge", "Vegetables", "item", 1, 16, 6],
+    ["Tomato", "fridge", "Vegetables", "item", 4, 18, 6],
+    ["Chicken", "freezer", "Proteins", "kg", 1, 85, 90],
+    ["Frozen vegetables", "freezer", "Vegetables", "packet", 1, 34, 120],
+    ["Mince", "freezer", "Proteins", "kg", 0.5, 65, 90],
+    ["Rice", "pantry", "Grains", "kg", 2, 62, 365],
+    ["Pasta", "pantry", "Grains", "packet", 1, 22, 240],
+    ["Canned tomatoes", "pantry", "Canned goods", "tin", 2, 36, 365],
+    ["Beans", "pantry", "Canned goods", "tin", 2, 34, 365],
+    ["Chickpeas", "pantry", "Canned goods", "tin", 2, 34, 365],
+    ["Lentils", "pantry", "Grains", "packet", 1, 26, 365],
+    ["Onion", "pantry", "Vegetables", "item", 4, 16, 21],
+    ["Garlic", "pantry", "Vegetables", "packet", 1, 18, 35],
+    ["Bread", "breakfast", "Bakery", "packet", 1, 18, 5],
+    ["Oats", "breakfast", "Breakfast", "kg", 1, 36, 240],
+    ["Flour", "baking", "Baking", "kg", 1, 24, 180],
+    ["Peanut butter", "breakfast", "Spreads", "jar", 1, 42, 240],
+    ["Soy sauce", "spice", "Sauces", "bottle", 1, 28, 365],
+    ["Curry powder", "spice", "Spices", "packet", 1, 20, 365],
+    ["Tuna", "backup", "Backup meals", "tin", 2, 38, 450]
+  ];
+
+  const scanDefaults = {
+    pantry: ["Rice", "Pasta", "Canned tomatoes", "Beans", "Onion", "Garlic"],
+    fridge: ["Milk", "Eggs", "Cheese", "Spinach", "Carrots", "Tomato"],
+    freezer: ["Chicken", "Frozen vegetables", "Mince"],
+    spice: ["Soy sauce", "Curry powder", "Garlic"],
+    baking: ["Flour", "Oats"],
+    breakfast: ["Bread", "Oats", "Peanut butter", "Milk"],
+    backup: ["Tuna", "Beans", "Canned tomatoes"],
+    receipt: ["Milk", "Eggs", "Bread", "Chicken", "Rice", "Tomato"],
+    invoice: ["Rice", "Pasta", "Canned tomatoes", "Beans", "Milk", "Chicken"]
+  };
+
   const wheelOptions = [
     "Pasta",
     "Rice bowl",
@@ -276,6 +317,8 @@
     authMode: "signin",
     servings: 2,
     previewMode: "web",
+    scanDrafts: [],
+    scanSource: "",
     items: [],
     shopping: [],
     containers: [],
@@ -306,6 +349,131 @@
     const rounded = Math.round(value * 100) / 100;
     if (Number.isInteger(rounded)) return String(rounded);
     return String(rounded).replace(/\.?0+$/, "");
+  }
+
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, (char) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    })[char]);
+  }
+
+  function catalogRecord(name) {
+    return scanCatalog.find(([itemName]) => itemName.toLowerCase() === name.toLowerCase()) || scanCatalog[0];
+  }
+
+  function draftFromName(name, locationOverride = "") {
+    const [itemName, location, category, unit, quantity, price, expiryDays] = catalogRecord(name);
+    const scanLocation = locationOverride || location;
+    return {
+      id: uid(),
+      selected: true,
+      name: itemName,
+      quantity,
+      unit,
+      location: scanLocation,
+      category,
+      section: category,
+      price,
+      expiryDate: isoDay(expiryDays),
+      notes: "Added from kitchen scan"
+    };
+  }
+
+  function findCatalogNames(text) {
+    const haystack = text.toLowerCase();
+    return [...new Set(scanCatalog
+      .map(([name]) => name)
+      .filter((name) => haystack.includes(name.toLowerCase()) || haystack.includes(name.toLowerCase().replace(/\s+/g, ""))))];
+  }
+
+  function buildScanDrafts(type, location, fileName, extractedText = "") {
+    const matched = findCatalogNames(`${fileName} ${extractedText}`);
+    const fallbackKey = type === "kitchen" ? location : type;
+    const names = matched.length ? matched : (scanDefaults[fallbackKey] || scanDefaults.receipt);
+    return names.slice(0, 10).map((name) => draftFromName(name, type === "kitchen" ? location : ""));
+  }
+
+  function renderScanDrafts() {
+    const list = $("#scanReviewList");
+    $("#scanDraftTitle").textContent = state.scanDrafts.length
+      ? `${state.scanDrafts.length} suggested item${state.scanDrafts.length === 1 ? "" : "s"} from ${state.scanSource}`
+      : "Waiting for scan";
+    list.innerHTML = state.scanDrafts.map((draft) => `
+      <article class="scan-row" data-scan-row="${draft.id}">
+        <input type="checkbox" ${draft.selected ? "checked" : ""} data-scan-field="selected" aria-label="Use ${draft.name}" />
+        <label>Item<input value="${escapeHtml(draft.name)}" data-scan-field="name" /></label>
+        <label>Qty<input type="number" min="0" step="0.1" value="${draft.quantity}" data-scan-field="quantity" /></label>
+        <label>Unit<input value="${escapeHtml(draft.unit)}" data-scan-field="unit" /></label>
+        <label>Location<select data-scan-field="location">${storageAreas.map((area) => `<option value="${area.id}" ${area.id === draft.location ? "selected" : ""}>${area.name}</option>`).join("")}</select></label>
+      </article>
+    `).join("") || `<article class="scan-row"><strong>No suggestions yet</strong><span>Upload a photo, receipt image, or PDF invoice first.</span></article>`;
+  }
+
+  function syncScanDraftFromInput(input) {
+    const row = input.closest("[data-scan-row]");
+    if (!row) return;
+    const draft = state.scanDrafts.find((item) => item.id === row.dataset.scanRow);
+    if (!draft) return;
+    const field = input.dataset.scanField;
+    draft[field] = field === "selected" ? input.checked : field === "quantity" ? Number(input.value || 0) : input.value;
+  }
+
+  async function readPdfText(file) {
+    const buffer = await file.arrayBuffer();
+    return new TextDecoder("latin1").decode(buffer).replace(/[^\x20-\x7E]+/g, " ");
+  }
+
+  async function handleScanFile(file, source) {
+    if (!file) return;
+    const isPdf = file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
+    const type = source === "document" ? $("#documentTypeSelect").value : "kitchen";
+    const location = $("#scanLocationSelect").value || state.selectedStorage;
+    let extractedText = "";
+    let preview = `<strong>${escapeHtml(file.name)}</strong><p>${isPdf ? "PDF invoice loaded for text matching." : "Image loaded for scan review."}</p>`;
+
+    if (isPdf) {
+      extractedText = await readPdfText(file);
+    } else {
+      const dataUrl = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.readAsDataURL(file);
+      });
+      preview = `<img src="${dataUrl}" alt="Scan preview" /><strong>${escapeHtml(file.name)}</strong><p>Review the suggested items below before saving.</p>`;
+    }
+
+    state.scanSource = type === "kitchen" ? areaById(location).name : type === "invoice" ? "PDF invoice" : "receipt image";
+    state.scanDrafts = buildScanDrafts(type, location, file.name, extractedText);
+    $("#scanPreview").innerHTML = preview;
+    renderScanDrafts();
+  }
+
+  async function addScanDraftsToInventory() {
+    const selected = state.scanDrafts.filter((draft) => draft.selected && draft.name.trim());
+    await Promise.all(selected.map((draft) => dbPut("groceries", {
+      id: uid(),
+      userEmail: state.user.email,
+      name: draft.name.trim(),
+      category: draft.category || "Scanned",
+      quantity: Number(draft.quantity || 1),
+      unit: draft.unit || "item",
+      location: draft.location || state.selectedStorage,
+      section: draft.section || draft.category || "Scanned",
+      expiryDate: draft.expiryDate || isoDay(14),
+      purchaseDate: isoDay(0),
+      price: Number(draft.price || 0),
+      status: "Good",
+      notes: draft.notes,
+      barcode: "",
+      image: ""
+    })));
+    await loadUserData();
+    if (selected[0]) state.selectedStorage = selected[0].location;
+    render();
   }
 
   function openDB() {
@@ -1043,6 +1211,46 @@
       closeDialog($("#authDialog"));
       return;
     }
+    if (button.matches("[data-open-scan]")) {
+      state.scanDrafts = [];
+      state.scanSource = "";
+      $("#scanPreview").innerHTML = "<strong>No scan selected yet.</strong><p>Choose a photo, receipt, or PDF invoice to generate a review list.</p>";
+      renderScanDrafts();
+      openDialog($("#scanDialog"));
+      return;
+    }
+    if (button.matches("[data-close-scan]")) {
+      closeDialog($("#scanDialog"));
+      return;
+    }
+    if (button.matches("[data-clear-scan]")) {
+      state.scanDrafts = [];
+      state.scanSource = "";
+      $("#kitchenPhotoInput").value = "";
+      $("#receiptFileInput").value = "";
+      $("#scanPreview").innerHTML = "<strong>No scan selected yet.</strong><p>Choose a photo, receipt, or PDF invoice to generate a review list.</p>";
+      renderScanDrafts();
+      return;
+    }
+    if (button.matches("[data-confirm-scan]")) {
+      await addScanDraftsToInventory();
+      closeDialog($("#scanDialog"));
+      return;
+    }
+    if (button.matches("[data-scan-to-shopping]")) {
+      const selected = state.scanDrafts.filter((draft) => draft.selected && draft.name.trim());
+      await Promise.all(selected.map((draft) => addShoppingItem({
+        name: draft.name.trim(),
+        quantity: `${draft.quantity || 1} ${draft.unit || "item"}`,
+        reason: `From ${state.scanSource || "scan"}`,
+        priority: "medium",
+        estimatedPrice: draft.price || 20
+      })));
+      await loadUserData();
+      closeDialog($("#scanDialog"));
+      setView("shopping");
+      return;
+    }
     if (button.dataset.authMode) {
       setAuthMode(button.dataset.authMode);
       return;
@@ -1212,6 +1420,14 @@
   }
 
   async function handleChange(event) {
+    if (event.target.matches("[data-scan-file]")) {
+      await handleScanFile(event.target.files?.[0], event.target.dataset.scanFile);
+      return;
+    }
+    if (event.target.matches("[data-scan-field]")) {
+      syncScanDraftFromInput(event.target);
+      return;
+    }
     if (event.target.id === "servingSelect") {
       state.servings = Number(event.target.value || 2);
       renderRecipeSpotlight();
@@ -1239,6 +1455,10 @@
     state.db = await openDB();
     const locationSelect = $("#locationSelect");
     locationSelect.innerHTML = storageAreas.map((area) => `<option value="${area.id}">${area.name}</option>`).join("");
+    $("#scanLocationSelect").innerHTML = storageAreas
+      .filter((area) => area.id !== "cleaning")
+      .map((area) => `<option value="${area.id}">${area.name}</option>`)
+      .join("");
 
     const session = await dbGet("sessions", SESSION_KEY);
     let user = session?.email ? await dbGet("users", session.email) : null;
