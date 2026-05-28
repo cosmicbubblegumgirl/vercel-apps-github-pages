@@ -361,6 +361,149 @@
     })[char]);
   }
 
+  const recipeImageCache = new Map();
+
+  function hashString(value) {
+    let hash = 0;
+    for (let index = 0; index < value.length; index += 1) {
+      hash = ((hash << 5) - hash) + value.charCodeAt(index);
+      hash |= 0;
+    }
+    return Math.abs(hash);
+  }
+
+  function recipeTheme(recipe) {
+    const title = recipe.title.toLowerCase();
+    const tags = recipe.tags.join(" ");
+    if (title.includes("tuna")) return "tuna-pasta";
+    if (title.includes("garlic chicken") || title.includes("chicken") && title.includes("pasta")) return "creamy-chicken";
+    if (title.includes("chicken") && title.includes("wrap")) return "wraps";
+    if (title.includes("chicken") && title.includes("soup")) return "soup";
+    if (title.includes("chicken")) return "chicken-rice";
+    if (title.includes("pizza")) return "pizza";
+    if (title.includes("pancake")) return "pancakes";
+    if (title.includes("potato")) return "potato";
+    if (title.includes("shakshuka")) return "shakshuka";
+    if (title.includes("fried rice") || tags.includes("rice bowl")) return "fried-rice";
+    if (title.includes("curry")) return "curry";
+    if (title.includes("noodle")) return "noodles";
+    if (title.includes("omelette")) return "omelette";
+    if (title.includes("soup") || title.includes("stew") || title.includes("minestrone")) return "soup";
+    if (title.includes("quesadilla") || title.includes("wrap")) return "wraps";
+    if (title.includes("oats")) return "oats";
+    if (title.includes("pasta") || title.includes("bolognese")) return "pasta";
+    return "pantry-bowl";
+  }
+
+  function garnish(seed) {
+    const leaves = [
+      [622, 146, -18], [682, 188, 22], [600, 248, 12], [720, 264, -28],
+      [242, 138, 18], [192, 236, -14], [286, 300, 28]
+    ];
+    return leaves.map(([x, y, rotation], index) => {
+      const offset = ((seed + index * 17) % 16) - 8;
+      return `<ellipse cx="${x + offset}" cy="${y - offset}" rx="20" ry="8" fill="#2f8a5f" transform="rotate(${rotation} ${x} ${y})"/>`;
+    }).join("");
+  }
+
+  function dishMarkup(theme, seed) {
+    const tomato = `<circle cx="312" cy="190" r="22" fill="#d94b38"/><circle cx="564" cy="238" r="18" fill="#d94b38"/><circle cx="452" cy="314" r="20" fill="#f05f45"/>`;
+    const herbs = garnish(seed);
+    const pasta = `
+      <g fill="none" stroke="#f3cf77" stroke-width="20" stroke-linecap="round">
+        <path d="M246 244c70-72 156 54 230-18 56-54 110-16 170 26"/>
+        <path d="M250 300c86-50 150 34 228-24 66-48 126-6 178 34"/>
+        <path d="M300 188c70 38 134 28 198-12 70-44 124 8 168 42"/>
+      </g>`;
+    const chicken = `
+      <g fill="#f2c08a" stroke="#a65d35" stroke-width="6" stroke-linecap="round">
+        <path d="M388 194c50-34 126-18 154 34-22 36-106 42-156 8-20-14-18-30 2-42z"/>
+        <path d="M472 286c54-30 118-8 144 38-30 30-106 34-148 2-18-14-16-30 4-40z"/>
+        <path d="M298 272c42-28 100-14 126 28-24 28-88 32-122 6-18-12-18-24-4-34z"/>
+      </g>`;
+    const rice = `
+      <g fill="#fff7df">
+        ${Array.from({ length: 34 }, (_, index) => {
+          const x = 250 + ((index * 47 + seed) % 330);
+          const y = 172 + ((index * 31 + seed) % 160);
+          return `<ellipse cx="${x}" cy="${y}" rx="13" ry="5" transform="rotate(${(index * 23) % 180} ${x} ${y})"/>`;
+        }).join("")}
+      </g>`;
+    const curry = `<ellipse cx="450" cy="250" rx="260" ry="112" fill="#dd8b2f"/><ellipse cx="450" cy="236" rx="230" ry="82" fill="#f1b24d"/><circle cx="342" cy="232" r="24" fill="#f7d37b"/><circle cx="456" cy="274" r="20" fill="#8f5b2c"/><circle cx="548" cy="226" r="24" fill="#fff7df"/>`;
+    const soup = `<ellipse cx="450" cy="248" rx="270" ry="118" fill="#c9503f"/><ellipse cx="450" cy="230" rx="238" ry="82" fill="#e86c45"/><circle cx="360" cy="232" r="18" fill="#f3cf77"/><circle cx="512" cy="260" r="22" fill="#fff7df"/><circle cx="592" cy="220" r="14" fill="#2f8a5f"/>`;
+    const eggs = `<ellipse cx="380" cy="238" rx="58" ry="42" fill="#fffaf0"/><circle cx="386" cy="240" r="18" fill="#e0a529"/><ellipse cx="510" cy="250" rx="62" ry="44" fill="#fffaf0"/><circle cx="504" cy="248" r="18" fill="#e0a529"/>`;
+    const wraps = `<path d="M268 178h340l-78 174H340z" fill="#f0c06a"/><path d="M318 208h248l-50 106H366z" fill="#fff7df"/><circle cx="386" cy="248" r="18" fill="#d94b38"/><rect x="424" y="224" width="108" height="22" rx="11" fill="#2f8a5f"/>`;
+    const pizza = `<circle cx="450" cy="250" r="155" fill="#f1b24d"/><circle cx="450" cy="250" r="128" fill="#e2624f"/><g fill="#fff7df"><circle cx="386" cy="202" r="22"/><circle cx="514" cy="224" r="20"/><circle cx="430" cy="314" r="24"/></g><g fill="#2f8a5f"><circle cx="474" cy="184" r="13"/><circle cx="544" cy="298" r="12"/><circle cx="342" cy="282" r="12"/></g>`;
+    const pancakes = `<ellipse cx="450" cy="308" rx="190" ry="58" fill="#c8863d"/><ellipse cx="450" cy="268" rx="174" ry="54" fill="#dfa751"/><ellipse cx="450" cy="232" rx="160" ry="50" fill="#efc06f"/><rect x="418" y="182" width="64" height="42" rx="8" fill="#e0a529"/>`;
+    const potato = `<ellipse cx="382" cy="250" rx="108" ry="76" fill="#b8793e"/><ellipse cx="524" cy="250" rx="108" ry="76" fill="#c48645"/><path d="M324 246c50 36 110 36 164 0" stroke="#fff7df" stroke-width="20" stroke-linecap="round"/><path d="M464 246c50 36 110 36 164 0" stroke="#fff7df" stroke-width="20" stroke-linecap="round"/>`;
+    const oats = `<ellipse cx="450" cy="250" rx="250" ry="112" fill="#ead6ad"/><circle cx="340" cy="232" r="28" fill="#d9a05b"/><circle cx="468" cy="284" r="22" fill="#f3cf77"/><circle cx="566" cy="226" r="26" fill="#fff7df"/>`;
+
+    const themes = {
+      "tuna-pasta": `${pasta}<g fill="#f7d6bd"><path d="M348 220l54 22-40 32-60-18z"/><path d="M536 258l58 20-36 34-62-16z"/></g>${tomato}${herbs}`,
+      "creamy-chicken": `<ellipse cx="450" cy="250" rx="262" ry="116" fill="#fff4cf"/>${pasta}${chicken}${herbs}`,
+      "chicken-rice": `${rice}${chicken}<circle cx="342" cy="292" r="18" fill="#d94b38"/>${herbs}`,
+      "fried-rice": `${rice}<rect x="330" y="214" width="60" height="28" rx="10" fill="#e0a529"/><circle cx="512" cy="236" r="20" fill="#2f8a5f"/>${eggs}${herbs}`,
+      curry,
+      soup,
+      shakshuka: `<ellipse cx="450" cy="250" rx="252" ry="112" fill="#b84034"/><ellipse cx="450" cy="234" rx="222" ry="80" fill="#e2624f"/>${eggs}${herbs}`,
+      noodles: `<g fill="none" stroke="#f3cf77" stroke-width="18" stroke-linecap="round">${Array.from({ length: 7 }, (_, index) => `<path d="M${250 + index * 38} ${210 + (index % 2) * 28}c54-42 92 48 148 2s96-26 144 18"/>`).join("")}</g><circle cx="346" cy="286" r="18" fill="#d94b38"/>${herbs}`,
+      wraps,
+      pizza,
+      pancakes,
+      potato,
+      omelette: `<ellipse cx="450" cy="250" rx="240" ry="104" fill="#e0a529"/><ellipse cx="450" cy="232" rx="206" ry="70" fill="#f3cf77"/>${herbs}<circle cx="540" cy="264" r="18" fill="#fff7df"/>`,
+      oats,
+      pasta: `${pasta}${tomato}${herbs}`,
+      "pantry-bowl": `${rice}${tomato}${herbs}<circle cx="506" cy="250" r="24" fill="#f3cf77"/>`
+    };
+    return themes[theme] || themes["pantry-bowl"];
+  }
+
+  function recipeImageSrc(recipe) {
+    if (recipeImageCache.has(recipe.id)) return recipeImageCache.get(recipe.id);
+    const seed = hashString(recipe.title);
+    const bg = [
+      ["#704324", "#d8a15e"],
+      ["#533b2f", "#bf8f54"],
+      ["#213f35", "#7ca86a"],
+      ["#402f3d", "#b57562"]
+    ][seed % 4];
+    const theme = recipeTheme(recipe);
+    const id = `dish${seed}`;
+    const svg = `
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" role="img" aria-label="${escapeHtml(recipe.title)}">
+        <defs>
+          <linearGradient id="${id}-table" x1="0" x2="1" y1="0" y2="1">
+            <stop stop-color="${bg[0]}"/>
+            <stop offset="1" stop-color="${bg[1]}"/>
+          </linearGradient>
+          <radialGradient id="${id}-shine" cx="36%" cy="24%" r="48%">
+            <stop stop-color="#ffffff" stop-opacity="0.52"/>
+            <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+          </radialGradient>
+          <filter id="${id}-shadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#120c08" flood-opacity="0.28"/>
+          </filter>
+        </defs>
+        <rect width="900" height="520" fill="url(#${id}-table)"/>
+        <g opacity="0.14" fill="#fff7df">
+          <rect x="0" y="82" width="900" height="7"/>
+          <rect x="0" y="262" width="900" height="6"/>
+          <rect x="0" y="410" width="900" height="8"/>
+        </g>
+        <circle cx="210" cy="120" r="86" fill="url(#${id}-shine)"/>
+        <g filter="url(#${id}-shadow)">
+          <ellipse cx="450" cy="284" rx="330" ry="150" fill="#f8f2df"/>
+          <ellipse cx="450" cy="254" rx="292" ry="126" fill="#e8dfc8"/>
+          ${dishMarkup(theme, seed)}
+        </g>
+      </svg>
+    `.replace(/\s+/g, " ").trim();
+    const src = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+    recipeImageCache.set(recipe.id, src);
+    return src;
+  }
+
   function catalogRecord(name) {
     return scanCatalog.find(([itemName]) => itemName.toLowerCase() === name.toLowerCase()) || scanCatalog[0];
   }
@@ -848,6 +991,7 @@
         <h2>${best.recipe.title}</h2>
         <p>Scaled for ${state.servings} ${state.servings === 1 ? "person" : "people"} at ${currency.format(scaledCost(best.recipe))} total. Uses ${best.status.owned.slice(0, 4).join(", ") || "your pantry"}${best.status.missing.length ? `. Need to buy: ${best.status.missing.join(", ")}.` : ". No shopping needed."}</p>
       </div>
+      <img class="spotlight-photo" src="${recipeImageSrc(best.recipe)}" alt="${escapeHtml(best.recipe.title)}" />
       <button class="primary-action" type="button" data-cook-recipe="${best.recipe.id}">Cook now</button>
     `;
   }
@@ -864,7 +1008,7 @@
 
     $("#recipeGrid").innerHTML = filtered.map(({ recipe, status }) => `
       <article class="recipe-card">
-        <div class="recipe-art" aria-hidden="true"></div>
+        <img class="recipe-photo" src="${recipeImageSrc(recipe)}" alt="${escapeHtml(recipe.title)}" loading="lazy" />
         <header>
           <div>
             <strong>${recipe.title}</strong>
