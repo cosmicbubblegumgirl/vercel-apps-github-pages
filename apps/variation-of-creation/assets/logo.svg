@@ -1,26 +1,35 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 190" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 790 190" role="img" aria-labelledby="title desc">
   <title id="title">Variation of Creation logo</title>
-  <desc id="desc">Variation of Creation wordmark with a layered geometric art mark.</desc>
+  <desc id="desc">A quirky whimsical wordmark with a tilted creation badge and colorful handmade strokes.</desc>
   <defs>
-    <linearGradient id="voc-mark" x1="30" y1="24" x2="158" y2="162" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#10a398"/>
-      <stop offset=".48" stop-color="#ec6f42"/>
-      <stop offset="1" stop-color="#7156d9"/>
+    <linearGradient id="logo-paper" x1="28" y1="22" x2="166" y2="166" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fff8e8"/>
+      <stop offset=".55" stop-color="#effaf6"/>
+      <stop offset="1" stop-color="#f8ecff"/>
     </linearGradient>
-    <linearGradient id="voc-soft" x1="22" y1="18" x2="176" y2="174" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#fff8ed"/>
-      <stop offset=".5" stop-color="#f4fbf7"/>
-      <stop offset="1" stop-color="#f7eefc"/>
+    <linearGradient id="logo-pop" x1="49" y1="43" x2="154" y2="150" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#08a79b"/>
+      <stop offset=".45" stop-color="#ff7548"/>
+      <stop offset="1" stop-color="#7a5cff"/>
     </linearGradient>
   </defs>
-  <rect x="5" y="5" width="178" height="178" rx="38" fill="#131718"/>
-  <rect x="20" y="20" width="148" height="148" rx="30" fill="url(#voc-soft)"/>
-  <path d="M94 39 145 69v56l-51 30-51-30V69l51-30Z" fill="none" stroke="#131718" stroke-width="8" stroke-linejoin="round"/>
-  <path d="M94 55c19 0 34 16 34 35 0 30-34 58-34 58S60 120 60 90c0-19 15-35 34-35Z" fill="url(#voc-mark)"/>
-  <circle cx="94" cy="90" r="16" fill="#fff8ed"/>
-  <path d="M55 129c19-5 35-4 48 4 10 5 20 5 32 1" fill="none" stroke="#131718" stroke-width="7" stroke-linecap="round"/>
-  <text x="216" y="82" fill="#131718" font-family="Inter, Arial, sans-serif" font-size="48" font-weight="800">Variation</text>
-  <text x="216" y="136" fill="#131718" font-family="Inter, Arial, sans-serif" font-size="48" font-weight="800">of Creation</text>
-  <path d="M217 154h412" stroke="#ec6f42" stroke-width="9" stroke-linecap="round"/>
-  <path d="M646 154h76" stroke="#10a398" stroke-width="9" stroke-linecap="round"/>
+
+  <g transform="rotate(-4 96 95)">
+    <rect x="8" y="8" width="174" height="174" rx="38" fill="#101515"/>
+    <rect x="23" y="23" width="144" height="144" rx="30" fill="url(#logo-paper)"/>
+    <path d="M50 68c17-17 82-20 105 0 10 9 10 30 3 41-12 16-13 35-5 54-25 11-79 15-106-2 9-20 8-36-3-52-8-12-6-31 6-41Z" fill="#fffdf8" stroke="#101515" stroke-width="7" stroke-linejoin="round"/>
+    <path d="M67 109c7-28 26-42 45-40 23 2 34 21 27 38 15 4 23 15 18 28-6 15-25 15-38 8-9 15-27 19-42 9-15-10-14-30-10-43Z" fill="url(#logo-pop)" stroke="#101515" stroke-width="6" stroke-linejoin="round"/>
+    <circle cx="108" cy="112" r="19" fill="#fff8e8" stroke="#101515" stroke-width="6"/>
+    <path d="M99 112c4 6 14 6 18 0" fill="none" stroke="#101515" stroke-width="4.5" stroke-linecap="round"/>
+    <circle cx="102" cy="105" r="3" fill="#101515"/>
+    <circle cx="116" cy="105" r="3" fill="#101515"/>
+    <path d="M58 80 67 84 76 80 72 90 76 99 67 95 58 99 62 90Z" fill="#ffd33d" stroke="#101515" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M138 58 145 71 158 74 148 83 150 97 138 90 126 97 128 83 118 74 132 71Z" fill="#08a79b" stroke="#101515" stroke-width="4" stroke-linejoin="round"/>
+  </g>
+
+  <text x="218" y="76" fill="#101515" font-family="Trebuchet MS, Inter, Arial, sans-serif" font-size="47" font-weight="800">Variation</text>
+  <text x="218" y="130" fill="#101515" font-family="Trebuchet MS, Inter, Arial, sans-serif" font-size="47" font-weight="800">of Creation</text>
+  <path d="M220 151c58 8 122 7 188-2 55-8 109-7 162 4" fill="none" stroke="#ff7548" stroke-width="9" stroke-linecap="round"/>
+  <path d="M598 151c30-6 58-6 84 0" fill="none" stroke="#08a79b" stroke-width="9" stroke-linecap="round"/>
+  <path d="M704 64 713 81 731 85 717 97 720 116 704 106 688 116 691 97 677 85 695 81Z" fill="#ffd33d" stroke="#101515" stroke-width="5" stroke-linejoin="round"/>
 </svg>

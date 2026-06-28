@@ -1,18 +1,22 @@
 :root {
   color-scheme: light;
-  --bg: #fbf7ef;
-  --bg-2: #eef7f1;
-  --ink: #131718;
-  --muted: #5e6863;
-  --panel: #fffdf8;
-  --line: #d8ddd4;
-  --teal: #0f9b91;
-  --coral: #df633e;
-  --violet: #6954c9;
-  --gold: #c78a23;
+  --bg: #f8f4ec;
+  --bg-2: #eaf5ef;
+  --ink: #101515;
+  --muted: #5c6762;
+  --panel: #fffefa;
+  --surface: #f6f2ea;
+  --line: #ccd5cf;
+  --teal: #08a79b;
+  --coral: #f06d43;
+  --violet: #7056d8;
+  --gold: #c89424;
   --leaf: #557a3a;
   --danger: #a93434;
-  --shadow: 0 18px 55px rgba(19, 23, 24, 0.12);
+  --active-bg: #101515;
+  --active-ink: #fffdf8;
+  --shadow: 0 16px 42px rgba(16, 21, 21, 0.1);
+  --shadow-tight: 0 8px 22px rgba(16, 21, 21, 0.1);
 }
 
 html[data-theme="dark"] {
@@ -21,9 +25,13 @@ html[data-theme="dark"] {
   --bg-2: #1d241f;
   --ink: #f9f4ea;
   --muted: #b9c4be;
-  --panel: #191d1c;
+  --panel: #181d1b;
+  --surface: #202824;
   --line: #33403a;
+  --active-bg: #fffdf8;
+  --active-ink: #101515;
   --shadow: 0 18px 55px rgba(0, 0, 0, 0.34);
+  --shadow-tight: 0 10px 26px rgba(0, 0, 0, 0.28);
 }
 
 * {
@@ -35,7 +43,7 @@ body {
   margin: 0;
   color: var(--ink);
   background:
-    linear-gradient(135deg, var(--bg) 0%, var(--bg-2) 48%, #f8eef7 100%);
+    linear-gradient(135deg, var(--bg) 0%, var(--bg-2) 52%, #f5edf8 100%);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
@@ -79,10 +87,23 @@ button {
   grid-template-columns: auto minmax(0, 1fr) auto;
   gap: 18px;
   align-items: center;
-  padding: 14px clamp(14px, 3vw, 30px);
+  padding: 12px clamp(14px, 3vw, 30px);
   border-bottom: 1px solid var(--line);
-  background: color-mix(in srgb, var(--panel) 88%, transparent);
-  backdrop-filter: blur(16px);
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--panel) 92%, transparent), color-mix(in srgb, var(--surface) 88%, transparent));
+  backdrop-filter: blur(18px);
+  box-shadow: 0 8px 24px rgba(16, 21, 21, 0.06);
+}
+
+.site-header::after {
+  position: absolute;
+  right: clamp(14px, 3vw, 30px);
+  bottom: -1px;
+  left: clamp(14px, 3vw, 30px);
+  height: 2px;
+  content: "";
+  background: linear-gradient(90deg, var(--teal), var(--coral), var(--violet));
+  opacity: 0.58;
 }
 
 .brand {
@@ -93,7 +114,7 @@ button {
 
 .brand img {
   display: block;
-  width: min(286px, 42vw);
+  width: min(270px, 42vw);
   height: auto;
 }
 
@@ -120,9 +141,10 @@ button {
   border: 1px solid var(--line);
   border-radius: 8px;
   color: var(--ink);
-  background: var(--panel);
+  background: color-mix(in srgb, var(--panel) 92%, transparent);
   text-decoration: none;
-  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset;
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease, color 160ms ease, box-shadow 160ms ease;
 }
 
 .nav-links a {
@@ -162,8 +184,10 @@ button {
 .mode-button.active,
 .segmented button.active {
   transform: translateY(-1px);
-  border-color: color-mix(in srgb, var(--teal) 60%, var(--line));
-  background: color-mix(in srgb, var(--teal) 13%, var(--panel));
+  border-color: var(--active-bg);
+  color: var(--active-ink);
+  background: var(--active-bg);
+  box-shadow: var(--shadow-tight);
 }
 
 .theme-switch {
@@ -205,7 +229,8 @@ main {
 .empty-gallery {
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: color-mix(in srgb, var(--panel) 94%, transparent);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--panel) 98%, transparent), color-mix(in srgb, var(--surface) 64%, transparent));
   box-shadow: var(--shadow);
 }
 
@@ -346,7 +371,7 @@ html[data-theme="dark"] .button.primary {
 .canvas-stage {
   min-width: 0;
   overflow: hidden;
-  padding: clamp(12px, 2vw, 20px);
+  padding: clamp(12px, 2vw, 18px);
 }
 
 .stage-toolbar,
@@ -368,7 +393,7 @@ html[data-theme="dark"] .button.primary {
   border-radius: 999px;
   padding: 0 12px;
   color: var(--muted);
-  background: color-mix(in srgb, var(--gold) 10%, var(--panel));
+  background: color-mix(in srgb, var(--gold) 12%, var(--panel));
   font-size: 0.78rem;
   font-weight: 850;
   white-space: nowrap;
@@ -381,6 +406,7 @@ canvas {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: #fffdf8;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset, 0 12px 28px rgba(16, 21, 21, 0.07);
 }
 
 .logo-stage canvas,
@@ -434,7 +460,7 @@ canvas {
   border-radius: 8px;
   padding: 12px;
   color: var(--ink);
-  background: color-mix(in srgb, var(--violet) 8%, var(--panel));
+  background: color-mix(in srgb, var(--violet) 7%, var(--panel));
   font-weight: 850;
   text-decoration: none;
 }
