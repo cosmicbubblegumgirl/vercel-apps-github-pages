@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Variation of Creation | Art Mixer Studio</title>
+  <meta name="description" content="Variation of Creation is a dynamic art mixer for generating new art, icons, logos, tattoo designs, and comic art.">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="db.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body data-page="studio">
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="Variation of Creation home">
+      <img src="assets/logo.svg" alt="Variation of Creation">
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="index.html" data-nav="studio">Studio</a>
+      <a href="logos.html" data-nav="logos">Logos</a>
+      <a href="tattoos.html" data-nav="tattoos">Tattoos</a>
+      <a href="comics.html" data-nav="comics">Comics</a>
+      <a href="gallery.html" data-nav="gallery">Gallery</a>
+    </nav>
+    <div class="header-actions">
+      <a class="auth-link" href="login.html" data-auth-link>Login</a>
+      <button class="theme-switch" type="button" data-theme-toggle>Dark</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="workspace hero-workspace">
+      <aside class="tool-panel" aria-label="Remix controls">
+        <p class="eyebrow">Art Mixer</p>
+        <h1>Variation of Creation</h1>
+        <p class="lede">Layer colors, symbols, motion, and type into fresh visual directions.</p>
+
+        <div class="mode-grid" data-mode-group="studioKind">
+          <button class="mode-button active" type="button" data-value="art">Art</button>
+          <button class="mode-button" type="button" data-value="icon">Icon</button>
+          <button class="mode-button" type="button" data-value="logo">Logo</button>
+          <button class="mode-button" type="button" data-value="tattoo">Tattoo</button>
+          <button class="mode-button" type="button" data-value="comic">Comic</button>
+        </div>
+
+        <label>Palette
+          <select id="studioPalette">
+            <option value="auroraInk">Aurora Ink</option>
+            <option value="citrusCircuit">Citrus Circuit</option>
+            <option value="velvetSignal">Velvet Signal</option>
+            <option value="mossFlame">Moss Flame</option>
+            <option value="monoStencil">Mono Stencil</option>
+          </select>
+        </label>
+
+        <label>Base form
+          <select id="studioBase">
+            <option value="orbital">Orbital</option>
+            <option value="botanical">Botanical</option>
+            <option value="crystal">Crystal</option>
+            <option value="signal">Signal</option>
+            <option value="mask">Mask</option>
+          </select>
+        </label>
+
+        <label>Motif
+          <select id="studioMotif">
+            <option value="stars">Stars</option>
+            <option value="ribbons">Ribbons</option>
+            <option value="glyphs">Glyphs</option>
+            <option value="petals">Petals</option>
+            <option value="sparks">Sparks</option>
+          </select>
+        </label>
+
+        <label>Signature text
+          <input id="studioText" type="text" value="Create the variation">
+        </label>
+
+        <label>Complexity <span data-output="studioComplexity">6</span>
+          <input id="studioComplexity" type="range" min="1" max="10" value="6">
+        </label>
+
+        <label>Symmetry <span data-output="studioSymmetry">5</span>
+          <input id="studioSymmetry" type="range" min="1" max="10" value="5">
+        </label>
+
+        <div class="action-grid">
+          <button class="button primary" type="button" data-action="shuffle-studio">Shuffle</button>
+          <button class="button" type="button" data-action="save-studio">Save</button>
+          <button class="button" type="button" data-action="download-studio">PNG</button>
+          <button class="button" type="button" data-action="copy-studio">Prompt</button>
+        </div>
+      </aside>
+
+      <section class="canvas-stage" aria-label="Live generated art preview">
+        <div class="stage-toolbar">
+          <div>
+            <p class="eyebrow">Live Canvas</p>
+            <h2 id="studioTitle">Remix 001</h2>
+          </div>
+          <span id="studioStatus" class="status-pill">ready</span>
+        </div>
+        <canvas id="studioCanvas" width="1080" height="1080" aria-label="Generated artwork preview"></canvas>
+      </section>
+
+      <aside class="recipe-panel" aria-label="Generated recipe">
+        <h2>Current Recipe</h2>
+        <div id="studioRecipe" class="recipe-list"></div>
+        <div class="mini-links">
+          <a href="logos.html">Logo lab</a>
+          <a href="tattoos.html">Tattoo forge</a>
+          <a href="comics.html">Comic lab</a>
+          <a href="gallery.html">Saved works</a>
+        </div>
+      </aside>
+    </section>
+
+    <section class="feature-strip" aria-label="Creative formats">
+      <a href="logos.html">
+        <strong>Icons and Logos</strong>
+        <span>Shape badges, monograms, marks, and app icons from the same remix engine.</span>
+      </a>
+      <a href="tattoos.html">
+        <strong>Tattoo Designs</strong>
+        <span>Generate crisp stencil-ready line art with symbolic structure and flow.</span>
+      </a>
+      <a href="comics.html">
+        <strong>Comic Art</strong>
+        <span>Build panels, captions, character silhouettes, and expressive page layouts.</span>
+      </a>
+    </section>
+
+    <section class="seed-section" aria-label="Free-to-use seed CSV ideas">
+      <div class="section-heading">
+        <p class="eyebrow">CSV Vibe Pack</p>
+        <h2>Start with a free-to-use seed.</h2>
+      </div>
+      <div id="seedDeck" class="seed-grid" data-seed-kind="all"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><strong>a quantum cupcake creation</strong></footer>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tattoo Forge | Variation of Creation</title>
+  <meta name="description" content="Generate sleek line art tattoo concepts with symbolic motifs and stencil-style previews.">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="db.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body data-page="tattoos">
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="Variation of Creation home">
+      <img src="assets/logo.svg" alt="Variation of Creation">
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="index.html" data-nav="studio">Studio</a>
+      <a href="logos.html" data-nav="logos">Logos</a>
+      <a href="tattoos.html" data-nav="tattoos">Tattoos</a>
+      <a href="comics.html" data-nav="comics">Comics</a>
+      <a href="gallery.html" data-nav="gallery">Gallery</a>
+    </nav>
+    <div class="header-actions">
+      <a class="auth-link" href="login.html" data-auth-link>Login</a>
+      <button class="theme-switch" type="button" data-theme-toggle>Dark</button>
+    </div>
+  </header>
+
+  <main class="page-grid">
+    <section class="page-intro">
+      <p class="eyebrow">Tattoo Forge</p>
+      <h1>Shape symbolic line art and stencil-ready concepts.</h1>
+    </section>
+
+    <section class="workspace split-workspace">
+      <aside class="tool-panel" aria-label="Tattoo controls">
+        <label>Motif
+          <select id="tattooMotif">
+            <option value="botanical">Botanical</option>
+            <option value="celestial">Celestial</option>
+            <option value="mythic">Mythic</option>
+            <option value="geometric">Geometric</option>
+            <option value="wave">Wave</option>
+          </select>
+        </label>
+        <label>Placement
+          <select id="tattooPlacement">
+            <option value="forearm">Forearm</option>
+            <option value="shoulder">Shoulder</option>
+            <option value="spine">Spine</option>
+            <option value="ankle">Ankle</option>
+            <option value="sternum">Sternum</option>
+          </select>
+        </label>
+        <label>Flow
+          <select id="tattooFlow">
+            <option value="vertical">Vertical</option>
+            <option value="spiral">Spiral</option>
+            <option value="crescent">Crescent</option>
+            <option value="band">Band</option>
+            <option value="crest">Crest</option>
+          </select>
+        </label>
+        <label>Line weight <span data-output="tattooWeight">5</span>
+          <input id="tattooWeight" type="range" min="1" max="10" value="5">
+        </label>
+        <label>Detail <span data-output="tattooDetail">6</span>
+          <input id="tattooDetail" type="range" min="1" max="10" value="6">
+        </label>
+        <label>Accent ink
+          <select id="tattooAccent">
+            <option value="black">Black</option>
+            <option value="red">Red</option>
+            <option value="teal">Teal</option>
+            <option value="violet">Violet</option>
+          </select>
+        </label>
+        <div class="action-grid">
+          <button class="button primary" type="button" data-action="shuffle-tattoo">Shuffle</button>
+          <button class="button" type="button" data-action="save-tattoo">Save</button>
+          <button class="button" type="button" data-action="download-tattoo">PNG</button>
+        </div>
+      </aside>
+
+      <section class="canvas-stage tattoo-stage" aria-label="Tattoo preview">
+        <div class="stage-toolbar">
+          <div>
+            <p class="eyebrow">Stencil Preview</p>
+            <h2 id="tattooTitle">Botanical Forearm</h2>
+          </div>
+          <span class="status-pill">line art</span>
+        </div>
+        <canvas id="tattooCanvas" width="900" height="1280" aria-label="Generated tattoo preview"></canvas>
+      </section>
+    </section>
+
+    <section class="feature-strip compact" aria-label="Tattoo notes">
+      <article>
+        <strong>Symbol Stack</strong>
+        <span>Layer motifs like petals, moons, waves, crests, and glyph paths.</span>
+      </article>
+      <article>
+        <strong>Placement Flow</strong>
+        <span>Composition bends toward vertical, banded, spiral, or crescent formats.</span>
+      </article>
+      <article>
+        <strong>Stencil Export</strong>
+        <span>PNG output keeps the preview clean for reference and refinement.</span>
+      </article>
+    </section>
+
+    <section class="seed-section" aria-label="Tattoo seed CSV ideas">
+      <div class="section-heading">
+        <p class="eyebrow">CSV Vibe Pack</p>
+        <h2>Tattoo seeds ready to refine.</h2>
+      </div>
+      <div id="seedDeck" class="seed-grid" data-seed-kind="tattoo"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><strong>a quantum cupcake creation</strong></footer>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gallery | Variation of Creation</title>
+  <meta name="description" content="Review saved Variation of Creation artwork from the studio, logo lab, tattoo forge, and comic lab.">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="db.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body data-page="gallery">
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="Variation of Creation home">
+      <img src="assets/logo.svg" alt="Variation of Creation">
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="index.html" data-nav="studio">Studio</a>
+      <a href="logos.html" data-nav="logos">Logos</a>
+      <a href="tattoos.html" data-nav="tattoos">Tattoos</a>
+      <a href="comics.html" data-nav="comics">Comics</a>
+      <a href="gallery.html" data-nav="gallery">Gallery</a>
+    </nav>
+    <div class="header-actions">
+      <a class="auth-link" href="login.html" data-auth-link>Login</a>
+      <button class="theme-switch" type="button" data-theme-toggle>Dark</button>
+    </div>
+  </header>
+
+  <main class="page-grid gallery-page">
+    <section class="page-intro">
+      <p class="eyebrow">Gallery</p>
+      <h1>Saved variations, recipes, and exports.</h1>
+    </section>
+
+    <section class="gallery-toolbar" aria-label="Gallery controls">
+      <div class="segmented" data-gallery-filter>
+        <button class="active" type="button" data-value="all">All</button>
+        <button type="button" data-value="studio">Studio</button>
+        <button type="button" data-value="logo">Logos</button>
+        <button type="button" data-value="tattoo">Tattoos</button>
+        <button type="button" data-value="comic">Comics</button>
+      </div>
+      <div class="gallery-actions">
+        <button class="button" type="button" data-action="export-gallery">Export JSON</button>
+        <button class="button" type="button" data-action="logout">Logout</button>
+        <button class="button danger" type="button" data-action="clear-gallery">Clear</button>
+      </div>
+    </section>
+
+    <section id="galleryGrid" class="gallery-grid" aria-live="polite"></section>
+  </main>
+
+  <footer class="site-footer"><strong>a quantum cupcake creation</strong></footer>
+</body>
+</html>

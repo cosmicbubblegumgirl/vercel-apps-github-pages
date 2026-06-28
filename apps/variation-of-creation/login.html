@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login | Variation of Creation</title>
+  <meta name="description" content="Log in to save Variation of Creation artwork and recipes in your browser-local studio database.">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="db.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body data-page="login">
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="Variation of Creation home">
+      <img src="assets/logo.svg" alt="Variation of Creation">
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="index.html" data-nav="studio">Studio</a>
+      <a href="logos.html" data-nav="logos">Logos</a>
+      <a href="tattoos.html" data-nav="tattoos">Tattoos</a>
+      <a href="comics.html" data-nav="comics">Comics</a>
+      <a href="gallery.html" data-nav="gallery">Gallery</a>
+    </nav>
+    <div class="header-actions">
+      <a class="auth-link active" href="signup.html">Sign up</a>
+      <button class="theme-switch" type="button" data-theme-toggle>Dark</button>
+    </div>
+  </header>
+
+  <main class="auth-shell">
+    <section class="auth-card">
+      <p class="eyebrow">Studio Login</p>
+      <h1>Welcome back.</h1>
+      <p class="lede">Log in to save creations, keep recipes, and export your local studio database.</p>
+      <form class="auth-form" data-auth-form="login">
+        <label>Email
+          <input name="email" type="email" autocomplete="email" required>
+        </label>
+        <label>Password
+          <input name="password" type="password" autocomplete="current-password" required>
+        </label>
+        <button class="button primary" type="submit">Login</button>
+      </form>
+      <p id="authMessage" class="auth-message" aria-live="polite"></p>
+      <a class="auth-alt" href="signup.html">Need an account? Sign up</a>
+    </section>
+  </main>
+
+  <footer class="site-footer"><strong>a quantum cupcake creation</strong></footer>
+</body>
+</html>

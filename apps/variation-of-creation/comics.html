@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Comic Lab | Variation of Creation</title>
+  <meta name="description" content="Create dynamic comic panels, captions, characters, and expressive layouts.">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="db.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body data-page="comics">
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="Variation of Creation home">
+      <img src="assets/logo.svg" alt="Variation of Creation">
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="index.html" data-nav="studio">Studio</a>
+      <a href="logos.html" data-nav="logos">Logos</a>
+      <a href="tattoos.html" data-nav="tattoos">Tattoos</a>
+      <a href="comics.html" data-nav="comics">Comics</a>
+      <a href="gallery.html" data-nav="gallery">Gallery</a>
+    </nav>
+    <div class="header-actions">
+      <a class="auth-link" href="login.html" data-auth-link>Login</a>
+      <button class="theme-switch" type="button" data-theme-toggle>Dark</button>
+    </div>
+  </header>
+
+  <main class="page-grid">
+    <section class="page-intro">
+      <p class="eyebrow">Comic Lab</p>
+      <h1>Build punchy panels with character, caption, and motion.</h1>
+    </section>
+
+    <section class="workspace split-workspace">
+      <aside class="tool-panel" aria-label="Comic controls">
+        <label>Layout
+          <select id="comicLayout">
+            <option value="three">Three panel</option>
+            <option value="splash">Splash panel</option>
+            <option value="grid">Four grid</option>
+            <option value="poster">Poster page</option>
+          </select>
+        </label>
+        <label>Hero name
+          <input id="comicHero" type="text" value="Pixel Nova">
+        </label>
+        <label>Scene mood
+          <select id="comicMood">
+            <option value="neon">Neon chase</option>
+            <option value="mystic">Mystic reveal</option>
+            <option value="cosmic">Cosmic rescue</option>
+            <option value="street">Street spark</option>
+          </select>
+        </label>
+        <label>Caption
+          <input id="comicCaption" type="text" value="The portal answered in color.">
+        </label>
+        <label>Ink energy <span data-output="comicEnergy">7</span>
+          <input id="comicEnergy" type="range" min="1" max="10" value="7">
+        </label>
+        <label>Palette
+          <select id="comicPalette">
+            <option value="citrusCircuit">Citrus Circuit</option>
+            <option value="auroraInk">Aurora Ink</option>
+            <option value="velvetSignal">Velvet Signal</option>
+            <option value="mossFlame">Moss Flame</option>
+            <option value="monoStencil">Mono Stencil</option>
+          </select>
+        </label>
+        <div class="action-grid">
+          <button class="button primary" type="button" data-action="shuffle-comic">Shuffle</button>
+          <button class="button" type="button" data-action="save-comic">Save</button>
+          <button class="button" type="button" data-action="download-comic">PNG</button>
+        </div>
+      </aside>
+
+      <section class="canvas-stage comic-stage" aria-label="Comic preview">
+        <div class="stage-toolbar">
+          <div>
+            <p class="eyebrow">Panel Preview</p>
+            <h2 id="comicTitle">Pixel Nova</h2>
+          </div>
+          <span class="status-pill">comic art</span>
+        </div>
+        <canvas id="comicCanvas" width="1400" height="1000" aria-label="Generated comic preview"></canvas>
+      </section>
+    </section>
+
+    <section class="feature-strip compact" aria-label="Comic elements">
+      <article>
+        <strong>Panel Flow</strong>
+        <span>Layouts shift from strips to poster panels and grid compositions.</span>
+      </article>
+      <article>
+        <strong>Character Shape</strong>
+        <span>Hero silhouettes, motion lines, effects, and caption rhythm combine.</span>
+      </article>
+      <article>
+        <strong>Story Spark</strong>
+        <span>Scene mood and typed captions seed a fast visual story direction.</span>
+      </article>
+    </section>
+
+    <section class="seed-section" aria-label="Comic seed CSV ideas">
+      <div class="section-heading">
+        <p class="eyebrow">CSV Vibe Pack</p>
+        <h2>Comic seeds ready for panels.</h2>
+      </div>
+      <div id="seedDeck" class="seed-grid" data-seed-kind="comic"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><strong>a quantum cupcake creation</strong></footer>
+</body>
+</html>

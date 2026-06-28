@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Logo Lab | Variation of Creation</title>
+  <meta name="description" content="Mix and match generated symbols, typography, and palettes to create logos and icons.">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="db.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body data-page="logos">
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="Variation of Creation home">
+      <img src="assets/logo.svg" alt="Variation of Creation">
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="index.html" data-nav="studio">Studio</a>
+      <a href="logos.html" data-nav="logos">Logos</a>
+      <a href="tattoos.html" data-nav="tattoos">Tattoos</a>
+      <a href="comics.html" data-nav="comics">Comics</a>
+      <a href="gallery.html" data-nav="gallery">Gallery</a>
+    </nav>
+    <div class="header-actions">
+      <a class="auth-link" href="login.html" data-auth-link>Login</a>
+      <button class="theme-switch" type="button" data-theme-toggle>Dark</button>
+    </div>
+  </header>
+
+  <main class="page-grid">
+    <section class="page-intro">
+      <p class="eyebrow">Logo Lab</p>
+      <h1>Mix a mark, icon, and identity lockup.</h1>
+    </section>
+
+    <section class="workspace split-workspace">
+      <aside class="tool-panel" aria-label="Logo controls">
+        <label>Brand name
+          <input id="logoName" type="text" value="Nova Craft">
+        </label>
+        <label>Monogram
+          <input id="logoMono" type="text" value="NC" maxlength="4">
+        </label>
+        <label>Mark shape
+          <select id="logoShape">
+            <option value="badge">Badge</option>
+            <option value="spark">Spark</option>
+            <option value="wave">Wave</option>
+            <option value="facets">Facets</option>
+            <option value="portal">Portal</option>
+          </select>
+        </label>
+        <label>Personality
+          <select id="logoPersonality">
+            <option value="sleek">Sleek</option>
+            <option value="playful">Playful</option>
+            <option value="luxury">Luxury</option>
+            <option value="street">Street</option>
+            <option value="future">Future</option>
+          </select>
+        </label>
+        <label>Palette
+          <select id="logoPalette">
+            <option value="auroraInk">Aurora Ink</option>
+            <option value="citrusCircuit">Citrus Circuit</option>
+            <option value="velvetSignal">Velvet Signal</option>
+            <option value="mossFlame">Moss Flame</option>
+            <option value="monoStencil">Mono Stencil</option>
+          </select>
+        </label>
+        <label>Detail <span data-output="logoDetail">5</span>
+          <input id="logoDetail" type="range" min="1" max="10" value="5">
+        </label>
+        <div class="action-grid">
+          <button class="button primary" type="button" data-action="shuffle-logo">Shuffle</button>
+          <button class="button" type="button" data-action="save-logo">Save</button>
+          <button class="button" type="button" data-action="download-logo">PNG</button>
+        </div>
+      </aside>
+
+      <section class="canvas-stage logo-stage" aria-label="Logo preview">
+        <div class="stage-toolbar">
+          <div>
+            <p class="eyebrow">Identity Preview</p>
+            <h2 id="logoTitle">Nova Craft</h2>
+          </div>
+          <span class="status-pill">vector mood</span>
+        </div>
+        <canvas id="logoCanvas" width="1280" height="900" aria-label="Generated logo preview"></canvas>
+      </section>
+    </section>
+
+    <section class="feature-strip compact" aria-label="Logo outputs">
+      <article>
+        <strong>App Icon</strong>
+        <span>Square mark with high contrast and simplified detail.</span>
+      </article>
+      <article>
+        <strong>Wordmark</strong>
+        <span>Name, monogram, and visual rhythm in one layout.</span>
+      </article>
+      <article>
+        <strong>Badge</strong>
+        <span>Social profile, sticker, label, or avatar-ready framing.</span>
+      </article>
+    </section>
+
+    <section class="seed-section" aria-label="Logo seed CSV ideas">
+      <div class="section-heading">
+        <p class="eyebrow">CSV Vibe Pack</p>
+        <h2>Logo seeds ready to remix.</h2>
+      </div>
+      <div id="seedDeck" class="seed-grid" data-seed-kind="logo"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><strong>a quantum cupcake creation</strong></footer>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Variation of Creation icon</title>
+  <desc id="desc">A sleek layered creation mark with intersecting shapes.</desc>
+  <defs>
+    <linearGradient id="paper" x1="32" y1="28" x2="224" y2="228" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fff8ed"/>
+      <stop offset="0.5" stop-color="#f4fbf7"/>
+      <stop offset="1" stop-color="#f7eefc"/>
+    </linearGradient>
+    <linearGradient id="mark" x1="56" y1="48" x2="204" y2="202" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#10a398"/>
+      <stop offset="0.46" stop-color="#ec6f42"/>
+      <stop offset="1" stop-color="#7156d9"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="52" fill="#131718"/>
+  <rect x="18" y="18" width="220" height="220" rx="42" fill="url(#paper)"/>
+  <path d="M128 42 199 83v90l-71 41-71-41V83l71-41Z" fill="none" stroke="#131718" stroke-width="11" stroke-linejoin="round"/>
+  <path d="M128 63c26 0 47 22 47 49 0 42-47 81-47 81s-47-39-47-81c0-27 21-49 47-49Z" fill="url(#mark)"/>
+  <circle cx="128" cy="111" r="23" fill="#fff8ed"/>
+  <path d="M74 168c26-7 48-5 66 5 13 7 27 8 42 2" fill="none" stroke="#131718" stroke-width="10" stroke-linecap="round"/>
+  <path d="M73 88c19 9 32 9 50 0 19-9 36-8 59 2" fill="none" stroke="#131718" stroke-width="8" stroke-linecap="round" opacity=".78"/>
+</svg>

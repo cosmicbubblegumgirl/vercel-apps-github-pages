@@ -1,0 +1,6 @@
+id,kind,title,vibe,palette,control_a,control_b,control_c,intensity,prompt,tags,license
+comic-001,comic,Pixel Nova,neon chase opening,citrusCircuit,three,neon,Pixel Nova,7,Make a three-panel chase where color becomes the getaway route,"comic,neon,chase",Original free-to-use seed
+comic-002,comic,Vera Volt,cosmic rescue poster,auroraInk,poster,cosmic,Vera Volt,8,Create a poster-style rescue page with a luminous portal moment,"comic,cosmic,rescue",Original free-to-use seed
+comic-003,comic,Ink Relay,mystic reveal strip,velvetSignal,three,mystic,Ink Relay,6,Build a dramatic reveal strip where a rune changes the scene,"comic,mystic,reveal",Original free-to-use seed
+comic-004,comic,Glyph Ryder,street spark grid,mossFlame,grid,street,Glyph Ryder,7,Use a four-panel grid for a street mural that wakes up,"comic,street,mural",Original free-to-use seed
+comic-005,comic,Captain Color,splash page arrival,citrusCircuit,splash,neon,Captain Color,9,Draw a splash panel arrival with bold motion lines and loud captions,"comic,splash,hero",Original free-to-use seed
