@@ -1362,6 +1362,37 @@
     drawUploadPlaceholder();
   }
 
+  function renderUploadLibrary() {
+    const target = $("#uploadLibrary");
+    if (!target) return;
+    const uploads = window.VOC_DB
+      ? window.VOC_DB.readCreations()
+        .filter((item) => item.kind === "upload" && item.image)
+        .slice(0, 8)
+      : [];
+
+    if (!uploads.length) {
+      target.innerHTML = `
+        <div class="empty-gallery upload-empty">
+          <h2>No personal images saved yet.</h2>
+          <p>Your uploaded doodles, sketches, drawings, photos, and reference images will appear here after you save them.</p>
+        </div>
+      `;
+      return;
+    }
+
+    target.innerHTML = uploads.map((item) => `
+      <article class="upload-library-card">
+        <img src="${item.image}" alt="${escapeHtml(item.title || "Uploaded image")}">
+        <div class="upload-library-card-body">
+          <h3>${escapeHtml(item.title || "Uploaded image")}</h3>
+          <p>${escapeHtml(item.uploadType || "image")} saved ${new Date(item.createdAt).toLocaleDateString()}</p>
+          ${item.tags ? `<div class="gallery-meta"><span>${escapeHtml(item.tags)}</span></div>` : ""}
+        </div>
+      </article>
+    `).join("");
+  }
+
   function initUpload() {
     const form = $("#uploadForm");
     const drop = $("#uploadDrop");
@@ -1370,6 +1401,7 @@
     if (!form || !drop || !fileInput) return;
 
     drawUploadPlaceholder();
+    renderUploadLibrary();
 
     fileInput.addEventListener("change", () => {
       handleUploadFile(fileInput.files[0]).catch((error) => {
@@ -1439,6 +1471,7 @@
       message.classList.remove("error");
       message.textContent = "Saved to your gallery.";
       $("#uploadStatus").textContent = "saved";
+      renderUploadLibrary();
     });
 
     $("[data-action='clear-upload']").addEventListener("click", clearUpload);
@@ -1588,13 +1621,18 @@
     if (page === "comics") drawComic();
   }
 
-  if (window.VOC_DB) await window.VOC_DB.init();
   initCommon();
+  if (page === "upload") initUpload();
+
+  if (window.VOC_DB) {
+    await window.VOC_DB.init();
+    if (page === "upload") renderUploadLibrary();
+  }
+
   if (page === "studio") initStudio();
   if (page === "logos") initLogo();
   if (page === "tattoos") initTattoo();
   if (page === "comics") initComic();
-  if (page === "upload") initUpload();
   if (page === "gallery") initGallery();
   if (page === "login" || page === "signup") initAuth();
   renderSeedDeck();
