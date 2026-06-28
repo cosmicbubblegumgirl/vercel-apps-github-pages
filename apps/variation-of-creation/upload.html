@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Upload Art | Variation of Creation</title>
+  <meta name="description" content="Upload doodles, art, sketches, and drawings into your local Variation of Creation gallery.">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="db.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body data-page="upload">
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="Variation of Creation home">
+      <img src="assets/logo.svg" alt="Variation of Creation">
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="index.html" data-nav="studio">Studio</a>
+      <a href="logos.html" data-nav="logos">Logos</a>
+      <a href="tattoos.html" data-nav="tattoos">Tattoos</a>
+      <a href="comics.html" data-nav="comics">Comics</a>
+      <a href="upload.html" data-nav="upload">Upload</a>
+      <a href="gallery.html" data-nav="gallery">Gallery</a>
+    </nav>
+    <div class="header-actions">
+      <a class="auth-link" href="login.html" data-auth-link>Login</a>
+      <button class="theme-switch" type="button" data-theme-toggle>Dark</button>
+    </div>
+  </header>
+
+  <main class="page-grid">
+    <section class="page-intro">
+      <p class="eyebrow">Upload Studio</p>
+      <h1>Bring in your doodles, sketches, drawings, and art.</h1>
+    </section>
+
+    <section class="workspace upload-workspace">
+      <form id="uploadForm" class="tool-panel upload-form">
+        <label>Title
+          <input id="uploadTitle" name="title" type="text" value="Untitled Doodle" required>
+        </label>
+        <label>Artwork type
+          <select id="uploadType" name="uploadType">
+            <option value="doodle">Doodle</option>
+            <option value="sketch">Sketch</option>
+            <option value="drawing">Drawing</option>
+            <option value="art">Finished art</option>
+            <option value="reference">Reference study</option>
+          </select>
+        </label>
+        <label>Vibe or note
+          <input id="uploadNote" name="note" type="text" value="Fresh upload from my sketchbook">
+        </label>
+        <label>Tags
+          <input id="uploadTags" name="tags" type="text" placeholder="pencil, character, flower">
+        </label>
+
+        <div id="uploadDrop" class="upload-drop" role="button" tabindex="0" aria-label="Choose an image to upload">
+          <strong>Drop image here</strong>
+          <span>or choose a PNG, JPG, GIF, WebP, or SVG file</span>
+          <input id="uploadFile" type="file" accept="image/*">
+        </div>
+
+        <div class="action-grid">
+          <button class="button primary" type="submit">Save Upload</button>
+          <button class="button" type="button" data-action="clear-upload">Clear</button>
+          <button class="button" type="button" data-action="download-upload">PNG</button>
+          <a class="button" href="gallery.html">Gallery</a>
+        </div>
+        <p id="uploadMessage" class="auth-message" aria-live="polite"></p>
+      </form>
+
+      <section class="canvas-stage upload-stage" aria-label="Uploaded artwork preview">
+        <div class="stage-toolbar">
+          <div>
+            <p class="eyebrow">Preview</p>
+            <h2 id="uploadPreviewTitle">No file selected</h2>
+          </div>
+          <span id="uploadStatus" class="status-pill">waiting</span>
+        </div>
+        <canvas id="uploadCanvas" width="1200" height="900" aria-label="Uploaded artwork preview canvas"></canvas>
+      </section>
+    </section>
+  </main>
+
+  <footer class="site-footer"><strong>a quantum cupcake creation</strong></footer>
+</body>
+</html>

@@ -78,6 +78,12 @@
     ]
   };
 
+  const uploadState = {
+    fileName: "",
+    imageData: "",
+    loaded: false
+  };
+
   const $ = (selector, scope = document) => scope.querySelector(selector);
   const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(selector));
   const value = (id) => {
@@ -544,15 +550,13 @@
     if (!deck || !window.VOC_DB) return;
 
     const kind = deck.dataset.seedKind;
-    const seeds = window.VOC_DB
-      .getSeeds(kind === "all" ? undefined : kind)
-      .slice(0, kind === "all" ? 10 : 5);
+    const seeds = pickSeedDeckRows(kind);
 
     deck.innerHTML = seeds.map((seed) => `
       <article class="seed-card">
         <canvas class="seed-preview seed-thumb" width="720" height="480" data-seed-canvas="${escapeHtml(seed.id)}" aria-label="${escapeHtml(seed.title)} preview"></canvas>
         <div>
-          <small>${escapeHtml(seed.kind)} / ${escapeHtml(seed.vibe)}</small>
+          <small>${escapeHtml(seed.kind)} / ${escapeHtml(seed.vibe)}${seed.source_title ? " / SVGrepo" : ""}</small>
           <h3>${escapeHtml(seed.title)}</h3>
           <p>${escapeHtml(seed.prompt)}</p>
         </div>
@@ -567,6 +571,16 @@
       });
     });
     drawSeedPreviews(deck);
+  }
+
+  function pickSeedDeckRows(kind) {
+    if (!window.VOC_DB) return [];
+    if (kind && kind !== "all") return window.VOC_DB.getSeeds(kind).slice(0, 8);
+
+    const allSeeds = window.VOC_DB.getSeeds();
+    return ["art", "icon", "logo", "tattoo", "comic"].flatMap((seedKind) => {
+      return allSeeds.filter((seed) => seed.kind === seedKind).slice(0, 2);
+    });
   }
 
   function drawSeedPreviews(scope = document) {
@@ -1236,6 +1250,203 @@
     }
   }
 
+  function drawUploadPlaceholder() {
+    const canvas = $("#uploadCanvas");
+    if (!canvas) return;
+    const pal = palette("auroraInk");
+    const ctx = clearCanvas(canvas, pal);
+    const cx = canvas.width / 2;
+    const cy = canvas.height / 2;
+
+    ctx.strokeStyle = pal.ink;
+    ctx.lineWidth = 10;
+    roundedRect(ctx, canvas.width * 0.18, canvas.height * 0.18, canvas.width * 0.64, canvas.height * 0.58, 34);
+    ctx.stroke();
+    ctx.strokeStyle = pal.colors[0];
+    ctx.lineWidth = 12;
+    ctx.beginPath();
+    ctx.moveTo(cx - 170, cy + 88);
+    ctx.bezierCurveTo(cx - 70, cy - 70, cx + 72, cy + 132, cx + 168, cy - 44);
+    ctx.stroke();
+    ctx.fillStyle = pal.ink;
+    drawTextFit(ctx, "Upload your art", cx, cy - 110, canvas.width * 0.62, 54, 900);
+    ctx.fillStyle = pal.colors[1];
+    drawTextFit(ctx, "doodles / sketches / drawings", cx, cy + 150, canvas.width * 0.62, 32, 800);
+  }
+
+  function fitImageRect(image, canvas) {
+    const imageRatio = image.width / image.height;
+    const canvasRatio = canvas.width / canvas.height;
+    let width = canvas.width;
+    let height = canvas.height;
+
+    if (imageRatio > canvasRatio) {
+      height = width / imageRatio;
+    } else {
+      width = height * imageRatio;
+    }
+
+    return {
+      x: (canvas.width - width) / 2,
+      y: (canvas.height - height) / 2,
+      width,
+      height
+    };
+  }
+
+  function drawUploadedImage(image) {
+    const canvas = $("#uploadCanvas");
+    if (!canvas) return "";
+    const ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#fffdf8";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    const rect = fitImageRect(image, canvas);
+    ctx.drawImage(image, rect.x, rect.y, rect.width, rect.height);
+    ctx.strokeStyle = "#131718";
+    ctx.lineWidth = 8;
+    roundedRect(ctx, rect.x + 8, rect.y + 8, rect.width - 16, rect.height - 16, 18);
+    ctx.stroke();
+    return canvas.toDataURL("image/jpeg", 0.86);
+  }
+
+  function loadImageFromDataUrl(dataUrl) {
+    return new Promise((resolve, reject) => {
+      const image = new Image();
+      image.onload = () => resolve(image);
+      image.onerror = () => reject(new Error("That image could not be loaded."));
+      image.src = dataUrl;
+    });
+  }
+
+  function readFileAsDataUrl(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => reject(new Error("That file could not be read."));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function handleUploadFile(file) {
+    const message = $("#uploadMessage");
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      message.classList.add("error");
+      message.textContent = "Choose an image file.";
+      return;
+    }
+
+    message.classList.remove("error");
+    message.textContent = "Loading image...";
+    const dataUrl = await readFileAsDataUrl(file);
+    const image = await loadImageFromDataUrl(dataUrl);
+    uploadState.fileName = file.name;
+    uploadState.imageData = drawUploadedImage(image);
+    uploadState.loaded = true;
+    $("#uploadPreviewTitle").textContent = file.name;
+    $("#uploadStatus").textContent = "ready";
+    message.textContent = `${file.name} is ready to save.`;
+  }
+
+  function clearUpload() {
+    uploadState.fileName = "";
+    uploadState.imageData = "";
+    uploadState.loaded = false;
+    const fileInput = $("#uploadFile");
+    if (fileInput) fileInput.value = "";
+    $("#uploadPreviewTitle").textContent = "No file selected";
+    $("#uploadStatus").textContent = "waiting";
+    $("#uploadMessage").textContent = "";
+    $("#uploadMessage").classList.remove("error");
+    drawUploadPlaceholder();
+  }
+
+  function initUpload() {
+    const form = $("#uploadForm");
+    const drop = $("#uploadDrop");
+    const fileInput = $("#uploadFile");
+    const message = $("#uploadMessage");
+    if (!form || !drop || !fileInput) return;
+
+    drawUploadPlaceholder();
+
+    fileInput.addEventListener("change", () => {
+      handleUploadFile(fileInput.files[0]).catch((error) => {
+        message.classList.add("error");
+        message.textContent = error.message;
+      });
+    });
+
+    ["dragenter", "dragover"].forEach((eventName) => {
+      drop.addEventListener(eventName, (event) => {
+        event.preventDefault();
+        drop.classList.add("dragging");
+      });
+    });
+
+    ["dragleave", "drop"].forEach((eventName) => {
+      drop.addEventListener(eventName, (event) => {
+        event.preventDefault();
+        drop.classList.remove("dragging");
+      });
+    });
+
+    drop.addEventListener("drop", (event) => {
+      handleUploadFile(event.dataTransfer.files[0]).catch((error) => {
+        message.classList.add("error");
+        message.textContent = error.message;
+      });
+    });
+
+    drop.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        fileInput.click();
+      }
+    });
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (!uploadState.loaded) {
+        message.classList.add("error");
+        message.textContent = "Upload an image before saving.";
+        return;
+      }
+
+      const title = value("uploadTitle") || uploadState.fileName || "Uploaded artwork";
+      const type = value("uploadType") || "art";
+      const note = value("uploadNote") || "Uploaded artwork";
+      const tags = value("uploadTags");
+      try {
+        if (window.VOC_DB) {
+          window.VOC_DB.saveCreation({
+            id: `upload-${Date.now()}`,
+            kind: "upload",
+            title,
+            uploadType: type,
+            tags,
+            recipe: `${title} / ${type}: ${note}`,
+            image: uploadState.imageData
+          });
+        }
+      } catch (error) {
+        message.classList.add("error");
+        message.textContent = "The browser database is full. Try a smaller image or clear older saves.";
+        return;
+      }
+
+      message.classList.remove("error");
+      message.textContent = "Saved to your gallery.";
+      $("#uploadStatus").textContent = "saved";
+    });
+
+    $("[data-action='clear-upload']").addEventListener("click", clearUpload);
+    $("[data-action='download-upload']").addEventListener("click", () => {
+      if (uploadState.loaded) downloadCanvas($("#uploadCanvas"), value("uploadTitle") || uploadState.fileName);
+    });
+  }
+
   function initAuth() {
     const form = $("[data-auth-form]");
     const message = $("#authMessage");
@@ -1268,14 +1479,24 @@
 
   function initGallery() {
     let filter = "all";
-    const render = () => renderGallery(filter);
+    const pageSize = 60;
+    let visibleCount = pageSize;
+    const render = () => renderGallery(filter, visibleCount);
     $$("[data-gallery-filter] button").forEach((button) => {
       button.addEventListener("click", () => {
         filter = button.dataset.value;
+        visibleCount = pageSize;
         $$("[data-gallery-filter] button").forEach((btn) => btn.classList.toggle("active", btn === button));
         render();
       });
     });
+    const loadMore = $("#loadMoreGallery");
+    if (loadMore) {
+      loadMore.addEventListener("click", () => {
+        visibleCount += pageSize;
+        render();
+      });
+    }
     $("[data-action='export-gallery']").addEventListener("click", () => {
       const snapshot = window.VOC_DB ? window.VOC_DB.exportSnapshot() : readGallery();
       downloadText("variation-of-creation-db.json", JSON.stringify(snapshot, null, 2));
@@ -1295,10 +1516,16 @@
     render();
   }
 
-  function renderGallery(filter) {
+  function renderGallery(filter, visibleCount = 60) {
     const grid = $("#galleryGrid");
     if (!grid) return;
     const items = readGallery().filter((item) => filter === "all" || item.kind === filter);
+    const visibleItems = items.slice(0, visibleCount);
+    const loadMore = $("#loadMoreGallery");
+    if (loadMore) {
+      loadMore.hidden = visibleItems.length >= items.length;
+      loadMore.textContent = `Load more samples (${visibleItems.length} of ${items.length})`;
+    }
     if (!items.length) {
       grid.innerHTML = `
         <div class="empty-gallery">
@@ -1309,7 +1536,7 @@
       `;
       return;
     }
-    grid.innerHTML = items.map((item) => `
+    grid.innerHTML = visibleItems.map((item) => `
       <article class="gallery-card">
         ${item.image
           ? `<img src="${item.image}" alt="${escapeHtml(item.kind)} saved artwork">`
@@ -1321,7 +1548,10 @@
           <div class="gallery-meta">
             <span>${item.seed ? "CSV seed" : new Date(item.createdAt).toLocaleDateString()}</span>
             <span>${escapeHtml(item.kind)}</span>
+            ${item.uploadType ? `<span>${escapeHtml(item.uploadType)}</span>` : ""}
+            ${item.tags ? `<span>${escapeHtml(item.tags)}</span>` : ""}
             ${item.license ? `<span>${escapeHtml(item.license)}</span>` : ""}
+            ${item.source_url ? `<a href="${escapeHtml(item.source_url)}" target="_blank" rel="noreferrer">source</a>` : ""}
           </div>
           ${item.image
             ? `<button class="button" type="button" data-download-saved="${item.id}">PNG</button>`
@@ -1364,6 +1594,7 @@
   if (page === "logos") initLogo();
   if (page === "tattoos") initTattoo();
   if (page === "comics") initComic();
+  if (page === "upload") initUpload();
   if (page === "gallery") initGallery();
   if (page === "login" || page === "signup") initAuth();
   renderSeedDeck();

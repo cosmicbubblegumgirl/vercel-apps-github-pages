@@ -191,6 +191,10 @@ main {
   grid-template-columns: minmax(250px, 330px) minmax(0, 1fr);
 }
 
+.upload-workspace {
+  grid-template-columns: minmax(260px, 390px) minmax(0, 1fr);
+}
+
 .tool-panel,
 .canvas-stage,
 .recipe-panel,
@@ -333,6 +337,10 @@ html[data-theme="dark"] .button.primary {
 .button.danger {
   border-color: color-mix(in srgb, var(--danger) 70%, var(--line));
   color: var(--danger);
+}
+
+.button.full-width {
+  width: 100%;
 }
 
 .canvas-stage {
@@ -591,6 +599,54 @@ canvas {
   border-radius: 0;
 }
 
+.upload-stage canvas {
+  aspect-ratio: 4 / 3;
+}
+
+.upload-drop {
+  position: relative;
+  display: grid;
+  place-items: center;
+  gap: 8px;
+  min-height: 150px;
+  border: 2px dashed color-mix(in srgb, var(--teal) 55%, var(--line));
+  border-radius: 8px;
+  padding: 18px;
+  color: var(--muted);
+  background: color-mix(in srgb, var(--teal) 8%, var(--panel));
+  text-align: center;
+  transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.upload-drop:hover,
+.upload-drop.dragging {
+  transform: translateY(-1px);
+  border-color: var(--teal);
+  background: color-mix(in srgb, var(--teal) 15%, var(--panel));
+}
+
+.upload-drop strong {
+  color: var(--ink);
+  font-size: 1.05rem;
+}
+
+.upload-drop span {
+  line-height: 1.45;
+}
+
+.upload-drop input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.upload-form .auth-message {
+  min-height: 0;
+}
+
 .gallery-card-body {
   display: grid;
   gap: 10px;
@@ -609,13 +665,15 @@ canvas {
   gap: 6px;
 }
 
-.gallery-meta span {
+.gallery-meta span,
+.gallery-meta a {
   border: 1px solid var(--line);
   border-radius: 999px;
   padding: 5px 9px;
   color: var(--muted);
   font-size: 0.76rem;
   font-weight: 850;
+  text-decoration: none;
 }
 
 .empty-gallery {
@@ -689,7 +747,8 @@ canvas {
 
 @media (max-width: 1120px) {
   .hero-workspace,
-  .split-workspace {
+  .split-workspace,
+  .upload-workspace {
     grid-template-columns: 1fr;
   }
 

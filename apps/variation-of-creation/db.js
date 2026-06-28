@@ -1,12 +1,18 @@
 (() => {
   const dbKey = "vocLocalDb";
   const sessionKey = "vocSession";
-  const seedKey = "vocSeedRows";
+  const seedKey = "vocSeedRowsV2";
   const seedFiles = [
     "data/art.csv",
+    "data/generated-art-200.csv",
     "data/icons.csv",
+    "data/generated-icons-200.csv",
     "data/logos.csv",
+    "data/generated-logos-200.csv",
+    "data/svgrepo-tattoo.csv",
     "data/tattoos.csv",
+    "data/generated-tattoos-200.csv",
+    "data/generated-comics-200.csv",
     "data/comics.csv"
   ];
 
