@@ -1,1639 +1,1616 @@
-(async () => {
-  const page = document.body.dataset.page;
-  const themeKey = "vocTheme";
+const elements = {
+  canvas: document.querySelector("#artCanvas"),
+  imageInput: document.querySelector("#imageInput"),
+  dropZone: document.querySelector("#dropZone"),
+  assetGrid: document.querySelector("#assetGrid"),
+  imageCount: document.querySelector("#imageCount"),
+  sampleButton: document.querySelector("#sampleButton"),
+  downloadButton: document.querySelector("#downloadButton"),
+  blendButton: document.querySelector("#blendButton"),
+  shuffleButton: document.querySelector("#shuffleButton"),
+  fitButton: document.querySelector("#fitButton"),
+  removeButton: document.querySelector("#removeButton"),
+  reactionStatus: document.querySelector("#reactionStatus"),
+  emptyState: document.querySelector("#emptyState"),
+  selectedLayerName: document.querySelector("#selectedLayerName"),
+  opacityRange: document.querySelector("#opacityRange"),
+  scaleRange: document.querySelector("#scaleRange"),
+  rotationRange: document.querySelector("#rotationRange"),
+  blendModeSelect: document.querySelector("#blendModeSelect"),
+  outputIntent: document.querySelector("#outputIntent"),
+  textPrompt: document.querySelector("#textPrompt"),
+  paletteStrip: document.querySelector("#paletteStrip"),
+  recipeList: document.querySelector("#recipeList"),
+  creditsList: document.querySelector("#creditsList"),
+  loadSourcesButton: document.querySelector("#loadSourcesButton"),
+  loadAllSourcesButton: document.querySelector("#loadAllSourcesButton"),
+  addSourceBatchButton: document.querySelector("#addSourceBatchButton"),
+  sourceLibraryGrid: document.querySelector("#sourceLibraryGrid"),
+  sourceLibraryStatus: document.querySelector("#sourceLibraryStatus"),
+  aiScore: document.querySelector("#aiScore"),
+  reactionOverlay: document.querySelector("#reactionOverlay"),
+  reactionStage: document.querySelector(".reaction-stage"),
+  reactantOrbit: document.querySelector("#reactantOrbit"),
+  finalPreview: document.querySelector("#finalPreview"),
+  reactionWords: document.querySelector("#reactionWords")
+};
 
-  const palettes = {
-    auroraInk: {
-      name: "Aurora Ink",
-      paper: "#fff8ed",
-      ink: "#131718",
-      colors: ["#10a398", "#ec6f42", "#7156d9", "#f3b332", "#1e7a53"]
-    },
-    citrusCircuit: {
-      name: "Citrus Circuit",
-      paper: "#f7fff4",
-      ink: "#14201c",
-      colors: ["#00a878", "#ff9f1c", "#e84855", "#28536b", "#f7d046"]
-    },
-    velvetSignal: {
-      name: "Velvet Signal",
-      paper: "#fff5fb",
-      ink: "#1d1620",
-      colors: ["#8f2d56", "#3a86ff", "#ffbe0b", "#2ec4b6", "#5f0f40"]
-    },
-    mossFlame: {
-      name: "Moss Flame",
-      paper: "#fbfbef",
-      ink: "#171a13",
-      colors: ["#557a3a", "#df633e", "#2b7a78", "#c78a23", "#7b4b94"]
-    },
-    monoStencil: {
-      name: "Mono Stencil",
-      paper: "#fbfaf5",
-      ink: "#111111",
-      colors: ["#111111", "#f2f0e8", "#76766f", "#c94336", "#0f9b91"]
-    }
-  };
+const ctx = elements.canvas.getContext("2d", { willReadFrequently: true });
 
-  const studioOptions = {
-    kind: ["art", "icon", "logo", "tattoo", "comic"],
-    palette: Object.keys(palettes),
-    base: ["orbital", "botanical", "crystal", "signal", "mask"],
-    motif: ["stars", "ribbons", "glyphs", "petals", "sparks"],
-    text: [
-      "Create the variation",
-      "A mark becomes a myth",
-      "Signal in full color",
-      "New art from old sparks",
-      "Make the remix visible"
-    ]
-  };
+const formats = {
+  square: { width: 1400, height: 1400 },
+  portrait: { width: 1080, height: 1440 },
+  story: { width: 1080, height: 1920 },
+  landscape: { width: 1600, height: 1000 },
+  banner: { width: 1800, height: 900 }
+};
 
-  const logoOptions = {
-    shape: ["badge", "spark", "wave", "facets", "portal"],
-    personality: ["sleek", "playful", "luxury", "street", "future"],
-    palette: Object.keys(palettes),
-    names: ["Nova Craft", "Signal Bloom", "Ink Method", "Bright Fold", "Muse Circuit"],
-    mono: ["NC", "SB", "IM", "BF", "MC"]
-  };
-
-  const tattooOptions = {
-    motif: ["botanical", "celestial", "mythic", "geometric", "wave"],
-    placement: ["forearm", "shoulder", "spine", "ankle", "sternum"],
-    flow: ["vertical", "spiral", "crescent", "band", "crest"],
-    accent: ["black", "red", "teal", "violet"]
-  };
-
-  const comicOptions = {
-    layout: ["three", "splash", "grid", "poster"],
-    mood: ["neon", "mystic", "cosmic", "street"],
-    palette: Object.keys(palettes),
-    heroes: ["Pixel Nova", "Ink Relay", "Captain Color", "Glyph Ryder", "Vera Volt"],
-    captions: [
-      "The portal answered in color.",
-      "Every panel changed the ending.",
-      "The city blinked first.",
-      "A secret symbol lit the sky.",
-      "The remix had a heartbeat."
-    ]
-  };
-
-  const uploadState = {
-    fileName: "",
-    imageData: "",
-    loaded: false
-  };
-
-  const $ = (selector, scope = document) => scope.querySelector(selector);
-  const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(selector));
-  const value = (id) => {
-    const el = document.getElementById(id);
-    return el ? el.value : "";
-  };
-  const number = (id) => Number(value(id));
-  const sample = (items) => items[Math.floor(Math.random() * items.length)];
-  const titleCase = (text) => String(text).replace(/(^|\s)\S/g, (match) => match.toUpperCase());
-  const slug = (text) => String(text).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") || "creation";
-
-  function initCommon() {
-    const savedTheme = localStorage.getItem(themeKey) || "light";
-    document.documentElement.dataset.theme = savedTheme;
-    updateThemeButton(savedTheme);
-
-    $$(".nav-links a").forEach((link) => {
-      if (link.dataset.nav === page) link.classList.add("active");
-    });
-    syncAuthNav();
-
-    const themeButton = $("[data-theme-toggle]");
-    if (themeButton) {
-      themeButton.addEventListener("click", () => {
-        const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
-        document.documentElement.dataset.theme = next;
-        localStorage.setItem(themeKey, next);
-        updateThemeButton(next);
-        redrawPage();
-      });
-    }
-
-    $$("input[type='range']").forEach((input) => {
-      const output = document.querySelector(`[data-output="${input.id}"]`);
-      const sync = () => {
-        if (output) output.textContent = input.value;
-      };
-      input.addEventListener("input", sync);
-      sync();
-    });
+const artProfiles = {
+  "mixed-media": {
+    label: "Mixed media",
+    blends: ["source-over", "overlay", "soft-light", "screen"],
+    clip: "blob",
+    opacity: 0.9,
+    filter: "saturate(1.12) contrast(1.04)"
+  },
+  watercolor: {
+    label: "Watercolor",
+    blends: ["soft-light", "screen", "source-over", "multiply"],
+    clip: "ellipse",
+    opacity: 0.74,
+    filter: "saturate(0.94) contrast(0.93) brightness(1.06)"
+  },
+  "surreal-collage": {
+    label: "Surreal collage",
+    blends: ["source-over", "multiply", "screen", "overlay"],
+    clip: "cutout",
+    opacity: 0.94,
+    filter: "saturate(1.22) contrast(1.1)"
+  },
+  "ink-poster": {
+    label: "Ink poster",
+    blends: ["multiply", "source-over", "luminosity", "overlay"],
+    clip: "poster",
+    opacity: 0.88,
+    filter: "grayscale(.18) contrast(1.32) saturate(0.82)"
+  },
+  tattoo: {
+    label: "Tattoo",
+    blends: ["multiply", "source-over", "overlay", "luminosity"],
+    clip: "tattoo",
+    opacity: 0.86,
+    filter: "grayscale(.34) contrast(1.42) saturate(0.76)"
+  },
+  "album-cover": {
+    label: "Album cover",
+    blends: ["source-over", "screen", "overlay", "soft-light"],
+    clip: "square",
+    opacity: 0.92,
+    filter: "saturate(1.18) contrast(1.12)"
+  },
+  "character-concept": {
+    label: "Character concept",
+    blends: ["source-over", "multiply", "soft-light", "screen"],
+    clip: "panel",
+    opacity: 0.88,
+    filter: "saturate(1.03) contrast(1.08)"
   }
+};
 
-  function syncAuthNav() {
-    const link = $("[data-auth-link]");
-    if (!link || !window.VOC_DB) return;
-    const user = window.VOC_DB.currentUser();
-    if (!user) {
-      link.textContent = "Login";
-      link.href = "login.html";
-      return;
-    }
-    link.textContent = user.name;
-    link.href = "gallery.html";
-    link.title = "Open your saved studio gallery";
+const vibeProfiles = {
+  whimsical: {
+    label: "Whimsical",
+    colors: ["#0e8075", "#d55d42", "#f2bd4e", "#3868a7"],
+    line: "#97406d",
+    warmth: 1.08
+  },
+  cinematic: {
+    label: "Cinematic",
+    colors: ["#13251f", "#c48a24", "#3868a7", "#d55d42"],
+    line: "#f7f4ed",
+    warmth: 0.92
+  },
+  cozy: {
+    label: "Cozy",
+    colors: ["#9c4d37", "#4e7b45", "#e2bd6d", "#3868a7"],
+    line: "#7a3d57",
+    warmth: 1.14
+  },
+  electric: {
+    label: "Electric",
+    colors: ["#1a9cc0", "#e04d7a", "#f3cf38", "#26225d"],
+    line: "#05a88f",
+    warmth: 1
+  },
+  botanical: {
+    label: "Botanical",
+    colors: ["#315c40", "#89a44e", "#d9a441", "#9a5543"],
+    line: "#0e8075",
+    warmth: 1.02
+  },
+  editorial: {
+    label: "Editorial",
+    colors: ["#141414", "#f7f4ed", "#c23737", "#3868a7"],
+    line: "#c23737",
+    warmth: 0.98
   }
+};
 
-  function updateThemeButton(theme) {
-    const button = $("[data-theme-toggle]");
-    if (button) button.textContent = theme === "dark" ? "Light" : "Dark";
-  }
+const sourceLibraryQueries = {
+  "mixed-media": [
+    "mixed media drawing sketch",
+    "collage drawing sketch",
+    "abstract art sketch"
+  ],
+  watercolor: [
+    "watercolor sketch drawing",
+    "watercolour botanical sketch",
+    "watercolor illustration drawing"
+  ],
+  "surreal-collage": [
+    "surreal drawing sketch",
+    "fantasy collage drawing",
+    "dream illustration sketch"
+  ],
+  "ink-poster": [
+    "ink drawing poster",
+    "black ink sketch",
+    "line art drawing"
+  ],
+  tattoo: [
+    "tattoo flash drawing",
+    "tattoo design sketch",
+    "traditional tattoo drawing"
+  ],
+  "album-cover": [
+    "album cover art drawing",
+    "music poster illustration",
+    "psychedelic drawing art"
+  ],
+  "character-concept": [
+    "character concept sketch",
+    "figure drawing sketch",
+    "portrait character drawing"
+  ]
+};
 
-  function activeMode(group) {
-    const active = $(`[data-mode-group="${group}"] .active`);
-    return active ? active.dataset.value : "";
-  }
+const sourceLibraryLimit = 90;
+const sourceCacheKey = "variationCreation.openSourceLibrary.v1";
+const commonsApi = "https://commons.wikimedia.org/w/api.php";
 
-  function setActiveMode(group, valueToSet) {
-    $$(`[data-mode-group="${group}"] .mode-button`).forEach((button) => {
-      button.classList.toggle("active", button.dataset.value === valueToSet);
-    });
-  }
+const state = {
+  images: [],
+  selectedId: null,
+  artType: "mixed-media",
+  vibe: "whimsical",
+  format: "square",
+  outputIntent: "finished-artwork",
+  prompt: "",
+  seed: 0.42,
+  dirtyLayout: false,
+  dragging: null,
+  lastRecipe: null,
+  sourceLibrary: readSourceCache(),
+  sourceLoading: false
+};
 
-  function bindModeGroup(group, callback) {
-    $$(`[data-mode-group="${group}"] .mode-button`).forEach((button) => {
-      button.addEventListener("click", () => {
-        setActiveMode(group, button.dataset.value);
-        callback();
-      });
-    });
-  }
+const VariationAI = {
+  analyzeImage(image) {
+    const sampleSize = 88;
+    const offscreen = document.createElement("canvas");
+    const sampleCtx = offscreen.getContext("2d", { willReadFrequently: true });
+    offscreen.width = sampleSize;
+    offscreen.height = sampleSize;
+    sampleCtx.drawImage(image, 0, 0, sampleSize, sampleSize);
 
-  function setRandomSelect(id, options) {
-    const el = document.getElementById(id);
-    if (el) el.value = sample(options);
-  }
+    const { data } = sampleCtx.getImageData(0, 0, sampleSize, sampleSize);
+    const buckets = new Map();
+    let total = 0;
+    let rTotal = 0;
+    let gTotal = 0;
+    let bTotal = 0;
+    let brightnessTotal = 0;
+    let contrastTotal = 0;
+    let textureTotal = 0;
+    let previousBrightness = 0;
 
-  function setRandomRange(id, min = 1, max = 10) {
-    const el = document.getElementById(id);
-    if (el) {
-      el.value = String(Math.floor(Math.random() * (max - min + 1)) + min);
-      el.dispatchEvent(new Event("input"));
-    }
-  }
+    for (let i = 0; i < data.length; i += 16) {
+      const alpha = data[i + 3];
+      if (alpha < 28) continue;
 
-  function setStatus(id, text) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.textContent = text;
-    window.clearTimeout(setStatus.timer);
-    setStatus.timer = window.setTimeout(() => {
-      el.textContent = "ready";
-    }, 1800);
-  }
+      const r = data[i];
+      const g = data[i + 1];
+      const b = data[i + 2];
+      const brightness = (r * 0.299 + g * 0.587 + b * 0.114) / 255;
+      const saturation = maxChannel(r, g, b) - minChannel(r, g, b);
+      const key = `${r >> 5}-${g >> 5}-${b >> 5}`;
+      const bucket = buckets.get(key) || { r: 0, g: 0, b: 0, count: 0, saturation: 0 };
 
-  function makeRng(seed) {
-    let state = seed >>> 0;
-    return () => {
-      state = (state * 1664525 + 1013904223) >>> 0;
-      return state / 4294967296;
-    };
-  }
+      bucket.r += r;
+      bucket.g += g;
+      bucket.b += b;
+      bucket.count += 1;
+      bucket.saturation += saturation;
+      buckets.set(key, bucket);
 
-  function hashText(text) {
-    let hash = 2166136261;
-    for (let i = 0; i < text.length; i += 1) {
-      hash ^= text.charCodeAt(i);
-      hash = Math.imul(hash, 16777619);
-    }
-    return hash >>> 0;
-  }
-
-  function palette(name) {
-    return palettes[name] || palettes.auroraInk;
-  }
-
-  function clearCanvas(canvas, pal) {
-    const ctx = canvas.getContext("2d");
-    const { width: w, height: h } = canvas;
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.clearRect(0, 0, w, h);
-    const grad = ctx.createLinearGradient(0, 0, w, h);
-    grad.addColorStop(0, pal.paper);
-    grad.addColorStop(0.58, mix(pal.paper, pal.colors[1], 0.1));
-    grad.addColorStop(1, mix(pal.paper, pal.colors[2], 0.12));
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, w, h);
-    ctx.globalAlpha = 0.08;
-    ctx.strokeStyle = pal.ink;
-    ctx.lineWidth = 1;
-    for (let x = -h; x < w; x += 48) {
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x + h, h);
-      ctx.stroke();
-    }
-    ctx.globalAlpha = 1;
-    return ctx;
-  }
-
-  function mix(a, b, amount) {
-    const ca = parseColor(a);
-    const cb = parseColor(b);
-    const next = ca.map((part, index) => Math.round(part + (cb[index] - part) * amount));
-    return `rgb(${next[0]}, ${next[1]}, ${next[2]})`;
-  }
-
-  function parseColor(color) {
-    const hex = color.replace("#", "");
-    return [
-      parseInt(hex.slice(0, 2), 16),
-      parseInt(hex.slice(2, 4), 16),
-      parseInt(hex.slice(4, 6), 16)
-    ];
-  }
-
-  function roundedRect(ctx, x, y, w, h, r) {
-    const radius = Math.min(r, w / 2, h / 2);
-    ctx.beginPath();
-    ctx.moveTo(x + radius, y);
-    ctx.lineTo(x + w - radius, y);
-    ctx.quadraticCurveTo(x + w, y, x + w, y + radius);
-    ctx.lineTo(x + w, y + h - radius);
-    ctx.quadraticCurveTo(x + w, y + h, x + w - radius, y + h);
-    ctx.lineTo(x + radius, y + h);
-    ctx.quadraticCurveTo(x, y + h, x, y + h - radius);
-    ctx.lineTo(x, y + radius);
-    ctx.quadraticCurveTo(x, y, x + radius, y);
-    ctx.closePath();
-  }
-
-  function polygon(ctx, cx, cy, radius, sides, rotation = 0) {
-    ctx.beginPath();
-    for (let i = 0; i < sides; i += 1) {
-      const angle = rotation + i * Math.PI * 2 / sides;
-      const x = cx + Math.cos(angle) * radius;
-      const y = cy + Math.sin(angle) * radius;
-      if (i === 0) ctx.moveTo(x, y);
-      else ctx.lineTo(x, y);
-    }
-    ctx.closePath();
-  }
-
-  function star(ctx, cx, cy, outer, inner, points, rotation = -Math.PI / 2) {
-    ctx.beginPath();
-    for (let i = 0; i < points * 2; i += 1) {
-      const radius = i % 2 === 0 ? outer : inner;
-      const angle = rotation + i * Math.PI / points;
-      const x = cx + Math.cos(angle) * radius;
-      const y = cy + Math.sin(angle) * radius;
-      if (i === 0) ctx.moveTo(x, y);
-      else ctx.lineTo(x, y);
-    }
-    ctx.closePath();
-  }
-
-  function drawTextFit(ctx, text, x, y, maxWidth, startSize, weight = 800, align = "center") {
-    let size = startSize;
-    ctx.textAlign = align;
-    ctx.textBaseline = "middle";
-    do {
-      ctx.font = `${weight} ${size}px Inter, Arial, sans-serif`;
-      if (ctx.measureText(text).width <= maxWidth || size <= 18) break;
-      size -= 2;
-    } while (size > 18);
-    ctx.fillText(text, x, y);
-  }
-
-  function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines = 3) {
-    const words = String(text).split(/\s+/).filter(Boolean);
-    const lines = [];
-    let line = "";
-    words.forEach((word) => {
-      const test = line ? `${line} ${word}` : word;
-      if (ctx.measureText(test).width > maxWidth && line) {
-        lines.push(line);
-        line = word;
-      } else {
-        line = test;
-      }
-    });
-    if (line) lines.push(line);
-    lines.slice(0, maxLines).forEach((part, index) => {
-      ctx.fillText(part, x, y + index * lineHeight);
-    });
-  }
-
-  function drawMotifs(ctx, state, pal, rng, cx, cy, radius) {
-    const colors = pal.colors;
-    const count = state.complexity + 7;
-    for (let i = 0; i < count; i += 1) {
-      const angle = i * Math.PI * 2 / count + rng() * 0.32;
-      const dist = radius * (0.32 + rng() * 0.72);
-      const x = cx + Math.cos(angle) * dist;
-      const y = cy + Math.sin(angle) * dist;
-      const size = 18 + rng() * 48;
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.rotate(angle + rng());
-      ctx.fillStyle = colors[i % colors.length];
-      ctx.strokeStyle = pal.ink;
-      ctx.lineWidth = 5;
-      if (state.motif === "stars") {
-        star(ctx, 0, 0, size, size * 0.42, 5 + (i % 3));
-        ctx.fill();
-        ctx.stroke();
-      } else if (state.motif === "ribbons") {
-        ctx.beginPath();
-        ctx.moveTo(-size, -size * 0.25);
-        ctx.bezierCurveTo(-size * 0.2, -size, size * 0.2, size, size, size * 0.25);
-        ctx.lineWidth = Math.max(9, size * 0.22);
-        ctx.strokeStyle = colors[i % colors.length];
-        ctx.stroke();
-        ctx.lineWidth = 3;
-        ctx.strokeStyle = pal.ink;
-        ctx.stroke();
-      } else if (state.motif === "glyphs") {
-        ctx.strokeStyle = colors[i % colors.length];
-        ctx.lineWidth = 7;
-        ctx.beginPath();
-        ctx.arc(0, 0, size * 0.55, 0, Math.PI * 1.35);
-        ctx.moveTo(-size * 0.35, size * 0.2);
-        ctx.lineTo(size * 0.35, -size * 0.45);
-        ctx.stroke();
-      } else if (state.motif === "petals") {
-        ctx.beginPath();
-        ctx.ellipse(0, 0, size * 0.35, size * 0.86, 0, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
-      } else {
-        ctx.strokeStyle = colors[i % colors.length];
-        ctx.lineWidth = 7;
-        ctx.beginPath();
-        ctx.moveTo(-size * 0.6, 0);
-        ctx.lineTo(size * 0.6, 0);
-        ctx.moveTo(0, -size * 0.6);
-        ctx.lineTo(0, size * 0.6);
-        ctx.stroke();
-      }
-      ctx.restore();
-    }
-  }
-
-  function drawCoreMark(ctx, state, pal, rng, cx, cy, radius) {
-    const colors = pal.colors;
-    ctx.save();
-    ctx.translate(cx, cy);
-    ctx.lineJoin = "round";
-    ctx.lineCap = "round";
-
-    for (let i = 0; i < state.symmetry + 4; i += 1) {
-      const angle = i * Math.PI * 2 / (state.symmetry + 4);
-      ctx.save();
-      ctx.rotate(angle);
-      ctx.fillStyle = colors[i % colors.length];
-      ctx.strokeStyle = pal.ink;
-      ctx.lineWidth = 7;
-      ctx.globalAlpha = 0.92;
-      if (state.base === "orbital") {
-        ctx.beginPath();
-        ctx.ellipse(radius * 0.25, 0, radius * 0.58, radius * 0.18, 0, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
-      } else if (state.base === "botanical") {
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.bezierCurveTo(radius * 0.12, -radius * 0.42, radius * 0.54, -radius * 0.42, radius * 0.72, 0);
-        ctx.bezierCurveTo(radius * 0.54, radius * 0.42, radius * 0.12, radius * 0.42, 0, 0);
-        ctx.fill();
-        ctx.stroke();
-      } else if (state.base === "crystal") {
-        polygon(ctx, radius * 0.4, 0, radius * 0.3, 4 + (i % 3), Math.PI / 4);
-        ctx.fill();
-        ctx.stroke();
-      } else if (state.base === "signal") {
-        ctx.strokeStyle = colors[i % colors.length];
-        ctx.lineWidth = 15;
-        ctx.beginPath();
-        ctx.arc(0, 0, radius * (0.26 + i * 0.035), -0.55, 0.55);
-        ctx.stroke();
-      } else {
-        ctx.beginPath();
-        ctx.arc(radius * 0.26, 0, radius * 0.28, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.arc(radius * 0.33, 0, radius * 0.08, 0, Math.PI * 2);
-        ctx.fillStyle = pal.paper;
-        ctx.fill();
-      }
-      ctx.restore();
+      total += 1;
+      rTotal += r;
+      gTotal += g;
+      bTotal += b;
+      brightnessTotal += brightness;
+      contrastTotal += Math.abs(brightness - 0.5);
+      textureTotal += Math.abs(brightness - previousBrightness);
+      previousBrightness = brightness;
     }
 
-    const inner = ctx.createRadialGradient(0, 0, radius * 0.05, 0, 0, radius * 0.42);
-    inner.addColorStop(0, pal.paper);
-    inner.addColorStop(1, colors[2]);
-    ctx.fillStyle = inner;
-    ctx.strokeStyle = pal.ink;
-    ctx.lineWidth = 10;
-    ctx.beginPath();
-    ctx.arc(0, 0, radius * 0.28, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-    ctx.fillStyle = pal.ink;
-    drawTextFit(ctx, "VOC", 0, 2, radius * 0.5, radius * 0.16, 900);
-    ctx.restore();
-  }
+    const palette = [...buckets.values()]
+      .sort((a, b) => (b.count * 2 + b.saturation / 32) - (a.count * 2 + a.saturation / 32))
+      .slice(0, 6)
+      .map((bucket) => rgbToHex(
+        Math.round(bucket.r / bucket.count),
+        Math.round(bucket.g / bucket.count),
+        Math.round(bucket.b / bucket.count)
+      ));
 
-  function drawStudio() {
-    const canvas = $("#studioCanvas");
-    if (!canvas) return;
-    const state = {
-      kind: activeMode("studioKind") || "art",
-      palette: value("studioPalette"),
-      base: value("studioBase"),
-      motif: value("studioMotif"),
-      text: value("studioText"),
-      complexity: number("studioComplexity"),
-      symmetry: number("studioSymmetry")
-    };
-    const pal = palette(state.palette);
-    const seed = hashText(JSON.stringify(state));
-    const rng = makeRng(seed);
-    const ctx = clearCanvas(canvas, pal);
-    const w = canvas.width;
-    const h = canvas.height;
-    const cx = w / 2;
-    const cy = h / 2;
-    const radius = Math.min(w, h) * 0.34;
-
-    if (state.kind === "tattoo") {
-      drawTattooArt(ctx, canvas, {
-        motif: state.base === "botanical" ? "botanical" : "geometric",
-        placement: "forearm",
-        flow: state.base === "signal" ? "spiral" : "vertical",
-        weight: Math.max(2, Math.round(state.symmetry / 2)),
-        detail: state.complexity,
-        accent: "black"
-      });
-    } else if (state.kind === "comic") {
-      drawComicArt(ctx, canvas, {
-        layout: "poster",
-        hero: state.text || "Variation Hero",
-        mood: "cosmic",
-        caption: "The remix changed everything.",
-        energy: state.complexity,
-        palette: state.palette
-      });
-    } else {
-      drawMotifs(ctx, state, pal, rng, cx, cy, radius);
-      drawCoreMark(ctx, state, pal, rng, cx, cy, radius);
-      if (state.kind === "icon") {
-        ctx.lineWidth = 24;
-        ctx.strokeStyle = pal.ink;
-        roundedRect(ctx, 120, 120, w - 240, h - 240, 130);
-        ctx.stroke();
-      }
-      if (state.kind === "logo") {
-        ctx.fillStyle = pal.ink;
-        drawTextFit(ctx, state.text || "Variation of Creation", cx, h - 150, w - 180, 78, 900);
-        ctx.fillStyle = pal.colors[1];
-        roundedRect(ctx, cx - 170, h - 96, 340, 18, 9);
-        ctx.fill();
-      }
-      if (state.kind === "art") {
-        ctx.strokeStyle = pal.ink;
-        ctx.lineWidth = 8;
-        ctx.globalAlpha = 0.65;
-        for (let i = 0; i < 9; i += 1) {
-          ctx.beginPath();
-          ctx.arc(cx, cy, radius * (0.45 + i * 0.07), rng() * 6, rng() * 6 + Math.PI);
-          ctx.stroke();
-        }
-        ctx.globalAlpha = 1;
-      }
-    }
-
-    $("#studioTitle").textContent = `${titleCase(state.kind)} Remix`;
-    renderRecipe("#studioRecipe", [
-      ["Format", titleCase(state.kind)],
-      ["Palette", pal.name],
-      ["Base", titleCase(state.base)],
-      ["Motif", titleCase(state.motif)],
-      ["Complexity", state.complexity],
-      ["Symmetry", state.symmetry]
-    ]);
-  }
-
-  function renderRecipe(selector, items) {
-    const target = $(selector);
-    if (!target) return;
-    target.innerHTML = items.map(([key, val]) => (
-      `<div class="recipe-item"><strong>${escapeHtml(key)}</strong><span>${escapeHtml(val)}</span></div>`
-    )).join("");
-  }
-
-  function escapeHtml(valueToEscape) {
-    return String(valueToEscape)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
-  }
-
-  function setSelectIfOption(id, nextValue) {
-    const el = document.getElementById(id);
-    if (!el || !nextValue) return;
-    if (Array.from(el.options).some((option) => option.value === nextValue)) {
-      el.value = nextValue;
-    }
-  }
-
-  function renderSeedDeck() {
-    const deck = $("#seedDeck");
-    if (!deck || !window.VOC_DB) return;
-
-    const kind = deck.dataset.seedKind;
-    const seeds = pickSeedDeckRows(kind);
-
-    deck.innerHTML = seeds.map((seed) => `
-      <article class="seed-card">
-        <canvas class="seed-preview seed-thumb" width="720" height="480" data-seed-canvas="${escapeHtml(seed.id)}" aria-label="${escapeHtml(seed.title)} preview"></canvas>
-        <div>
-          <small>${escapeHtml(seed.kind)} / ${escapeHtml(seed.vibe)}${seed.source_title ? " / SVGrepo" : ""}</small>
-          <h3>${escapeHtml(seed.title)}</h3>
-          <p>${escapeHtml(seed.prompt)}</p>
-        </div>
-        <button class="button" type="button" data-use-seed="${escapeHtml(seed.id)}">Use Vibe</button>
-      </article>
-    `).join("");
-
-    $$("[data-use-seed]", deck).forEach((button) => {
-      button.addEventListener("click", () => {
-        const seed = window.VOC_DB.getSeeds().find((item) => item.id === button.dataset.useSeed);
-        if (seed) applySeed(seed);
-      });
-    });
-    drawSeedPreviews(deck);
-  }
-
-  function pickSeedDeckRows(kind) {
-    if (!window.VOC_DB) return [];
-    if (kind && kind !== "all") return window.VOC_DB.getSeeds(kind).slice(0, 8);
-
-    const allSeeds = window.VOC_DB.getSeeds();
-    return ["art", "icon", "logo", "tattoo", "comic"].flatMap((seedKind) => {
-      return allSeeds.filter((seed) => seed.kind === seedKind).slice(0, 2);
-    });
-  }
-
-  function drawSeedPreviews(scope = document) {
-    if (!window.VOC_DB) return;
-    const seedMap = new Map(window.VOC_DB.getSeeds().map((seed) => [seed.id, seed]));
-    $$("[data-seed-canvas]", scope).forEach((canvas) => {
-      const seed = seedMap.get(canvas.dataset.seedCanvas);
-      if (seed) drawSeedPreview(canvas, seed);
-    });
-  }
-
-  function drawSeedPreview(canvas, seed) {
-    const ctx = canvas.getContext("2d");
-    const pal = palette(seed.palette);
-    const rng = makeRng(hashText(seed.id + seed.prompt));
-
-    if (seed.kind === "logo") {
-      clearCanvas(canvas, pal);
-      const state = {
-        name: seed.title,
-        mono: seed.control_c || seed.title.slice(0, 2).toUpperCase(),
-        shape: seed.control_a,
-        personality: seed.control_b,
-        palette: seed.palette,
-        detail: Number(seed.intensity || 5)
-      };
-      drawLogoMark(ctx, state, pal, rng, canvas.width * 0.3, canvas.height * 0.48, Math.min(canvas.width, canvas.height) * 0.23);
-      ctx.fillStyle = pal.ink;
-      drawTextFit(ctx, seed.title, canvas.width * 0.55, canvas.height * 0.42, canvas.width * 0.36, 44, 900, "left");
-      ctx.fillStyle = pal.colors[1];
-      roundedRect(ctx, canvas.width * 0.55, canvas.height * 0.56, canvas.width * 0.26, 12, 6);
-      ctx.fill();
-      return;
-    }
-
-    if (seed.kind === "tattoo") {
-      drawTattooArt(ctx, canvas, {
-        motif: seed.control_a,
-        placement: seed.control_b,
-        flow: seed.control_c,
-        weight: Math.max(2, Math.round(Number(seed.intensity || 5) / 2)),
-        detail: Number(seed.intensity || 6),
-        accent: "black"
-      });
-      return;
-    }
-
-    if (seed.kind === "comic") {
-      drawComicArt(ctx, canvas, {
-        layout: seed.control_a,
-        hero: seed.control_c || seed.title,
-        mood: seed.control_b,
-        caption: seed.prompt,
-        energy: Number(seed.intensity || 7),
-        palette: seed.palette
-      });
-      return;
-    }
-
-    const state = {
-      kind: seed.kind,
-      palette: seed.palette,
-      base: seed.control_a || "orbital",
-      motif: seed.control_b || "stars",
-      text: seed.control_c || seed.title,
-      complexity: Number(seed.intensity || 6),
-      symmetry: Math.max(3, Math.min(9, Number(seed.intensity || 6)))
-    };
-    clearCanvas(canvas, pal);
-    drawMotifs(ctx, state, pal, rng, canvas.width / 2, canvas.height / 2, Math.min(canvas.width, canvas.height) * 0.31);
-    drawCoreMark(ctx, state, pal, rng, canvas.width / 2, canvas.height / 2, Math.min(canvas.width, canvas.height) * 0.28);
-    if (seed.kind === "icon") {
-      ctx.strokeStyle = pal.ink;
-      ctx.lineWidth = 16;
-      roundedRect(ctx, canvas.width * 0.18, canvas.height * 0.14, canvas.width * 0.64, canvas.height * 0.72, 58);
-      ctx.stroke();
-    }
-  }
-
-  function applySeed(seed) {
-    if (page === "studio") {
-      setActiveMode("studioKind", seed.kind);
-      setSelectIfOption("studioPalette", seed.palette);
-      setSelectIfOption("studioBase", seed.control_a);
-      setSelectIfOption("studioMotif", seed.control_b);
-      $("#studioText").value = seed.control_c || seed.title;
-      $("#studioComplexity").value = seed.intensity || 6;
-      $("#studioComplexity").dispatchEvent(new Event("input"));
-      $("#studioSymmetry").value = Math.min(10, Math.max(2, Number(seed.intensity || 5)));
-      $("#studioSymmetry").dispatchEvent(new Event("input"));
-      drawStudio();
-      setStatus("studioStatus", "seed loaded");
-    }
-
-    if (page === "logos" && seed.kind === "logo") {
-      $("#logoName").value = seed.title;
-      $("#logoMono").value = seed.control_c || seed.title.slice(0, 2).toUpperCase();
-      setSelectIfOption("logoShape", seed.control_a);
-      setSelectIfOption("logoPersonality", seed.control_b);
-      setSelectIfOption("logoPalette", seed.palette);
-      $("#logoDetail").value = seed.intensity || 5;
-      $("#logoDetail").dispatchEvent(new Event("input"));
-      drawLogo();
-    }
-
-    if (page === "tattoos" && seed.kind === "tattoo") {
-      setSelectIfOption("tattooMotif", seed.control_a);
-      setSelectIfOption("tattooPlacement", seed.control_b);
-      setSelectIfOption("tattooFlow", seed.control_c);
-      $("#tattooDetail").value = seed.intensity || 6;
-      $("#tattooDetail").dispatchEvent(new Event("input"));
-      drawTattoo();
-    }
-
-    if (page === "comics" && seed.kind === "comic") {
-      setSelectIfOption("comicLayout", seed.control_a);
-      setSelectIfOption("comicMood", seed.control_b);
-      $("#comicHero").value = seed.control_c || seed.title;
-      $("#comicCaption").value = seed.prompt;
-      $("#comicEnergy").value = seed.intensity || 7;
-      $("#comicEnergy").dispatchEvent(new Event("input"));
-      setSelectIfOption("comicPalette", seed.palette);
-      drawComic();
-    }
-  }
-
-  function currentStudioRecipe() {
-    const kind = activeMode("studioKind") || "art";
-    return `A ${kind} remix using ${palette(value("studioPalette")).name}, ${value("studioBase")} structure, ${value("studioMotif")} motifs, complexity ${value("studioComplexity")}, symmetry ${value("studioSymmetry")}, and the text "${value("studioText")}".`;
-  }
-
-  function initStudio() {
-    bindModeGroup("studioKind", drawStudio);
-    ["studioPalette", "studioBase", "studioMotif", "studioText", "studioComplexity", "studioSymmetry"].forEach((id) => {
-      const el = document.getElementById(id);
-      if (el) el.addEventListener("input", drawStudio);
-    });
-    $("[data-action='shuffle-studio']").addEventListener("click", () => {
-      setActiveMode("studioKind", sample(studioOptions.kind));
-      setRandomSelect("studioPalette", studioOptions.palette);
-      setRandomSelect("studioBase", studioOptions.base);
-      setRandomSelect("studioMotif", studioOptions.motif);
-      $("#studioText").value = sample(studioOptions.text);
-      setRandomRange("studioComplexity", 2, 10);
-      setRandomRange("studioSymmetry", 2, 10);
-      drawStudio();
-      setStatus("studioStatus", "shuffled");
-    });
-    $("[data-action='save-studio']").addEventListener("click", () => {
-      saveCreation("studio", $("#studioCanvas"), currentStudioRecipe());
-      setStatus("studioStatus", "saved");
-    });
-    $("[data-action='download-studio']").addEventListener("click", () => downloadCanvas($("#studioCanvas"), "variation-of-creation"));
-    $("[data-action='copy-studio']").addEventListener("click", () => copyText(currentStudioRecipe(), "studioStatus"));
-    drawStudio();
-  }
-
-  function drawLogo() {
-    const canvas = $("#logoCanvas");
-    if (!canvas) return;
-    const state = {
-      name: value("logoName") || "Nova Craft",
-      mono: (value("logoMono") || "NC").slice(0, 4).toUpperCase(),
-      shape: value("logoShape"),
-      personality: value("logoPersonality"),
-      palette: value("logoPalette"),
-      detail: number("logoDetail")
-    };
-    const pal = palette(state.palette);
-    const rng = makeRng(hashText(JSON.stringify(state)));
-    const ctx = clearCanvas(canvas, pal);
-    const w = canvas.width;
-    const h = canvas.height;
-
-    $("#logoTitle").textContent = state.name;
-    ctx.fillStyle = mix(pal.paper, pal.colors[0], 0.08);
-    roundedRect(ctx, 72, 82, 382, 382, 82);
-    ctx.fill();
-    ctx.strokeStyle = pal.ink;
-    ctx.lineWidth = 12;
-    ctx.stroke();
-    drawLogoMark(ctx, state, pal, rng, 263, 273, 142);
-
-    ctx.fillStyle = pal.ink;
-    drawTextFit(ctx, state.name, 520, 230, 640, 82, 900, "left");
-    ctx.fillStyle = pal.colors[1];
-    roundedRect(ctx, 522, 300, 330, 20, 10);
-    ctx.fill();
-    ctx.fillStyle = pal.ink;
-    ctx.font = "700 32px Inter, Arial, sans-serif";
-    ctx.textAlign = "left";
-    ctx.textBaseline = "middle";
-    ctx.fillText(titleCase(state.personality), 522, 372);
-    ctx.fillStyle = pal.colors[2];
-    ctx.fillText(`${state.mono} / ${titleCase(state.shape)}`, 522, 418);
-
-    const y = 616;
-    ["Icon", "Badge", "Mono"].forEach((label, index) => {
-      const x = 90 + index * 382;
-      ctx.fillStyle = "#fffdf8";
-      roundedRect(ctx, x, y, 300, 190, 28);
-      ctx.fill();
-      ctx.strokeStyle = pal.ink;
-      ctx.lineWidth = 6;
-      ctx.stroke();
-      drawLogoMark(ctx, state, pal, rng, x + 88, y + 96, 54);
-      ctx.fillStyle = pal.ink;
-      drawTextFit(ctx, index === 0 ? state.mono : label, x + 200, y + 96, 150, index === 0 ? 46 : 32, 900);
-    });
-  }
-
-  function drawLogoMark(ctx, state, pal, rng, cx, cy, radius) {
-    ctx.save();
-    ctx.translate(cx, cy);
-    ctx.strokeStyle = pal.ink;
-    ctx.lineWidth = Math.max(6, radius * 0.08);
-    ctx.lineJoin = "round";
-    ctx.lineCap = "round";
-    const colors = pal.colors;
-
-    if (state.shape === "badge") {
-      polygon(ctx, 0, 0, radius, 6, Math.PI / 6);
-      ctx.fillStyle = colors[0];
-      ctx.fill();
-      ctx.stroke();
-    } else if (state.shape === "spark") {
-      star(ctx, 0, 0, radius, radius * 0.38, 8);
-      ctx.fillStyle = colors[1];
-      ctx.fill();
-      ctx.stroke();
-    } else if (state.shape === "wave") {
-      ctx.fillStyle = colors[2];
-      ctx.beginPath();
-      ctx.moveTo(-radius, 0);
-      ctx.bezierCurveTo(-radius * 0.45, -radius, radius * 0.28, radius, radius, -radius * 0.15);
-      ctx.bezierCurveTo(radius * 0.35, radius * 0.2, -radius * 0.26, -radius * 0.2, -radius, radius * 0.4);
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
-    } else if (state.shape === "facets") {
-      for (let i = 0; i < 5; i += 1) {
-        ctx.rotate(Math.PI * 2 / 5);
-        polygon(ctx, radius * 0.36, 0, radius * 0.45, 3 + (i % 2), rng() * 2);
-        ctx.fillStyle = colors[i % colors.length];
-        ctx.fill();
-        ctx.stroke();
-      }
-    } else {
-      ctx.beginPath();
-      ctx.arc(0, 0, radius, 0, Math.PI * 2);
-      ctx.fillStyle = colors[3];
-      ctx.fill();
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.arc(0, 0, radius * 0.55, 0, Math.PI * 2);
-      ctx.stroke();
-    }
-
-    ctx.fillStyle = "#fffdf8";
-    ctx.strokeStyle = pal.ink;
-    ctx.lineWidth = Math.max(4, radius * 0.05);
-    ctx.beginPath();
-    ctx.arc(0, 0, radius * 0.42, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-    ctx.fillStyle = pal.ink;
-    drawTextFit(ctx, state.mono, 0, 1, radius * 0.68, radius * 0.34, 900);
-    ctx.restore();
-  }
-
-  function initLogo() {
-    ["logoName", "logoMono", "logoShape", "logoPersonality", "logoPalette", "logoDetail"].forEach((id) => {
-      document.getElementById(id).addEventListener("input", drawLogo);
-    });
-    $("[data-action='shuffle-logo']").addEventListener("click", () => {
-      const index = Math.floor(Math.random() * logoOptions.names.length);
-      $("#logoName").value = logoOptions.names[index];
-      $("#logoMono").value = logoOptions.mono[index];
-      setRandomSelect("logoShape", logoOptions.shape);
-      setRandomSelect("logoPersonality", logoOptions.personality);
-      setRandomSelect("logoPalette", logoOptions.palette);
-      setRandomRange("logoDetail", 2, 10);
-      drawLogo();
-    });
-    $("[data-action='save-logo']").addEventListener("click", () => saveCreation("logo", $("#logoCanvas"), `${value("logoName")} logo with ${value("logoShape")} mark and ${palette(value("logoPalette")).name} palette.`));
-    $("[data-action='download-logo']").addEventListener("click", () => downloadCanvas($("#logoCanvas"), `${slug(value("logoName"))}-logo`));
-    drawLogo();
-  }
-
-  function tattooAccentColor(accent) {
+    const safeTotal = Math.max(total, 1);
     return {
-      black: "#111111",
-      red: "#c94336",
-      teal: "#0f9b91",
-      violet: "#6954c9"
-    }[accent] || "#111111";
+      palette: palette.length ? palette : ["#0e8075", "#d55d42", "#f2bd4e"],
+      average: rgbToHex(Math.round(rTotal / safeTotal), Math.round(gTotal / safeTotal), Math.round(bTotal / safeTotal)),
+      brightness: brightnessTotal / safeTotal,
+      contrast: clamp(contrastTotal / safeTotal, 0, 1),
+      texture: clamp(textureTotal / safeTotal * 2.8, 0, 1)
+    };
+  },
+
+  compose() {
+    const format = formats[state.format];
+    elements.canvas.width = format.width;
+    elements.canvas.height = format.height;
+
+    const width = elements.canvas.width;
+    const height = elements.canvas.height;
+    const palette = collectPalette();
+    const art = artProfiles[state.artType];
+    const vibe = vibeProfiles[state.vibe];
+
+    drawBackground(width, height, palette, vibe);
+    drawCompositionScaffold(width, height, palette, vibe);
+
+    state.images.forEach((layer, index) => {
+      drawLayer(layer, index, width, height, art, vibe, palette);
+    });
+
+    drawSynthesisDetails(width, height, palette, art, vibe);
+    drawIntentTreatment(width, height, palette, state.outputIntent);
+    drawSelection(width, height);
+
+    const recipe = buildRecipe(palette);
+    state.lastRecipe = recipe;
+    return recipe;
+  }
+};
+
+function initialize() {
+  bindEvents();
+  setFormat("square");
+  updateInspector();
+  renderSourceLibrary();
+  renderArtwork();
+  loadStarterSet();
+}
+
+function bindEvents() {
+  elements.imageInput.addEventListener("change", (event) => {
+    handleFiles([...event.target.files]);
+    event.target.value = "";
+  });
+
+  ["dragenter", "dragover"].forEach((eventName) => {
+    elements.dropZone.addEventListener(eventName, (event) => {
+      event.preventDefault();
+      elements.dropZone.classList.add("dragging");
+    });
+  });
+
+  ["dragleave", "drop"].forEach((eventName) => {
+    elements.dropZone.addEventListener(eventName, (event) => {
+      event.preventDefault();
+      elements.dropZone.classList.remove("dragging");
+    });
+  });
+
+  elements.dropZone.addEventListener("drop", (event) => {
+    handleFiles([...event.dataTransfer.files]);
+  });
+
+  document.querySelectorAll("[data-art-type]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.artType = button.dataset.artType;
+      syncActiveButtons("[data-art-type]", state.artType, "artType");
+      renderSourceLibrary();
+      state.images.forEach((layer, index) => {
+        layer.blendMode = layer.userBlendMode || defaultBlend(index);
+        layer.opacity = Math.min(layer.opacity, artProfiles[state.artType].opacity + 0.12);
+      });
+      renderArtwork();
+    });
+  });
+
+  document.querySelectorAll("[data-vibe]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.vibe = button.dataset.vibe;
+      syncActiveButtons("[data-vibe]", state.vibe, "vibe");
+      renderArtwork();
+    });
+  });
+
+  document.querySelectorAll("[data-format]").forEach((button) => {
+    button.addEventListener("click", () => setFormat(button.dataset.format));
+  });
+
+  elements.outputIntent.addEventListener("change", () => {
+    state.outputIntent = elements.outputIntent.value;
+    renderArtwork();
+  });
+
+  elements.textPrompt.addEventListener("input", () => {
+    state.prompt = elements.textPrompt.value.trim();
+    renderArtwork();
+  });
+
+  elements.opacityRange.addEventListener("input", () => {
+    const layer = selectedLayer();
+    if (!layer) return;
+    layer.opacity = Number(elements.opacityRange.value) / 100;
+    renderArtwork();
+  });
+
+  elements.scaleRange.addEventListener("input", () => {
+    const layer = selectedLayer();
+    if (!layer) return;
+    layer.scale = Number(elements.scaleRange.value) / 100;
+    renderArtwork();
+  });
+
+  elements.rotationRange.addEventListener("input", () => {
+    const layer = selectedLayer();
+    if (!layer) return;
+    layer.rotation = Number(elements.rotationRange.value);
+    renderArtwork();
+  });
+
+  elements.blendModeSelect.addEventListener("change", () => {
+    const layer = selectedLayer();
+    if (!layer) return;
+    layer.blendMode = elements.blendModeSelect.value;
+    layer.userBlendMode = layer.blendMode;
+    renderArtwork();
+  });
+
+  elements.shuffleButton.addEventListener("click", () => {
+    state.seed = Math.random() * 20;
+    layoutLayers(true);
+    renderArtwork();
+  });
+
+  elements.fitButton.addEventListener("click", () => {
+    const layer = selectedLayer();
+    if (!layer) return;
+    layer.x = 0.5;
+    layer.y = 0.5;
+    layer.scale = 1.08;
+    layer.rotation = 0;
+    syncLayerControls(layer);
+    renderArtwork();
+  });
+
+  elements.removeButton.addEventListener("click", () => {
+    const layer = selectedLayer();
+    if (!layer) return;
+    state.images = state.images.filter((item) => item.id !== layer.id);
+    state.selectedId = state.images[0]?.id || null;
+    renderArtwork();
+  });
+
+  elements.sampleButton.addEventListener("click", () => loadStarterSet(true));
+  elements.downloadButton.addEventListener("click", downloadArtwork);
+  elements.blendButton.addEventListener("click", runBlendReaction);
+  elements.loadSourcesButton.addEventListener("click", () => loadSourcesForArtType(state.artType));
+  elements.loadAllSourcesButton.addEventListener("click", loadAllSourceTypes);
+  elements.addSourceBatchButton.addEventListener("click", addSourceBatch);
+
+  elements.canvas.addEventListener("pointerdown", beginCanvasDrag);
+  window.addEventListener("pointermove", continueCanvasDrag);
+  window.addEventListener("pointerup", endCanvasDrag);
+  window.addEventListener("resize", () => renderArtwork());
+}
+
+async function handleFiles(files) {
+  const imageFiles = files.filter((file) => file.type.startsWith("image/") || /\.(png|jpe?g|webp|gif|svg)$/i.test(file.name));
+  if (!imageFiles.length) return;
+
+  elements.reactionStatus.textContent = "Reading images";
+  const images = await Promise.all(imageFiles.map(readImageFile));
+  for (const item of images.filter(Boolean)) {
+    await addImageSource(item.src, item.name);
+  }
+  state.seed = Math.random() * 20;
+  layoutLayers(true);
+  selectLayer(state.images.at(-1)?.id || state.selectedId);
+  renderArtwork();
+}
+
+function readImageFile(file) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve({ src: reader.result, name: file.name.replace(/\.[^.]+$/, "") });
+    reader.onerror = () => resolve(null);
+    reader.readAsDataURL(file);
+  });
+}
+
+function addImageSource(src, name, sourceMeta = null) {
+  return new Promise((resolve) => {
+    const image = new Image();
+    if (/^https?:\/\//i.test(src)) {
+      image.crossOrigin = "anonymous";
+    }
+    image.onload = () => {
+      let analysis;
+      try {
+        analysis = VariationAI.analyzeImage(image);
+      } catch (error) {
+        analysis = {
+          palette: vibeProfiles[state.vibe].colors,
+          average: vibeProfiles[state.vibe].colors[0],
+          brightness: 0.55,
+          contrast: 0.28,
+          texture: 0.24
+        };
+      }
+      const index = state.images.length;
+      const layer = {
+        id: makeId(),
+        name,
+        src,
+        sourceMeta,
+        image,
+        width: image.naturalWidth || image.width,
+        height: image.naturalHeight || image.height,
+        analysis,
+        x: 0.5,
+        y: 0.5,
+        scale: 1,
+        rotation: 0,
+        opacity: artProfiles[state.artType].opacity,
+        blendMode: defaultBlend(index),
+        seed: Math.random() * 1000
+      };
+
+      state.images.push(layer);
+      if (!state.selectedId) state.selectedId = layer.id;
+      resolve(layer);
+    };
+    image.onerror = () => resolve(null);
+    image.src = src;
+  });
+}
+
+async function loadStarterSet(replace = false) {
+  if (!replace && state.images.length) return;
+  if (replace) {
+    state.images = [];
+    state.selectedId = null;
   }
 
-  function drawTattooArt(ctx, canvas, state) {
-    const w = canvas.width;
-    const h = canvas.height;
-    const accent = tattooAccentColor(state.accent);
-    ctx.fillStyle = "#fffdf8";
-    ctx.fillRect(0, 0, w, h);
-    ctx.strokeStyle = "#111111";
-    ctx.fillStyle = "#111111";
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
-    ctx.lineWidth = 4 + state.weight * 1.4;
+  const starters = [
+    createStarterImage("botanical", "botanical sketch"),
+    createStarterImage("portrait", "portrait color study"),
+    createStarterImage("texture", "paper texture"),
+    createStarterImage("light", "light fragment")
+  ];
 
-    const cx = w / 2;
-    const top = h * 0.13;
-    const bottom = h * 0.83;
-    ctx.globalAlpha = 0.08;
-    ctx.lineWidth = 2;
+  for (const starter of starters) {
+    await addImageSource(starter.src, starter.name);
+  }
+
+  state.seed = 2.76;
+  layoutLayers(true);
+  selectLayer(state.images[0]?.id);
+  renderArtwork();
+}
+
+function createStarterImage(kind, name) {
+  const canvas = document.createElement("canvas");
+  const starterCtx = canvas.getContext("2d");
+  canvas.width = 980;
+  canvas.height = 980;
+
+  const bg = starterCtx.createLinearGradient(0, 0, 980, 980);
+  bg.addColorStop(0, kind === "portrait" ? "#ffe0c7" : kind === "texture" ? "#f6e9c8" : "#e5f1e7");
+  bg.addColorStop(1, kind === "light" ? "#3169a4" : kind === "texture" ? "#b64b45" : "#0e8075");
+  starterCtx.fillStyle = bg;
+  starterCtx.fillRect(0, 0, 980, 980);
+
+  if (kind === "botanical") {
+    starterCtx.strokeStyle = "#173f34";
+    starterCtx.lineWidth = 10;
+    for (let i = 0; i < 13; i += 1) {
+      const x = 140 + i * 58;
+      starterCtx.beginPath();
+      starterCtx.moveTo(x, 860);
+      starterCtx.bezierCurveTo(x - 80, 600, x + 110, 460, x + 25, 180);
+      starterCtx.stroke();
+      starterCtx.fillStyle = i % 2 ? "#d55d42" : "#f2bd4e";
+      starterCtx.beginPath();
+      starterCtx.ellipse(x + 28, 380 + (i % 4) * 52, 46, 90, -0.7, 0, Math.PI * 2);
+      starterCtx.fill();
+    }
+  }
+
+  if (kind === "portrait") {
+    starterCtx.fillStyle = "#7f3655";
+    starterCtx.beginPath();
+    starterCtx.ellipse(510, 470, 250, 330, -0.1, 0, Math.PI * 2);
+    starterCtx.fill();
+    starterCtx.fillStyle = "#f7c6a1";
+    starterCtx.beginPath();
+    starterCtx.ellipse(500, 455, 165, 220, 0.05, 0, Math.PI * 2);
+    starterCtx.fill();
+    starterCtx.fillStyle = "#13251f";
+    starterCtx.fillRect(390, 425, 48, 14);
+    starterCtx.fillRect(555, 425, 48, 14);
+    starterCtx.strokeStyle = "#3868a7";
+    starterCtx.lineWidth = 24;
+    starterCtx.beginPath();
+    starterCtx.arc(500, 680, 250, Math.PI * 1.06, Math.PI * 1.94);
+    starterCtx.stroke();
+  }
+
+  if (kind === "texture") {
+    for (let i = 0; i < 260; i += 1) {
+      starterCtx.fillStyle = i % 3 === 0 ? "rgba(14,128,117,.22)" : i % 3 === 1 ? "rgba(151,64,109,.24)" : "rgba(196,138,36,.24)";
+      starterCtx.fillRect(Math.random() * 980, Math.random() * 980, 18 + Math.random() * 72, 3 + Math.random() * 16);
+    }
+    starterCtx.strokeStyle = "rgba(20,20,20,.22)";
+    starterCtx.lineWidth = 3;
+    for (let i = 0; i < 40; i += 1) {
+      starterCtx.beginPath();
+      starterCtx.moveTo(Math.random() * 980, Math.random() * 980);
+      starterCtx.lineTo(Math.random() * 980, Math.random() * 980);
+      starterCtx.stroke();
+    }
+  }
+
+  if (kind === "light") {
+    starterCtx.globalCompositeOperation = "screen";
+    for (let i = 0; i < 18; i += 1) {
+      const grd = starterCtx.createRadialGradient(490, 490, 10, 490, 490, 420 + i * 12);
+      grd.addColorStop(0, i % 2 ? "rgba(242,189,78,.4)" : "rgba(255,255,255,.42)");
+      grd.addColorStop(1, "rgba(255,255,255,0)");
+      starterCtx.fillStyle = grd;
+      starterCtx.fillRect(0, 0, 980, 980);
+    }
+    starterCtx.globalCompositeOperation = "source-over";
+    starterCtx.strokeStyle = "#f2bd4e";
+    starterCtx.lineWidth = 12;
+    for (let i = 0; i < 9; i += 1) {
+      starterCtx.beginPath();
+      starterCtx.moveTo(100 + i * 95, 140);
+      starterCtx.quadraticCurveTo(520, 420 + i * 15, 820 - i * 50, 860);
+      starterCtx.stroke();
+    }
+  }
+
+  return { src: canvas.toDataURL("image/png"), name };
+}
+
+function readSourceCache() {
+  try {
+    const cached = window.localStorage?.getItem(sourceCacheKey);
+    if (!cached) return {};
+    const parsed = JSON.parse(cached);
+    return typeof parsed === "object" && parsed ? parsed : {};
+  } catch (error) {
+    return {};
+  }
+}
+
+function writeSourceCache() {
+  try {
+    window.localStorage?.setItem(sourceCacheKey, JSON.stringify(state.sourceLibrary));
+  } catch (error) {
+    // Cache pressure should not block the studio.
+  }
+}
+
+async function loadSourcesForArtType(artType = state.artType) {
+  if (state.sourceLoading) return;
+  const existing = state.sourceLibrary[artType] || [];
+  if (existing.length >= sourceLibraryLimit) {
+    renderSourceLibrary();
+    return;
+  }
+
+  state.sourceLoading = true;
+  renderSourceLibrary(`Loading ${artProfiles[artType].label.toLowerCase()}`);
+  try {
+    state.sourceLibrary[artType] = await fetchCommonsForArtType(artType, sourceLibraryLimit);
+    writeSourceCache();
+    renderSourceLibrary();
+  } catch (error) {
+    renderSourceLibrary("Could not load sources");
+  } finally {
+    state.sourceLoading = false;
+    renderSourceLibrary();
+  }
+}
+
+async function loadAllSourceTypes() {
+  if (state.sourceLoading) return;
+  state.sourceLoading = true;
+  const artTypes = Object.keys(artProfiles);
+
+  try {
+    for (const artType of artTypes) {
+      const existing = state.sourceLibrary[artType] || [];
+      if (existing.length < sourceLibraryLimit) {
+        renderSourceLibrary(`Loading ${artProfiles[artType].label.toLowerCase()}`);
+        state.sourceLibrary[artType] = await fetchCommonsForArtType(artType, sourceLibraryLimit);
+        writeSourceCache();
+      }
+    }
+  } catch (error) {
+    renderSourceLibrary("Some sources could not load");
+  } finally {
+    state.sourceLoading = false;
+    renderSourceLibrary();
+  }
+}
+
+async function fetchCommonsForArtType(artType, limit) {
+  const existing = state.sourceLibrary[artType] || [];
+  const collected = [...existing];
+  const seen = new Set(existing.map((item) => item.id || item.url));
+  const queries = sourceLibraryQueries[artType] || sourceLibraryQueries["mixed-media"];
+
+  for (const query of queries) {
+    let continuation = {};
+    let attempts = 0;
+
+    while (collected.length < limit && attempts < 4) {
+      attempts += 1;
+      const page = await fetchCommonsQuery(query, continuation);
+      page.items.forEach((item) => {
+        const key = item.id || item.url;
+        if (!seen.has(key) && collected.length < limit) {
+          seen.add(key);
+          collected.push({ ...item, artType });
+        }
+      });
+
+      if (!page.continuation) break;
+      continuation = page.continuation;
+    }
+
+    if (collected.length >= limit) break;
+  }
+
+  return collected.slice(0, limit);
+}
+
+async function fetchCommonsQuery(query, continuation = {}) {
+  const params = new URLSearchParams({
+    action: "query",
+    format: "json",
+    origin: "*",
+    generator: "search",
+    gsrnamespace: "6",
+    gsrlimit: "50",
+    gsrsearch: query,
+    prop: "imageinfo",
+    iiprop: "url|mime|extmetadata",
+    iiurlwidth: "900"
+  });
+
+  Object.entries(continuation).forEach(([key, value]) => {
+    params.set(key, value);
+  });
+
+  const response = await fetch(`${commonsApi}?${params.toString()}`);
+  if (!response.ok) throw new Error("Commons request failed");
+
+  const data = await response.json();
+  const pages = Object.values(data.query?.pages || {});
+  return {
+    items: pages.map(normalizeCommonsItem).filter(Boolean),
+    continuation: data.continue || null
+  };
+}
+
+function normalizeCommonsItem(page) {
+  const info = page.imageinfo?.[0];
+  if (!info || !info.url || !info.mime?.startsWith("image/")) return null;
+
+  const metadata = info.extmetadata || {};
+  const title = cleanText(metadata.ObjectName?.value || page.title.replace(/^File:/i, ""));
+  const artist = cleanText(metadata.Artist?.value || metadata.Credit?.value || "Wikimedia Commons");
+  const license = cleanText(metadata.LicenseShortName?.value || metadata.UsageTerms?.value || "Commons");
+  const pageUrl = `https://commons.wikimedia.org/wiki/${encodeURIComponent(page.title.replaceAll(" ", "_"))}`;
+  const licenseUrl = metadata.LicenseUrl?.value || pageUrl;
+
+  if (/non-free|fair use|copyrighted/i.test(license)) return null;
+
+  return {
+    id: String(page.pageid),
+    title: title || page.title.replace(/^File:/i, ""),
+    artist,
+    license,
+    licenseUrl,
+    pageUrl,
+    url: info.url,
+    thumb: info.thumburl || info.url
+  };
+}
+
+function renderSourceLibrary(message = "") {
+  const items = state.sourceLibrary[state.artType] || [];
+  const label = artProfiles[state.artType].label;
+  elements.sourceLibraryGrid.replaceChildren();
+  elements.sourceLibraryStatus.textContent = message || `${items.length}/${sourceLibraryLimit} ${label}`;
+  elements.loadSourcesButton.disabled = state.sourceLoading;
+  elements.loadAllSourcesButton.disabled = state.sourceLoading;
+  elements.addSourceBatchButton.disabled = state.sourceLoading || !items.length;
+
+  items.slice(0, sourceLibraryLimit).forEach((item) => {
+    const card = document.createElement("div");
+    card.className = "source-card";
+
+    const image = document.createElement("img");
+    image.src = item.thumb || item.url;
+    image.alt = item.title;
+    image.loading = "lazy";
+
+    const link = document.createElement("a");
+    link.href = item.pageUrl;
+    link.target = "_blank";
+    link.rel = "noreferrer";
+    link.title = `${item.license} source`;
+    link.textContent = "i";
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = "Use";
+    button.addEventListener("click", () => addSourceToCanvas(item));
+
+    card.append(image, link, button);
+    elements.sourceLibraryGrid.append(card);
+  });
+}
+
+async function addSourceBatch() {
+  const items = state.sourceLibrary[state.artType] || [];
+  if (!items.length || state.sourceLoading) return;
+
+  state.sourceLoading = true;
+  renderSourceLibrary("Adding sources");
+  const start = Math.max(0, state.images.filter((layer) => layer.sourceMeta?.artType === state.artType).length % Math.max(items.length, 1));
+  const batch = [...items.slice(start, start + 12), ...items.slice(0, Math.max(0, start + 12 - items.length))].slice(0, 12);
+
+  for (const item of batch) {
+    await addSourceToCanvas(item, false);
+  }
+
+  state.seed = Math.random() * 20;
+  layoutLayers(true);
+  state.sourceLoading = false;
+  selectLayer(state.images.at(-1)?.id || state.selectedId);
+  renderSourceLibrary();
+}
+
+async function addSourceToCanvas(item, shouldRender = true) {
+  const name = item.title.length > 48 ? `${item.title.slice(0, 45)}...` : item.title;
+  const layer = await addImageSource(item.thumb || item.url, name, {
+    title: item.title,
+    artist: item.artist,
+    license: item.license,
+    licenseUrl: item.licenseUrl,
+    pageUrl: item.pageUrl,
+    artType: item.artType || state.artType
+  });
+
+  if (layer && shouldRender) {
+    state.seed = Math.random() * 20;
+    layoutLayers(true);
+    selectLayer(layer.id);
+  }
+}
+
+function layoutLayers(force = false) {
+  if (!force && state.dirtyLayout) return;
+  const count = Math.max(state.images.length, 1);
+  state.images.forEach((layer, index) => {
+    const angle = state.seed + index * ((Math.PI * 2) / count);
+    const ring = count < 3 ? 0.13 : 0.16 + (index % 3) * 0.045;
+    layer.x = clamp(0.5 + Math.cos(angle) * ring, 0.18, 0.82);
+    layer.y = clamp(0.5 + Math.sin(angle) * ring * 0.76, 0.18, 0.82);
+    layer.scale = clamp(1.12 - count * 0.045 + (index % 2) * 0.08, 0.64, 1.24);
+    layer.rotation = Math.round(Math.sin(angle * 1.7) * 17);
+    layer.opacity = artProfiles[state.artType].opacity;
+    layer.blendMode = layer.userBlendMode || defaultBlend(index);
+  });
+}
+
+function renderArtwork() {
+  const recipe = VariationAI.compose();
+  renderAssets();
+  updateInspector(recipe);
+}
+
+function drawBackground(width, height, palette, vibe) {
+  ctx.clearRect(0, 0, width, height);
+  ctx.fillStyle = "#f7f4ed";
+  ctx.fillRect(0, 0, width, height);
+
+  const gradient = ctx.createLinearGradient(0, 0, width, height);
+  gradient.addColorStop(0, mixHex(palette[0], vibe.colors[0], 0.44));
+  gradient.addColorStop(0.48, mixHex(palette[1] || palette[0], vibe.colors[1], 0.34));
+  gradient.addColorStop(1, mixHex(palette[2] || palette[0], vibe.colors[2], 0.44));
+  ctx.globalAlpha = 0.74;
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, width, height);
+  ctx.globalAlpha = 1;
+
+  const paper = ctx.createLinearGradient(width, 0, 0, height);
+  paper.addColorStop(0, "rgba(255,255,255,.32)");
+  paper.addColorStop(0.5, "rgba(255,255,255,0)");
+  paper.addColorStop(1, "rgba(20,25,23,.18)");
+  ctx.fillStyle = paper;
+  ctx.fillRect(0, 0, width, height);
+}
+
+function drawCompositionScaffold(width, height, palette, vibe) {
+  ctx.save();
+  ctx.globalAlpha = 0.16;
+  ctx.lineWidth = Math.max(8, Math.min(width, height) * 0.008);
+  ctx.strokeStyle = vibe.line;
+
+  for (let i = 0; i < 7; i += 1) {
+    const offset = (i - 3) * Math.min(width, height) * 0.1;
     ctx.beginPath();
-    ctx.moveTo(cx, top - 40);
-    ctx.lineTo(cx, bottom + 40);
+    ctx.moveTo(width * -0.05, height * (0.2 + i * 0.1));
+    ctx.bezierCurveTo(width * 0.25, height * 0.06 + offset, width * 0.64, height * 0.92 - offset, width * 1.05, height * (0.28 + i * 0.08));
     ctx.stroke();
-    ctx.globalAlpha = 1;
-    ctx.lineWidth = 4 + state.weight * 1.4;
-
-    if (state.flow === "band") {
-      for (let i = 0; i < state.detail + 4; i += 1) {
-        const y = top + i * ((bottom - top) / (state.detail + 3));
-        ctx.beginPath();
-        ctx.moveTo(w * 0.18, y);
-        ctx.bezierCurveTo(w * 0.35, y - 50, w * 0.65, y + 50, w * 0.82, y);
-        ctx.stroke();
-      }
-    } else {
-      ctx.beginPath();
-      ctx.moveTo(cx, top);
-      for (let i = 0; i <= 9; i += 1) {
-        const y = top + (bottom - top) * i / 9;
-        const offset = state.flow === "spiral" ? Math.sin(i * 1.35) * 82 : state.flow === "crescent" ? Math.sin(i * 0.58) * 128 : 0;
-        ctx.lineTo(cx + offset, y);
-      }
-      ctx.stroke();
-    }
-
-    drawTattooMotif(ctx, state, cx, (top + bottom) / 2, Math.min(w, h) * 0.3, accent);
-
-    ctx.strokeStyle = accent;
-    ctx.lineWidth = Math.max(3, state.weight);
-    for (let i = 0; i < state.detail + 4; i += 1) {
-      const angle = i * Math.PI * 2 / (state.detail + 4);
-      const x = cx + Math.cos(angle) * (80 + i * 9);
-      const y = h * 0.48 + Math.sin(angle) * (170 + i * 6);
-      if (state.motif === "botanical") {
-        ctx.beginPath();
-        ctx.ellipse(x, y, 18 + i, 42 + i * 2, angle, 0, Math.PI * 2);
-        ctx.stroke();
-      } else {
-        polygon(ctx, x, y, 18 + i, 3 + (i % 4), angle);
-        ctx.stroke();
-      }
-    }
-
-    ctx.fillStyle = "#111111";
-    ctx.font = "800 30px Inter, Arial, sans-serif";
-    ctx.textAlign = "center";
-    ctx.fillText(`${titleCase(state.motif)} / ${titleCase(state.placement)}`, cx, h - 72);
   }
 
-  function drawTattooMotif(ctx, state, cx, cy, radius, accent) {
-    ctx.save();
-    ctx.translate(cx, cy);
-    ctx.strokeStyle = "#111111";
-    ctx.fillStyle = "transparent";
-
-    if (state.motif === "celestial") {
-      ctx.beginPath();
-      ctx.arc(0, 0, radius * 0.42, Math.PI * 0.15, Math.PI * 1.8);
-      ctx.stroke();
-      ctx.strokeStyle = accent;
-      for (let i = 0; i < 8; i += 1) {
-        star(ctx, Math.cos(i) * radius * 0.55, Math.sin(i * 1.4) * radius * 0.55, 18, 8, 5);
-        ctx.stroke();
-      }
-    } else if (state.motif === "mythic") {
-      ctx.beginPath();
-      ctx.moveTo(0, -radius * 0.8);
-      ctx.bezierCurveTo(radius * 0.52, -radius * 0.22, radius * 0.36, radius * 0.42, 0, radius * 0.8);
-      ctx.bezierCurveTo(-radius * 0.36, radius * 0.42, -radius * 0.52, -radius * 0.22, 0, -radius * 0.8);
-      ctx.stroke();
-      ctx.strokeStyle = accent;
-      ctx.beginPath();
-      ctx.moveTo(-radius * 0.46, -radius * 0.24);
-      ctx.lineTo(radius * 0.46, -radius * 0.24);
-      ctx.moveTo(-radius * 0.32, radius * 0.22);
-      ctx.lineTo(radius * 0.32, radius * 0.22);
-      ctx.stroke();
-    } else if (state.motif === "geometric") {
-      for (let i = 0; i < 5; i += 1) {
-        polygon(ctx, 0, 0, radius * (0.25 + i * 0.12), 3 + (i % 4), Math.PI / 6 + i);
-        ctx.stroke();
-      }
-    } else if (state.motif === "wave") {
-      for (let i = -2; i <= 2; i += 1) {
-        ctx.beginPath();
-        ctx.moveTo(-radius, i * 42);
-        ctx.bezierCurveTo(-radius * 0.4, i * 42 - 82, radius * 0.4, i * 42 + 82, radius, i * 42);
-        ctx.stroke();
-      }
-    } else {
-      for (let i = 0; i < 10; i += 1) {
-        ctx.save();
-        ctx.rotate(i * Math.PI * 2 / 10);
-        ctx.beginPath();
-        ctx.ellipse(0, -radius * 0.36, radius * 0.12, radius * 0.42, 0, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.restore();
-      }
-    }
-    ctx.restore();
-  }
-
-  function drawTattoo() {
-    const canvas = $("#tattooCanvas");
-    if (!canvas) return;
-    const state = {
-      motif: value("tattooMotif"),
-      placement: value("tattooPlacement"),
-      flow: value("tattooFlow"),
-      weight: number("tattooWeight"),
-      detail: number("tattooDetail"),
-      accent: value("tattooAccent")
-    };
-    const ctx = canvas.getContext("2d");
-    drawTattooArt(ctx, canvas, state);
-    $("#tattooTitle").textContent = `${titleCase(state.motif)} ${titleCase(state.placement)}`;
-  }
-
-  function initTattoo() {
-    ["tattooMotif", "tattooPlacement", "tattooFlow", "tattooWeight", "tattooDetail", "tattooAccent"].forEach((id) => {
-      document.getElementById(id).addEventListener("input", drawTattoo);
-    });
-    $("[data-action='shuffle-tattoo']").addEventListener("click", () => {
-      setRandomSelect("tattooMotif", tattooOptions.motif);
-      setRandomSelect("tattooPlacement", tattooOptions.placement);
-      setRandomSelect("tattooFlow", tattooOptions.flow);
-      setRandomSelect("tattooAccent", tattooOptions.accent);
-      setRandomRange("tattooWeight", 1, 10);
-      setRandomRange("tattooDetail", 2, 10);
-      drawTattoo();
-    });
-    $("[data-action='save-tattoo']").addEventListener("click", () => saveCreation("tattoo", $("#tattooCanvas"), `${titleCase(value("tattooMotif"))} tattoo for ${value("tattooPlacement")} with ${value("tattooFlow")} flow.`));
-    $("[data-action='download-tattoo']").addEventListener("click", () => downloadCanvas($("#tattooCanvas"), `${value("tattooMotif")}-tattoo`));
-    drawTattoo();
-  }
-
-  function drawComicArt(ctx, canvas, state) {
-    const pal = palette(state.palette);
-    const w = canvas.width;
-    const h = canvas.height;
-    const rng = makeRng(hashText(JSON.stringify(state)));
-    ctx.fillStyle = pal.paper;
-    ctx.fillRect(0, 0, w, h);
-    ctx.fillStyle = pal.ink;
-    ctx.fillRect(42, 42, w - 84, h - 84);
-
-    const panels = comicPanels(state.layout, w, h);
-    panels.forEach((panel, index) => {
-      ctx.save();
-      roundedRect(ctx, panel.x, panel.y, panel.w, panel.h, 12);
-      ctx.clip();
-      const grad = ctx.createLinearGradient(panel.x, panel.y, panel.x + panel.w, panel.y + panel.h);
-      grad.addColorStop(0, pal.colors[(index + 1) % pal.colors.length]);
-      grad.addColorStop(1, pal.colors[(index + 3) % pal.colors.length]);
-      ctx.fillStyle = grad;
-      ctx.fillRect(panel.x, panel.y, panel.w, panel.h);
-      drawComicTexture(ctx, panel, pal, rng, state.energy);
-      drawHero(ctx, panel, pal, index, state.energy);
-      drawSpeech(ctx, panel, pal, index === panels.length - 1 ? state.caption : comicLine(state.mood, index));
-      ctx.restore();
-      ctx.strokeStyle = pal.ink;
-      ctx.lineWidth = 11;
-      roundedRect(ctx, panel.x, panel.y, panel.w, panel.h, 12);
-      ctx.stroke();
-    });
-
-    ctx.fillStyle = pal.paper;
-    roundedRect(ctx, 72, 64, Math.min(560, w - 144), 92, 14);
+  ctx.globalCompositeOperation = "multiply";
+  ctx.globalAlpha = 0.09;
+  ctx.fillStyle = palette[3] || palette[0];
+  for (let i = 0; i < 8; i += 1) {
+    const x = ((i * 233 + 97) % 1000) / 1000 * width;
+    const y = ((i * 157 + 211) % 1000) / 1000 * height;
+    ctx.beginPath();
+    ctx.rect(x - width * 0.08, y - height * 0.02, width * 0.22, height * 0.042);
     ctx.fill();
-    ctx.strokeStyle = pal.ink;
-    ctx.lineWidth = 7;
-    ctx.stroke();
-    ctx.fillStyle = pal.ink;
-    drawTextFit(ctx, state.hero || "Pixel Nova", 96, 111, Math.min(510, w - 190), 48, 900, "left");
   }
+  ctx.restore();
+}
 
-  function comicPanels(layout, w, h) {
-    if (layout === "splash") {
-      return [{ x: 78, y: 178, w: w - 156, h: h - 250 }];
-    }
-    if (layout === "grid") {
-      const gap = 28;
-      const pw = (w - 156 - gap) / 2;
-      const ph = (h - 250 - gap) / 2;
-      return [
-        { x: 78, y: 178, w: pw, h: ph },
-        { x: 78 + pw + gap, y: 178, w: pw, h: ph },
-        { x: 78, y: 178 + ph + gap, w: pw, h: ph },
-        { x: 78 + pw + gap, y: 178 + ph + gap, w: pw, h: ph }
-      ];
-    }
-    if (layout === "poster") {
-      return [
-        { x: 78, y: 178, w: w - 156, h: h - 250 },
-        { x: w - 438, y: h - 290, w: 360, h: 218 }
-      ];
-    }
-    const gap = 28;
-    const pw = (w - 156 - gap * 2) / 3;
-    return [0, 1, 2].map((i) => ({ x: 78 + i * (pw + gap), y: 178, w: pw, h: h - 250 }));
-  }
+function drawLayer(layer, index, width, height, art, vibe, palette) {
+  const measure = measureLayer(layer, width, height);
+  const x = layer.x * width;
+  const y = layer.y * height;
 
-  function comicLine(mood, index) {
-    const lines = {
-      neon: ["The alley lit up.", "A signal screamed.", "Run toward color."],
-      mystic: ["The rune opened.", "Old light returned.", "Truth wore a mask."],
-      cosmic: ["Stars bent close.", "The ship sang back.", "Gravity took notes."],
-      street: ["Paint hit the wall.", "The block held breath.", "Noise became rhythm."]
-    };
-    return (lines[mood] || lines.neon)[index % 3];
-  }
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(degreesToRadians(layer.rotation));
+  ctx.globalAlpha = layer.opacity;
+  ctx.globalCompositeOperation = layer.blendMode || defaultBlend(index);
+  ctx.filter = art.filter;
+  drawClipPath(measure.width, measure.height, index, art.clip, layer.seed);
+  ctx.clip();
+  drawImageCover(layer.image, -measure.width / 2, -measure.height / 2, measure.width, measure.height);
 
-  function drawComicTexture(ctx, panel, pal, rng, energy) {
+  if (art.clip === "poster" || art.clip === "panel") {
+    ctx.globalCompositeOperation = "multiply";
     ctx.globalAlpha = 0.22;
-    ctx.strokeStyle = pal.ink;
-    ctx.lineWidth = 2;
-    for (let i = 0; i < energy * 8; i += 1) {
-      const x = panel.x + rng() * panel.w;
-      const y = panel.y + rng() * panel.h;
-      ctx.beginPath();
-      ctx.moveTo(x, y);
-      ctx.lineTo(x + 30 + rng() * 90, y - 40 + rng() * 80);
-      ctx.stroke();
-    }
-    ctx.globalAlpha = 1;
+    ctx.fillStyle = palette[(index + 2) % palette.length];
+    ctx.fillRect(-measure.width / 2, -measure.height / 2, measure.width, measure.height);
   }
 
-  function drawHero(ctx, panel, pal, index, energy) {
-    const cx = panel.x + panel.w * (0.46 + (index % 2) * 0.08);
-    const cy = panel.y + panel.h * 0.58;
-    const scale = Math.min(panel.w, panel.h) / 280;
-    ctx.fillStyle = pal.ink;
+  ctx.restore();
+
+  drawLayerAccent(layer, index, width, height, measure, art, vibe, palette);
+}
+
+function drawLayerAccent(layer, index, width, height, measure, art, vibe, palette) {
+  ctx.save();
+  ctx.translate(layer.x * width, layer.y * height);
+  ctx.rotate(degreesToRadians(layer.rotation));
+
+  ctx.globalCompositeOperation = "source-over";
+  ctx.globalAlpha = art.clip === "watercolor" ? 0.23 : 0.42;
+  ctx.strokeStyle = palette[(index + 1) % palette.length] || vibe.line;
+  ctx.lineWidth = Math.max(4, Math.min(width, height) * 0.006);
+  drawClipPath(measure.width, measure.height, index, art.clip, layer.seed);
+  ctx.stroke();
+
+  ctx.globalCompositeOperation = "screen";
+  ctx.globalAlpha = 0.16;
+  ctx.fillStyle = vibe.colors[index % vibe.colors.length];
+  drawClipPath(measure.width * 0.72, measure.height * 0.72, index + 2, "ellipse", layer.seed);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawSynthesisDetails(width, height, palette, art, vibe) {
+  ctx.save();
+  ctx.globalCompositeOperation = art.clip === "ink-poster" || art.clip === "tattoo" ? "multiply" : "overlay";
+  ctx.lineCap = "round";
+
+  const promptInfluence = state.prompt ? clamp(state.prompt.length / 120, 0.18, 0.7) : 0.22;
+  for (let i = 0; i < 18; i += 1) {
+    ctx.globalAlpha = 0.08 + (i % 4) * 0.012 + promptInfluence * 0.04;
+    ctx.strokeStyle = mixHex(palette[i % palette.length], vibe.colors[(i + 1) % vibe.colors.length], 0.36);
+    ctx.lineWidth = Math.max(3, Math.min(width, height) * (0.003 + (i % 5) * 0.001));
     ctx.beginPath();
-    ctx.arc(cx, cy - 86 * scale, 34 * scale, 0, Math.PI * 2);
+    const x = width * (((i * 89) % 100) / 100);
+    const y = height * (((i * 53 + 20) % 100) / 100);
+    ctx.moveTo(x, y);
+    ctx.bezierCurveTo(width * (0.18 + (i % 3) * 0.2), height * (0.1 + (i % 5) * 0.17), width * (0.82 - (i % 4) * 0.12), height * (0.88 - (i % 6) * 0.1), width - x, height - y);
+    ctx.stroke();
+  }
+
+  drawGrain(width, height, state.images.length > 4 ? 0.08 : 0.055);
+  if (art.clip === "tattoo") {
+    drawTattooLinework(width, height, palette, vibe);
+  }
+  ctx.restore();
+}
+
+function drawIntentTreatment(width, height, palette, intent) {
+  ctx.save();
+  ctx.globalCompositeOperation = "source-over";
+
+  if (intent === "print-poster") {
+    ctx.strokeStyle = "rgba(255,255,255,.72)";
+    ctx.lineWidth = Math.max(22, Math.min(width, height) * 0.035);
+    ctx.strokeRect(ctx.lineWidth / 2, ctx.lineWidth / 2, width - ctx.lineWidth, height - ctx.lineWidth);
+  }
+
+  if (intent === "social-post") {
+    ctx.fillStyle = "rgba(255,255,255,.78)";
+    ctx.beginPath();
+    roundedRect(ctx, width * 0.06, height * 0.06, width * 0.18, Math.max(34, height * 0.035), Math.min(18, width * 0.02));
     ctx.fill();
+  }
+
+  if (intent === "brand-concept") {
+    const swatchSize = Math.max(34, Math.min(width, height) * 0.043);
+    const gap = swatchSize * 0.22;
+    palette.slice(0, 5).forEach((color, index) => {
+      ctx.fillStyle = color;
+      ctx.fillRect(width - (swatchSize + gap) * (index + 1) - width * 0.04, height - swatchSize - height * 0.045, swatchSize, swatchSize);
+    });
+  }
+
+  if (intent === "character-sheet") {
+    ctx.globalAlpha = 0.18;
+    ctx.strokeStyle = "#141414";
+    ctx.lineWidth = Math.max(3, Math.min(width, height) * 0.004);
     ctx.beginPath();
-    ctx.moveTo(cx, cy - 46 * scale);
-    ctx.lineTo(cx - 58 * scale, cy + 98 * scale);
-    ctx.lineTo(cx + 66 * scale, cy + 98 * scale);
+    ctx.moveTo(width * 0.33, height * 0.06);
+    ctx.lineTo(width * 0.33, height * 0.94);
+    ctx.moveTo(width * 0.66, height * 0.06);
+    ctx.lineTo(width * 0.66, height * 0.94);
+    ctx.stroke();
+  }
+
+  if (intent === "wallpaper") {
+    const vignette = ctx.createRadialGradient(width / 2, height / 2, Math.min(width, height) * 0.18, width / 2, height / 2, Math.max(width, height) * 0.72);
+    vignette.addColorStop(0, "rgba(255,255,255,0)");
+    vignette.addColorStop(1, "rgba(0,0,0,.2)");
+    ctx.fillStyle = vignette;
+    ctx.fillRect(0, 0, width, height);
+  }
+
+  ctx.restore();
+}
+
+function drawSelection(width, height) {
+  const layer = selectedLayer();
+  if (!layer) return;
+
+  const measure = measureLayer(layer, width, height);
+  ctx.save();
+  ctx.translate(layer.x * width, layer.y * height);
+  ctx.rotate(degreesToRadians(layer.rotation));
+  ctx.globalCompositeOperation = "source-over";
+  ctx.globalAlpha = 0.95;
+  ctx.setLineDash([Math.max(10, width * 0.008), Math.max(8, width * 0.006)]);
+  ctx.strokeStyle = "#ffffff";
+  ctx.lineWidth = Math.max(5, width * 0.004);
+  ctx.strokeRect(-measure.width / 2, -measure.height / 2, measure.width, measure.height);
+  ctx.strokeStyle = "#141414";
+  ctx.lineWidth = Math.max(2, width * 0.002);
+  ctx.strokeRect(-measure.width / 2, -measure.height / 2, measure.width, measure.height);
+  ctx.restore();
+}
+
+function drawClipPath(width, height, index, clip, seed) {
+  ctx.beginPath();
+
+  if (clip === "ellipse") {
+    ctx.ellipse(0, 0, width / 2, height / 2, 0, 0, Math.PI * 2);
+    return;
+  }
+
+  if (clip === "square") {
+    roundedRect(ctx, -width / 2, -height / 2, width, height, Math.min(width, height) * 0.025);
+    return;
+  }
+
+  if (clip === "poster" || clip === "panel") {
+    const tilt = clip === "panel" ? width * 0.08 : width * 0.03;
+    ctx.moveTo(-width / 2 + tilt, -height / 2);
+    ctx.lineTo(width / 2, -height / 2 + tilt);
+    ctx.lineTo(width / 2 - tilt, height / 2);
+    ctx.lineTo(-width / 2, height / 2 - tilt);
     ctx.closePath();
-    ctx.fill();
-    ctx.strokeStyle = "#fffdf8";
-    ctx.lineWidth = Math.max(5, 7 * scale);
-    ctx.beginPath();
-    ctx.moveTo(cx - 78 * scale, cy - 8 * scale);
-    ctx.lineTo(cx + 92 * scale, cy - 42 * scale);
-    ctx.moveTo(cx - 42 * scale, cy + 94 * scale);
-    ctx.lineTo(cx - 104 * scale, cy + 168 * scale);
-    ctx.moveTo(cx + 40 * scale, cy + 94 * scale);
-    ctx.lineTo(cx + 110 * scale, cy + 150 * scale);
-    ctx.stroke();
-    ctx.strokeStyle = pal.colors[(index + 2) % pal.colors.length];
-    ctx.lineWidth = Math.max(6, energy * 1.6);
-    ctx.beginPath();
-    ctx.arc(cx, cy - 38 * scale, 96 * scale, Math.PI * 1.1, Math.PI * 1.9);
-    ctx.stroke();
+    return;
   }
 
-  function drawSpeech(ctx, panel, pal, text) {
-    const bubbleW = Math.min(panel.w * 0.82, 360);
-    const bubbleH = Math.min(116, panel.h * 0.32);
-    const x = panel.x + panel.w * 0.08;
-    const y = panel.y + panel.h * 0.08;
-    ctx.fillStyle = "#fffdf8";
-    roundedRect(ctx, x, y, bubbleW, bubbleH, 18);
-    ctx.fill();
-    ctx.strokeStyle = pal.ink;
-    ctx.lineWidth = 5;
-    ctx.stroke();
-    ctx.fillStyle = pal.ink;
-    ctx.font = "800 27px Inter, Arial, sans-serif";
-    ctx.textAlign = "left";
-    ctx.textBaseline = "top";
-    wrapText(ctx, text, x + 20, y + 21, bubbleW - 40, 31, 3);
-  }
-
-  function drawComic() {
-    const canvas = $("#comicCanvas");
-    if (!canvas) return;
-    const state = {
-      layout: value("comicLayout"),
-      hero: value("comicHero"),
-      mood: value("comicMood"),
-      caption: value("comicCaption"),
-      energy: number("comicEnergy"),
-      palette: value("comicPalette")
-    };
-    const ctx = canvas.getContext("2d");
-    drawComicArt(ctx, canvas, state);
-    $("#comicTitle").textContent = state.hero || "Comic Lab";
-  }
-
-  function initComic() {
-    ["comicLayout", "comicHero", "comicMood", "comicCaption", "comicEnergy", "comicPalette"].forEach((id) => {
-      document.getElementById(id).addEventListener("input", drawComic);
-    });
-    $("[data-action='shuffle-comic']").addEventListener("click", () => {
-      $("#comicHero").value = sample(comicOptions.heroes);
-      $("#comicCaption").value = sample(comicOptions.captions);
-      setRandomSelect("comicLayout", comicOptions.layout);
-      setRandomSelect("comicMood", comicOptions.mood);
-      setRandomSelect("comicPalette", comicOptions.palette);
-      setRandomRange("comicEnergy", 2, 10);
-      drawComic();
-    });
-    $("[data-action='save-comic']").addEventListener("click", () => saveCreation("comic", $("#comicCanvas"), `${value("comicHero")} comic page in ${value("comicMood")} mood: ${value("comicCaption")}`));
-    $("[data-action='download-comic']").addEventListener("click", () => downloadCanvas($("#comicCanvas"), `${slug(value("comicHero"))}-comic`));
-    drawComic();
-  }
-
-  function saveCreation(kind, canvas, recipe) {
-    if (!canvas) return;
-    const item = {
-      id: `voc-${Date.now()}`,
-      kind,
-      recipe,
-      image: canvas.toDataURL("image/png")
-    };
-    if (window.VOC_DB) {
-      window.VOC_DB.saveCreation(item);
+  if (clip === "cutout" || clip === "tattoo") {
+    const sides = clip === "tattoo" ? 12 : 7;
+    for (let i = 0; i < sides; i += 1) {
+      const angle = -Math.PI / 2 + i * (Math.PI * 2 / sides);
+      const wobble = clip === "tattoo"
+        ? 0.74 + (((Math.sin(seed + i * 0.9) + 1) / 2) * 0.2)
+        : 0.82 + (((index + i + seed) * 31) % 18) / 100;
+      const x = Math.cos(angle) * width * 0.5 * wobble;
+      const y = Math.sin(angle) * height * (clip === "tattoo" ? 0.42 : 0.5) * wobble;
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
     }
+    ctx.closePath();
+    return;
   }
 
-  function readGallery() {
-    return window.VOC_DB ? window.VOC_DB.readGallery() : [];
-  }
-
-  function downloadCanvas(canvas, name) {
-    if (!canvas) return;
-    const link = document.createElement("a");
-    link.download = `${slug(name)}.png`;
-    link.href = canvas.toDataURL("image/png");
-    link.click();
-  }
-
-  function downloadText(name, content, type = "application/json") {
-    const blob = new Blob([content], { type });
-    const link = document.createElement("a");
-    link.download = name;
-    link.href = URL.createObjectURL(blob);
-    link.click();
-    URL.revokeObjectURL(link.href);
-  }
-
-  async function copyText(text, statusId) {
-    try {
-      await navigator.clipboard.writeText(text);
-      setStatus(statusId, "copied");
-    } catch (error) {
-      setStatus(statusId, "copy blocked");
-    }
-  }
-
-  function drawUploadPlaceholder() {
-    const canvas = $("#uploadCanvas");
-    if (!canvas) return;
-    const pal = palette("auroraInk");
-    const ctx = clearCanvas(canvas, pal);
-    const cx = canvas.width / 2;
-    const cy = canvas.height / 2;
-
-    ctx.strokeStyle = pal.ink;
-    ctx.lineWidth = 10;
-    roundedRect(ctx, canvas.width * 0.18, canvas.height * 0.18, canvas.width * 0.64, canvas.height * 0.58, 34);
-    ctx.stroke();
-    ctx.strokeStyle = pal.colors[0];
-    ctx.lineWidth = 12;
-    ctx.beginPath();
-    ctx.moveTo(cx - 170, cy + 88);
-    ctx.bezierCurveTo(cx - 70, cy - 70, cx + 72, cy + 132, cx + 168, cy - 44);
-    ctx.stroke();
-    ctx.fillStyle = pal.ink;
-    drawTextFit(ctx, "Upload your art", cx, cy - 110, canvas.width * 0.62, 54, 900);
-    ctx.fillStyle = pal.colors[1];
-    drawTextFit(ctx, "doodles / sketches / drawings", cx, cy + 150, canvas.width * 0.62, 32, 800);
-  }
-
-  function fitImageRect(image, canvas) {
-    const imageRatio = image.width / image.height;
-    const canvasRatio = canvas.width / canvas.height;
-    let width = canvas.width;
-    let height = canvas.height;
-
-    if (imageRatio > canvasRatio) {
-      height = width / imageRatio;
+  const points = 10;
+  for (let i = 0; i <= points; i += 1) {
+    const angle = -Math.PI / 2 + i * (Math.PI * 2 / points);
+    const wobble = 0.78 + (((Math.sin(seed + i * 1.7 + index) + 1) / 2) * 0.26);
+    const x = Math.cos(angle) * width * 0.5 * wobble;
+    const y = Math.sin(angle) * height * 0.5 * wobble;
+    if (i === 0) {
+      ctx.moveTo(x, y);
     } else {
-      width = height * imageRatio;
+      const prevAngle = -Math.PI / 2 + (i - 0.5) * (Math.PI * 2 / points);
+      const cpx = Math.cos(prevAngle) * width * 0.54;
+      const cpy = Math.sin(prevAngle) * height * 0.54;
+      ctx.quadraticCurveTo(cpx, cpy, x, y);
     }
+  }
+  ctx.closePath();
+}
 
-    return {
-      x: (canvas.width - width) / 2,
-      y: (canvas.height - height) / 2,
-      width,
-      height
-    };
+function drawImageCover(image, x, y, width, height) {
+  const imageRatio = image.width / image.height;
+  const targetRatio = width / height;
+  let sx = 0;
+  let sy = 0;
+  let sw = image.width;
+  let sh = image.height;
+
+  if (imageRatio > targetRatio) {
+    sw = image.height * targetRatio;
+    sx = (image.width - sw) / 2;
+  } else {
+    sh = image.width / targetRatio;
+    sy = (image.height - sh) / 2;
   }
 
-  function drawUploadedImage(image) {
-    const canvas = $("#uploadCanvas");
-    if (!canvas) return "";
-    const ctx = canvas.getContext("2d");
-    ctx.fillStyle = "#fffdf8";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(image, sx, sy, sw, sh, x, y, width, height);
+}
 
-    const rect = fitImageRect(image, canvas);
-    ctx.drawImage(image, rect.x, rect.y, rect.width, rect.height);
-    ctx.strokeStyle = "#131718";
-    ctx.lineWidth = 8;
-    roundedRect(ctx, rect.x + 8, rect.y + 8, rect.width - 16, rect.height - 16, 18);
+function measureLayer(layer, width, height) {
+  const minDim = Math.min(width, height);
+  const imageRatio = layer.width / layer.height || 1;
+  let layerWidth = minDim * 0.54 * layer.scale;
+  let layerHeight = layerWidth / imageRatio;
+
+  if (layerHeight < minDim * 0.34 * layer.scale) {
+    layerHeight = minDim * 0.34 * layer.scale;
+    layerWidth = layerHeight * imageRatio;
+  }
+
+  const maxWidth = width * 0.92;
+  const maxHeight = height * 0.92;
+  const reduction = Math.min(maxWidth / layerWidth, maxHeight / layerHeight, 1);
+  return {
+    width: layerWidth * reduction,
+    height: layerHeight * reduction
+  };
+}
+
+function collectPalette() {
+  const imagePalette = state.images.flatMap((layer) => layer.analysis.palette);
+  const vibePalette = vibeProfiles[state.vibe].colors;
+  const merged = [...imagePalette, ...vibePalette].filter(Boolean);
+  const unique = [];
+
+  merged.forEach((color) => {
+    if (!unique.some((known) => colorDistance(known, color) < 38)) unique.push(color);
+  });
+
+  while (unique.length < 6) {
+    unique.push(vibePalette[unique.length % vibePalette.length]);
+  }
+
+  return unique.slice(0, 8);
+}
+
+function buildRecipe(palette) {
+  const imageCount = state.images.length;
+  const texture = imageCount ? state.images.reduce((sum, layer) => sum + layer.analysis.texture, 0) / imageCount : 0;
+  const contrast = imageCount ? state.images.reduce((sum, layer) => sum + layer.analysis.contrast, 0) / imageCount : 0;
+  const paletteVariety = Math.min(palette.length / 8, 1);
+  const score = Math.round(clamp(24 + imageCount * 15 + texture * 20 + contrast * 16 + paletteVariety * 16, 0, 99));
+
+  return {
+    score,
+    palette,
+    rows: [
+      { key: "Reactants", value: imageCount ? `${imageCount} images` : "No images" },
+      { key: "Art", value: artProfiles[state.artType].label },
+      { key: "Vibe", value: vibeProfiles[state.vibe].label },
+      { key: "Texture", value: texture > 0.35 ? "Rich" : texture > 0.18 ? "Balanced" : "Soft" },
+      { key: "Output", value: readableValue(state.outputIntent) }
+    ]
+  };
+}
+
+function renderAssets() {
+  elements.assetGrid.replaceChildren();
+  state.images.forEach((layer) => {
+    const tile = document.createElement("button");
+    tile.type = "button";
+    tile.className = `asset-tile${layer.id === state.selectedId ? " active" : ""}`;
+    tile.style.setProperty("--tile-color", layer.analysis.palette[0]);
+    tile.setAttribute("aria-pressed", layer.id === state.selectedId ? "true" : "false");
+
+    const image = document.createElement("img");
+    image.src = layer.src;
+    image.alt = layer.name;
+
+    const label = document.createElement("strong");
+    label.textContent = layer.name;
+
+    tile.append(image, label);
+    tile.addEventListener("click", () => selectLayer(layer.id));
+    elements.assetGrid.append(tile);
+  });
+
+  elements.imageCount.textContent = String(state.images.length);
+  elements.emptyState.classList.toggle("hidden", state.images.length > 0);
+}
+
+function updateInspector(recipe = state.lastRecipe) {
+  const layer = selectedLayer();
+  const activeRecipe = recipe || buildRecipe(collectPalette());
+
+  elements.selectedLayerName.textContent = layer ? layer.name : "None";
+  elements.aiScore.textContent = `AI ${activeRecipe.score}%`;
+  elements.reactionStatus.textContent = state.images.length
+    ? `${state.images.length} reactants -> ${artProfiles[state.artType].label.toLowerCase()}`
+    : "Ready";
+
+  syncLayerControls(layer);
+  renderPalette(activeRecipe.palette);
+  renderRecipe(activeRecipe.rows);
+  renderCredits();
+}
+
+function syncLayerControls(layer) {
+  const hasLayer = Boolean(layer);
+  [elements.opacityRange, elements.scaleRange, elements.rotationRange, elements.blendModeSelect].forEach((control) => {
+    control.disabled = !hasLayer;
+  });
+
+  if (!layer) {
+    elements.opacityRange.value = 92;
+    elements.scaleRange.value = 100;
+    elements.rotationRange.value = 0;
+    elements.blendModeSelect.value = "source-over";
+    return;
+  }
+
+  elements.opacityRange.value = Math.round(layer.opacity * 100);
+  elements.scaleRange.value = Math.round(layer.scale * 100);
+  elements.rotationRange.value = Math.round(layer.rotation);
+  elements.blendModeSelect.value = layer.blendMode || "source-over";
+}
+
+function renderPalette(palette) {
+  elements.paletteStrip.replaceChildren();
+  palette.slice(0, 6).forEach((color) => {
+    const swatch = document.createElement("span");
+    swatch.style.background = color;
+    elements.paletteStrip.append(swatch);
+  });
+}
+
+function renderRecipe(rows) {
+  elements.recipeList.replaceChildren();
+  rows.forEach((row) => {
+    const pill = document.createElement("div");
+    pill.className = "recipe-pill";
+
+    const key = document.createElement("strong");
+    key.textContent = row.key;
+
+    const value = document.createElement("span");
+    value.textContent = row.value;
+
+    pill.append(key, value);
+    elements.recipeList.append(pill);
+  });
+}
+
+function renderCredits() {
+  elements.creditsList.replaceChildren();
+  const credits = [];
+  const seen = new Set();
+
+  state.images.forEach((layer) => {
+    const source = layer.sourceMeta;
+    if (!source?.pageUrl || seen.has(source.pageUrl)) return;
+    seen.add(source.pageUrl);
+    credits.push(source);
+  });
+
+  if (!credits.length) {
+    const empty = document.createElement("span");
+    empty.className = "empty-credit";
+    empty.textContent = "No open sources used";
+    elements.creditsList.append(empty);
+    return;
+  }
+
+  credits.slice(0, 8).forEach((source) => {
+    const link = document.createElement("a");
+    link.className = "credit-link";
+    link.href = source.pageUrl;
+    link.target = "_blank";
+    link.rel = "noreferrer";
+
+    const title = document.createElement("strong");
+    title.textContent = source.title || "Source image";
+
+    const meta = document.createElement("span");
+    meta.textContent = `${source.license || "Commons"} - ${source.artist || "Wikimedia Commons"}`;
+
+    link.append(title, meta);
+    elements.creditsList.append(link);
+  });
+}
+
+function selectLayer(id) {
+  state.selectedId = id || null;
+  renderArtwork();
+}
+
+function selectedLayer() {
+  return state.images.find((layer) => layer.id === state.selectedId) || null;
+}
+
+function beginCanvasDrag(event) {
+  if (!state.images.length) return;
+  const point = getCanvasPoint(event);
+  const hit = hitTest(point.x, point.y);
+  if (!hit) return;
+
+  state.selectedId = hit.id;
+  state.dragging = {
+    id: hit.id,
+    startX: point.x,
+    startY: point.y,
+    layerX: hit.x,
+    layerY: hit.y
+  };
+  state.dirtyLayout = true;
+  elements.canvas.classList.add("dragging");
+  elements.canvas.setPointerCapture?.(event.pointerId);
+  renderArtwork();
+}
+
+function continueCanvasDrag(event) {
+  if (!state.dragging) return;
+  const layer = selectedLayer();
+  if (!layer) return;
+
+  const point = getCanvasPoint(event);
+  layer.x = clamp(state.dragging.layerX + (point.x - state.dragging.startX) / elements.canvas.width, -0.12, 1.12);
+  layer.y = clamp(state.dragging.layerY + (point.y - state.dragging.startY) / elements.canvas.height, -0.12, 1.12);
+  renderArtwork();
+}
+
+function endCanvasDrag() {
+  state.dragging = null;
+  elements.canvas.classList.remove("dragging");
+}
+
+function hitTest(x, y) {
+  for (let index = state.images.length - 1; index >= 0; index -= 1) {
+    const layer = state.images[index];
+    const measure = measureLayer(layer, elements.canvas.width, elements.canvas.height);
+    const centerX = layer.x * elements.canvas.width;
+    const centerY = layer.y * elements.canvas.height;
+    const point = rotatePoint(x - centerX, y - centerY, -degreesToRadians(layer.rotation));
+
+    if (Math.abs(point.x) <= measure.width / 2 && Math.abs(point.y) <= measure.height / 2) {
+      return layer;
+    }
+  }
+  return null;
+}
+
+function getCanvasPoint(event) {
+  const rect = elements.canvas.getBoundingClientRect();
+  return {
+    x: (event.clientX - rect.left) * (elements.canvas.width / rect.width),
+    y: (event.clientY - rect.top) * (elements.canvas.height / rect.height)
+  };
+}
+
+function setFormat(formatName) {
+  state.format = formatName;
+  document.querySelectorAll("[data-format]").forEach((button) => {
+    const active = button.dataset.format === formatName;
+    button.classList.toggle("active", active);
+  });
+  renderArtwork();
+}
+
+async function runBlendReaction() {
+  if (!state.images.length) {
+    await loadStarterSet();
+  }
+
+  elements.blendButton.disabled = true;
+  elements.reactionOverlay.classList.add("active");
+  elements.reactionOverlay.classList.remove("revealed");
+  elements.reactionOverlay.setAttribute("aria-hidden", "false");
+  elements.finalPreview.removeAttribute("src");
+  elements.reactantOrbit.replaceChildren();
+  elements.reactionWords.textContent = "Mixing reactants";
+  elements.reactionStatus.textContent = "Reaction running";
+
+  window.requestAnimationFrame(() => createReactionChips());
+  timedWords([
+    [520, "Extracting palettes"],
+    [1120, "Separating texture"],
+    [1690, "Balancing composition"],
+    [2180, "Synthesizing output"]
+  ]);
+
+  await delay(2380);
+  renderArtwork();
+  elements.finalPreview.src = elements.canvas.toDataURL("image/png");
+  elements.reactionOverlay.classList.add("revealed");
+  elements.reactionWords.textContent = "Output synthesized";
+
+  await delay(1500);
+  elements.reactionOverlay.classList.remove("active", "revealed");
+  elements.reactionOverlay.setAttribute("aria-hidden", "true");
+  elements.blendButton.disabled = false;
+  elements.reactionStatus.textContent = "Output ready";
+}
+
+function createReactionChips() {
+  const rect = elements.reactionStage.getBoundingClientRect();
+  const centerX = rect.width / 2;
+  const centerY = rect.height / 2;
+  const starts = [
+    [0.09, 0.18],
+    [0.78, 0.14],
+    [0.12, 0.72],
+    [0.82, 0.68],
+    [0.44, 0.05],
+    [0.46, 0.82]
+  ];
+
+  state.images.slice(0, 8).forEach((layer, index) => {
+    const chip = document.createElement("div");
+    const image = document.createElement("img");
+    const [sx, sy] = starts[index % starts.length];
+    const startX = sx * rect.width;
+    const startY = sy * rect.height;
+
+    chip.className = "reactant-chip";
+    chip.style.setProperty("--start-x", `${startX}px`);
+    chip.style.setProperty("--start-y", `${startY}px`);
+    chip.style.setProperty("--mid-x", `${centerX - startX + (index % 2 ? -90 : 90)}px`);
+    chip.style.setProperty("--mid-y", `${centerY - startY - 90 + index * 8}px`);
+    chip.style.setProperty("--end-x", `${centerX - startX}px`);
+    chip.style.setProperty("--end-y", `${centerY - startY}px`);
+    chip.style.setProperty("--rot", `${index % 2 ? -18 : 18}deg`);
+    chip.style.setProperty("--delay", `${index * 130}ms`);
+    image.src = layer.src;
+    image.alt = "";
+    chip.append(image);
+    elements.reactantOrbit.append(chip);
+  });
+}
+
+function timedWords(items) {
+  items.forEach(([time, words]) => {
+    window.setTimeout(() => {
+      if (elements.reactionOverlay.classList.contains("active")) {
+        elements.reactionWords.textContent = words;
+      }
+    }, time);
+  });
+}
+
+function downloadArtwork() {
+  renderArtwork();
+  const link = document.createElement("a");
+  const stamp = new Date().toISOString().slice(0, 10);
+  link.download = `variation-of-creation-${stamp}.png`;
+  link.href = elements.canvas.toDataURL("image/png");
+  link.click();
+}
+
+function defaultBlend(index) {
+  const blends = artProfiles[state.artType].blends;
+  return blends[index % blends.length];
+}
+
+function syncActiveButtons(selector, value, datasetKey) {
+  document.querySelectorAll(selector).forEach((button) => {
+    const active = button.dataset[datasetKey] === value;
+    button.classList.toggle("active", active);
+    if (button.getAttribute("role") === "radio") {
+      button.setAttribute("aria-checked", active ? "true" : "false");
+    }
+  });
+}
+
+function drawGrain(width, height, alpha) {
+  const amount = Math.round(Math.min(width * height / 260, 9000));
+  ctx.save();
+  ctx.globalCompositeOperation = "overlay";
+  for (let i = 0; i < amount; i += 1) {
+    const tone = i % 2 ? 255 : 20;
+    ctx.globalAlpha = alpha * (0.25 + (i % 5) / 10);
+    ctx.fillStyle = `rgb(${tone}, ${tone}, ${tone})`;
+    ctx.fillRect((i * 97) % width, (i * 193) % height, 1.3, 1.3);
+  }
+  ctx.restore();
+}
+
+function drawTattooLinework(width, height, palette, vibe) {
+  const minDim = Math.min(width, height);
+  ctx.save();
+  ctx.globalCompositeOperation = "multiply";
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
+  ctx.strokeStyle = mixHex("#141414", vibe.line, 0.18);
+  ctx.lineWidth = Math.max(3, minDim * 0.004);
+  ctx.globalAlpha = 0.34;
+
+  for (let i = 0; i < 9; i += 1) {
+    const startX = width * (0.14 + (i % 3) * 0.18);
+    const startY = height * (0.18 + i * 0.07);
+    const endX = width * (0.86 - (i % 2) * 0.16);
+    const endY = height * (0.25 + ((i * 13) % 58) / 100);
+    ctx.beginPath();
+    ctx.moveTo(startX, startY);
+    ctx.bezierCurveTo(width * 0.36, height * (0.08 + i * 0.045), width * 0.62, height * (0.92 - i * 0.035), endX, endY);
     ctx.stroke();
-    return canvas.toDataURL("image/jpeg", 0.86);
   }
 
-  function loadImageFromDataUrl(dataUrl) {
-    return new Promise((resolve, reject) => {
-      const image = new Image();
-      image.onload = () => resolve(image);
-      image.onerror = () => reject(new Error("That image could not be loaded."));
-      image.src = dataUrl;
-    });
+  ctx.globalAlpha = 0.2;
+  ctx.fillStyle = palette[0] || "#141414";
+  for (let i = 0; i < 120; i += 1) {
+    const x = width * (((i * 37 + 11) % 100) / 100);
+    const y = height * (((i * 61 + 23) % 100) / 100);
+    const radius = 1.8 + (i % 4) * 0.7;
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
+    ctx.fill();
   }
 
-  function readFileAsDataUrl(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = () => reject(new Error("That file could not be read."));
-      reader.readAsDataURL(file);
-    });
-  }
+  ctx.restore();
+}
 
-  async function handleUploadFile(file) {
-    const message = $("#uploadMessage");
-    if (!file) return;
-    if (!file.type.startsWith("image/")) {
-      message.classList.add("error");
-      message.textContent = "Choose an image file.";
-      return;
-    }
+function roundedRect(context, x, y, width, height, radius) {
+  const safeRadius = Math.min(radius, width / 2, height / 2);
+  context.moveTo(x + safeRadius, y);
+  context.lineTo(x + width - safeRadius, y);
+  context.quadraticCurveTo(x + width, y, x + width, y + safeRadius);
+  context.lineTo(x + width, y + height - safeRadius);
+  context.quadraticCurveTo(x + width, y + height, x + width - safeRadius, y + height);
+  context.lineTo(x + safeRadius, y + height);
+  context.quadraticCurveTo(x, y + height, x, y + height - safeRadius);
+  context.lineTo(x, y + safeRadius);
+  context.quadraticCurveTo(x, y, x + safeRadius, y);
+  context.closePath();
+}
 
-    message.classList.remove("error");
-    message.textContent = "Loading image...";
-    const dataUrl = await readFileAsDataUrl(file);
-    const image = await loadImageFromDataUrl(dataUrl);
-    uploadState.fileName = file.name;
-    uploadState.imageData = drawUploadedImage(image);
-    uploadState.loaded = true;
-    $("#uploadPreviewTitle").textContent = file.name;
-    $("#uploadStatus").textContent = "ready";
-    message.textContent = `${file.name} is ready to save.`;
-  }
+function mixHex(first, second, amount) {
+  const a = hexToRgb(first);
+  const b = hexToRgb(second);
+  return rgbToHex(
+    Math.round(a.r + (b.r - a.r) * amount),
+    Math.round(a.g + (b.g - a.g) * amount),
+    Math.round(a.b + (b.b - a.b) * amount)
+  );
+}
 
-  function clearUpload() {
-    uploadState.fileName = "";
-    uploadState.imageData = "";
-    uploadState.loaded = false;
-    const fileInput = $("#uploadFile");
-    if (fileInput) fileInput.value = "";
-    $("#uploadPreviewTitle").textContent = "No file selected";
-    $("#uploadStatus").textContent = "waiting";
-    $("#uploadMessage").textContent = "";
-    $("#uploadMessage").classList.remove("error");
-    drawUploadPlaceholder();
-  }
+function colorDistance(first, second) {
+  const a = hexToRgb(first);
+  const b = hexToRgb(second);
+  return Math.sqrt((a.r - b.r) ** 2 + (a.g - b.g) ** 2 + (a.b - b.b) ** 2);
+}
 
-  function renderUploadLibrary() {
-    const target = $("#uploadLibrary");
-    if (!target) return;
-    const uploads = window.VOC_DB
-      ? window.VOC_DB.readCreations()
-        .filter((item) => item.kind === "upload" && item.image)
-        .slice(0, 8)
-      : [];
+function hexToRgb(hex) {
+  const clean = hex.replace("#", "");
+  const full = clean.length === 3
+    ? clean.split("").map((char) => char + char).join("")
+    : clean.padEnd(6, "0").slice(0, 6);
+  return {
+    r: parseInt(full.slice(0, 2), 16),
+    g: parseInt(full.slice(2, 4), 16),
+    b: parseInt(full.slice(4, 6), 16)
+  };
+}
 
-    if (!uploads.length) {
-      target.innerHTML = `
-        <div class="empty-gallery upload-empty">
-          <h2>No personal images saved yet.</h2>
-          <p>Your uploaded doodles, sketches, drawings, photos, and reference images will appear here after you save them.</p>
-        </div>
-      `;
-      return;
-    }
+function rgbToHex(r, g, b) {
+  return `#${[r, g, b].map((channel) => clamp(channel, 0, 255).toString(16).padStart(2, "0")).join("")}`;
+}
 
-    target.innerHTML = uploads.map((item) => `
-      <article class="upload-library-card">
-        <img src="${item.image}" alt="${escapeHtml(item.title || "Uploaded image")}">
-        <div class="upload-library-card-body">
-          <h3>${escapeHtml(item.title || "Uploaded image")}</h3>
-          <p>${escapeHtml(item.uploadType || "image")} saved ${new Date(item.createdAt).toLocaleDateString()}</p>
-          ${item.tags ? `<div class="gallery-meta"><span>${escapeHtml(item.tags)}</span></div>` : ""}
-        </div>
-      </article>
-    `).join("");
-  }
+function readableValue(value) {
+  return value.split("-").map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
+}
 
-  function initUpload() {
-    const form = $("#uploadForm");
-    const drop = $("#uploadDrop");
-    const fileInput = $("#uploadFile");
-    const message = $("#uploadMessage");
-    if (!form || !drop || !fileInput) return;
+function cleanText(value) {
+  const element = document.createElement("textarea");
+  element.innerHTML = String(value || "").replace(/<[^>]*>/g, " ");
+  return element.value.replace(/\s+/g, " ").trim();
+}
 
-    drawUploadPlaceholder();
-    renderUploadLibrary();
+function rotatePoint(x, y, angle) {
+  return {
+    x: x * Math.cos(angle) - y * Math.sin(angle),
+    y: x * Math.sin(angle) + y * Math.cos(angle)
+  };
+}
 
-    fileInput.addEventListener("change", () => {
-      handleUploadFile(fileInput.files[0]).catch((error) => {
-        message.classList.add("error");
-        message.textContent = error.message;
-      });
-    });
+function makeId() {
+  if (window.crypto?.randomUUID) return window.crypto.randomUUID();
+  return `image-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
 
-    ["dragenter", "dragover"].forEach((eventName) => {
-      drop.addEventListener(eventName, (event) => {
-        event.preventDefault();
-        drop.classList.add("dragging");
-      });
-    });
+function degreesToRadians(degrees) {
+  return degrees * Math.PI / 180;
+}
 
-    ["dragleave", "drop"].forEach((eventName) => {
-      drop.addEventListener(eventName, (event) => {
-        event.preventDefault();
-        drop.classList.remove("dragging");
-      });
-    });
+function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max);
+}
 
-    drop.addEventListener("drop", (event) => {
-      handleUploadFile(event.dataTransfer.files[0]).catch((error) => {
-        message.classList.add("error");
-        message.textContent = error.message;
-      });
-    });
+function maxChannel(r, g, b) {
+  return Math.max(r, g, b);
+}
 
-    drop.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        fileInput.click();
-      }
-    });
+function minChannel(r, g, b) {
+  return Math.min(r, g, b);
+}
 
-    form.addEventListener("submit", (event) => {
-      event.preventDefault();
-      if (!uploadState.loaded) {
-        message.classList.add("error");
-        message.textContent = "Upload an image before saving.";
-        return;
-      }
+function delay(ms) {
+  return new Promise((resolve) => window.setTimeout(resolve, ms));
+}
 
-      const title = value("uploadTitle") || uploadState.fileName || "Uploaded artwork";
-      const type = value("uploadType") || "art";
-      const note = value("uploadNote") || "Uploaded artwork";
-      const tags = value("uploadTags");
-      try {
-        if (window.VOC_DB) {
-          window.VOC_DB.saveCreation({
-            id: `upload-${Date.now()}`,
-            kind: "upload",
-            title,
-            uploadType: type,
-            tags,
-            recipe: `${title} / ${type}: ${note}`,
-            image: uploadState.imageData
-          });
-        }
-      } catch (error) {
-        message.classList.add("error");
-        message.textContent = "The browser database is full. Try a smaller image or clear older saves.";
-        return;
-      }
-
-      message.classList.remove("error");
-      message.textContent = "Saved to your gallery.";
-      $("#uploadStatus").textContent = "saved";
-      renderUploadLibrary();
-    });
-
-    $("[data-action='clear-upload']").addEventListener("click", clearUpload);
-    $("[data-action='download-upload']").addEventListener("click", () => {
-      if (uploadState.loaded) downloadCanvas($("#uploadCanvas"), value("uploadTitle") || uploadState.fileName);
-    });
-  }
-
-  function initAuth() {
-    const form = $("[data-auth-form]");
-    const message = $("#authMessage");
-    if (!form || !window.VOC_DB) return;
-
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const fields = Object.fromEntries(new FormData(form).entries());
-      message.classList.remove("error");
-      message.textContent = "Working...";
-
-      try {
-        if (form.dataset.authForm === "signup") {
-          await window.VOC_DB.signUp(fields);
-          message.textContent = "Account created. Opening your gallery...";
-        } else {
-          await window.VOC_DB.logIn(fields);
-          message.textContent = "Logged in. Opening your gallery...";
-        }
-        syncAuthNav();
-        window.setTimeout(() => {
-          window.location.href = "gallery.html";
-        }, 650);
-      } catch (error) {
-        message.classList.add("error");
-        message.textContent = error.message || "Something went wrong.";
-      }
-    });
-  }
-
-  function initGallery() {
-    let filter = "all";
-    const pageSize = 60;
-    let visibleCount = pageSize;
-    const render = () => renderGallery(filter, visibleCount);
-    $$("[data-gallery-filter] button").forEach((button) => {
-      button.addEventListener("click", () => {
-        filter = button.dataset.value;
-        visibleCount = pageSize;
-        $$("[data-gallery-filter] button").forEach((btn) => btn.classList.toggle("active", btn === button));
-        render();
-      });
-    });
-    const loadMore = $("#loadMoreGallery");
-    if (loadMore) {
-      loadMore.addEventListener("click", () => {
-        visibleCount += pageSize;
-        render();
-      });
-    }
-    $("[data-action='export-gallery']").addEventListener("click", () => {
-      const snapshot = window.VOC_DB ? window.VOC_DB.exportSnapshot() : readGallery();
-      downloadText("variation-of-creation-db.json", JSON.stringify(snapshot, null, 2));
-    });
-    $("[data-action='clear-gallery']").addEventListener("click", () => {
-      if (window.VOC_DB) window.VOC_DB.clearCreations();
-      render();
-    });
-    const logoutButton = $("[data-action='logout']");
-    if (logoutButton) {
-      logoutButton.addEventListener("click", () => {
-        if (window.VOC_DB) window.VOC_DB.logOut();
-        syncAuthNav();
-        render();
-      });
-    }
-    render();
-  }
-
-  function renderGallery(filter, visibleCount = 60) {
-    const grid = $("#galleryGrid");
-    if (!grid) return;
-    const items = readGallery().filter((item) => filter === "all" || item.kind === filter);
-    const visibleItems = items.slice(0, visibleCount);
-    const loadMore = $("#loadMoreGallery");
-    if (loadMore) {
-      loadMore.hidden = visibleItems.length >= items.length;
-      loadMore.textContent = `Load more samples (${visibleItems.length} of ${items.length})`;
-    }
-    if (!items.length) {
-      grid.innerHTML = `
-        <div class="empty-gallery">
-          <h2>No saved variations yet.</h2>
-          <p>Saved studio, logo, tattoo, and comic pieces appear here with their recipes and export previews.</p>
-          <a class="button primary" href="index.html">Open Studio</a>
-        </div>
-      `;
-      return;
-    }
-    grid.innerHTML = visibleItems.map((item) => `
-      <article class="gallery-card">
-        ${item.image
-          ? `<img src="${item.image}" alt="${escapeHtml(item.kind)} saved artwork">`
-          : `<canvas class="seed-preview seed-art" width="720" height="720" data-seed-canvas="${escapeHtml(item.id)}" aria-label="${escapeHtml(item.title)} seed artwork"></canvas>`
-        }
-        <div class="gallery-card-body">
-          <h2>${escapeHtml(item.title || titleCase(item.kind))}</h2>
-          <p>${escapeHtml(item.recipe)}</p>
-          <div class="gallery-meta">
-            <span>${item.seed ? "CSV seed" : new Date(item.createdAt).toLocaleDateString()}</span>
-            <span>${escapeHtml(item.kind)}</span>
-            ${item.uploadType ? `<span>${escapeHtml(item.uploadType)}</span>` : ""}
-            ${item.tags ? `<span>${escapeHtml(item.tags)}</span>` : ""}
-            ${item.license ? `<span>${escapeHtml(item.license)}</span>` : ""}
-            ${item.source_url ? `<a href="${escapeHtml(item.source_url)}" target="_blank" rel="noreferrer">source</a>` : ""}
-          </div>
-          ${item.image
-            ? `<button class="button" type="button" data-download-saved="${item.id}">PNG</button>`
-            : `<a class="button" href="${seedTarget(item.kind)}">Use Generator</a>`
-          }
-        </div>
-      </article>
-    `).join("");
-    $$("[data-download-saved]").forEach((button) => {
-      button.addEventListener("click", () => {
-        const item = readGallery().find((entry) => entry.id === button.dataset.downloadSaved);
-        if (!item) return;
-        const link = document.createElement("a");
-        link.download = `${item.kind}-${item.id}.png`;
-        link.href = item.image;
-        link.click();
-      });
-    });
-    drawSeedPreviews(grid);
-  }
-
-  function seedTarget(kind) {
-    return {
-      logo: "logos.html",
-      tattoo: "tattoos.html",
-      comic: "comics.html"
-    }[kind] || "index.html";
-  }
-
-  function redrawPage() {
-    if (page === "studio") drawStudio();
-    if (page === "logos") drawLogo();
-    if (page === "tattoos") drawTattoo();
-    if (page === "comics") drawComic();
-  }
-
-  initCommon();
-  if (page === "upload") initUpload();
-
-  if (window.VOC_DB) {
-    await window.VOC_DB.init();
-    if (page === "upload") renderUploadLibrary();
-  }
-
-  if (page === "studio") initStudio();
-  if (page === "logos") initLogo();
-  if (page === "tattoos") initTattoo();
-  if (page === "comics") initComic();
-  if (page === "gallery") initGallery();
-  if (page === "login" || page === "signup") initAuth();
-  renderSeedDeck();
-})();
+initialize();

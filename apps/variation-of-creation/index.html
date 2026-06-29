@@ -3,144 +3,257 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Variation of Creation | Art Mixer Studio</title>
-  <meta name="description" content="Variation of Creation is a dynamic art mixer for generating new art, icons, logos, tattoo designs, and comic art.">
-  <link rel="icon" href="assets/icon.svg?v=whimsy3" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css">
-  <script defer src="db.js"></script>
-  <script defer src="app.js"></script>
+  <title>Variation of Creation | Blend Studio</title>
+  <meta name="description" content="A browser-based image blending studio for combining uploaded artwork, drawings, and pictures into a polished generated output.">
+  <link rel="stylesheet" href="./styles.css">
+  <script defer src="./app.js"></script>
 </head>
-<body data-page="studio">
-  <header class="site-header">
-    <a class="brand" href="index.html" aria-label="Variation of Creation home">
-      <img src="assets/logo.svg" alt="Variation of Creation">
+<body>
+  <header class="app-header">
+    <a class="brand" href="./" aria-label="Variation of Creation home">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 44 44" role="img">
+          <path d="M18 4h8v11l9.8 15.9A6 6 0 0 1 30.7 40H13.3a6 6 0 0 1-5.1-9.1L18 15V4Z" fill="currentColor" opacity=".18"/>
+          <path d="M18 4h8M20 4v12L9.9 32.5A5 5 0 0 0 14.1 40h15.8a5 5 0 0 0 4.2-7.5L26 16V4" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/>
+          <path d="M14 31c3.8-3.8 6.8 3.5 10.6-.3 2.9-2.9 5.1.3 7.4-.9" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/>
+          <circle cx="18" cy="27" r="1.8" fill="currentColor"/>
+          <circle cx="27" cy="33" r="1.5" fill="currentColor"/>
+        </svg>
+      </span>
+      <span>
+        <strong>Variation of Creation</strong>
+        <small>Blend Studio</small>
+      </span>
     </a>
-    <nav class="nav-links" aria-label="Primary">
-      <a href="index.html" data-nav="studio">Studio</a>
-      <a href="logos.html" data-nav="logos">Logos</a>
-      <a href="tattoos.html" data-nav="tattoos">Tattoos</a>
-      <a href="comics.html" data-nav="comics">Comics</a>
-      <a href="upload.html" data-nav="upload">Upload</a>
-      <a href="gallery.html" data-nav="gallery">Gallery</a>
+    <nav class="header-actions" aria-label="Studio actions">
+      <button id="sampleButton" class="ghost-button" type="button" title="Load samples" aria-label="Load samples">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 7.5 12 3l8 4.5v9L12 21l-8-4.5v-9Z"/>
+          <path d="m8.5 9.5 7 4M15.5 9.5l-7 4"/>
+        </svg>
+      </button>
+      <button id="downloadButton" class="ghost-button" type="button" title="Download artwork" aria-label="Download artwork">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 3v12"/>
+          <path d="m7 10 5 5 5-5"/>
+          <path d="M5 20h14"/>
+        </svg>
+      </button>
     </nav>
-    <div class="header-actions">
-      <a class="auth-link" href="login.html" data-auth-link>Login</a>
-      <button class="theme-switch" type="button" data-theme-toggle>Dark</button>
-    </div>
   </header>
 
-  <main>
-    <section class="workspace hero-workspace">
-      <aside class="tool-panel" aria-label="Remix controls">
-        <p class="eyebrow">Art Mixer</p>
-        <h1>Variation of Creation</h1>
-        <p class="lede">Layer colors, symbols, motion, and type into fresh visual directions.</p>
-
-        <div class="mode-grid" data-mode-group="studioKind">
-          <button class="mode-button active" type="button" data-value="art">Art</button>
-          <button class="mode-button" type="button" data-value="icon">Icon</button>
-          <button class="mode-button" type="button" data-value="logo">Logo</button>
-          <button class="mode-button" type="button" data-value="tattoo">Tattoo</button>
-          <button class="mode-button" type="button" data-value="comic">Comic</button>
+  <main class="studio-shell">
+    <aside class="panel source-panel" aria-label="Source images">
+      <div class="panel-head">
+        <div>
+          <p class="eyebrow">Reactants</p>
+          <h1>Image Sources</h1>
         </div>
-
-        <label>Palette
-          <select id="studioPalette">
-            <option value="auroraInk">Aurora Ink</option>
-            <option value="citrusCircuit">Citrus Circuit</option>
-            <option value="velvetSignal">Velvet Signal</option>
-            <option value="mossFlame">Moss Flame</option>
-            <option value="monoStencil">Mono Stencil</option>
-          </select>
-        </label>
-
-        <label>Base form
-          <select id="studioBase">
-            <option value="orbital">Orbital</option>
-            <option value="botanical">Botanical</option>
-            <option value="crystal">Crystal</option>
-            <option value="signal">Signal</option>
-            <option value="mask">Mask</option>
-          </select>
-        </label>
-
-        <label>Motif
-          <select id="studioMotif">
-            <option value="stars">Stars</option>
-            <option value="ribbons">Ribbons</option>
-            <option value="glyphs">Glyphs</option>
-            <option value="petals">Petals</option>
-            <option value="sparks">Sparks</option>
-          </select>
-        </label>
-
-        <label>Signature text
-          <input id="studioText" type="text" value="Create the variation">
-        </label>
-
-        <label>Complexity <span data-output="studioComplexity">6</span>
-          <input id="studioComplexity" type="range" min="1" max="10" value="6">
-        </label>
-
-        <label>Symmetry <span data-output="studioSymmetry">5</span>
-          <input id="studioSymmetry" type="range" min="1" max="10" value="5">
-        </label>
-
-        <div class="action-grid">
-          <button class="button primary" type="button" data-action="shuffle-studio">Shuffle</button>
-          <button class="button" type="button" data-action="save-studio">Save</button>
-          <button class="button" type="button" data-action="download-studio">PNG</button>
-          <button class="button" type="button" data-action="copy-studio">Prompt</button>
-        </div>
-      </aside>
-
-      <section class="canvas-stage" aria-label="Live generated art preview">
-        <div class="stage-toolbar">
-          <div>
-            <p class="eyebrow">Live Canvas</p>
-            <h2 id="studioTitle">Remix 001</h2>
-          </div>
-          <span id="studioStatus" class="status-pill">ready</span>
-        </div>
-        <canvas id="studioCanvas" width="1080" height="1080" aria-label="Generated artwork preview"></canvas>
-      </section>
-
-      <aside class="recipe-panel" aria-label="Generated recipe">
-        <h2>Current Recipe</h2>
-        <div id="studioRecipe" class="recipe-list"></div>
-        <div class="mini-links">
-          <a href="logos.html">Logo lab</a>
-          <a href="tattoos.html">Tattoo forge</a>
-          <a href="comics.html">Comic lab</a>
-          <a href="gallery.html">Saved works</a>
-        </div>
-      </aside>
-    </section>
-
-    <section class="feature-strip" aria-label="Creative formats">
-      <a href="logos.html">
-        <strong>Icons and Logos</strong>
-        <span>Shape badges, monograms, marks, and app icons from the same remix engine.</span>
-      </a>
-      <a href="tattoos.html">
-        <strong>Tattoo Designs</strong>
-        <span>Generate crisp stencil-ready line art with symbolic structure and flow.</span>
-      </a>
-      <a href="comics.html">
-        <strong>Comic Art</strong>
-        <span>Build panels, captions, character silhouettes, and expressive page layouts.</span>
-      </a>
-    </section>
-
-    <section class="seed-section" aria-label="Free-to-use seed CSV ideas">
-      <div class="section-heading">
-        <p class="eyebrow">CSV Vibe Pack</p>
-        <h2>Start with a free-to-use seed.</h2>
+        <span id="imageCount" class="counter">0</span>
       </div>
-      <div id="seedDeck" class="seed-grid" data-seed-kind="all"></div>
+
+      <label id="dropZone" class="drop-zone" for="imageInput">
+        <input id="imageInput" type="file" accept="image/*" multiple>
+        <span aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 5v14"/>
+            <path d="M5 12h14"/>
+          </svg>
+        </span>
+        <strong>Add pictures</strong>
+        <small>PNG, JPG, SVG, WEBP</small>
+      </label>
+
+      <div id="assetGrid" class="asset-grid" aria-label="Uploaded image layers"></div>
+
+      <div class="control-group">
+        <div class="control-title">Art Type</div>
+        <div id="artTypeGroup" class="option-grid" role="radiogroup" aria-label="Art type">
+          <button class="option active" type="button" data-art-type="mixed-media" role="radio" aria-checked="true">Mixed media</button>
+          <button class="option" type="button" data-art-type="watercolor" role="radio" aria-checked="false">Watercolor</button>
+          <button class="option" type="button" data-art-type="surreal-collage" role="radio" aria-checked="false">Surreal collage</button>
+          <button class="option" type="button" data-art-type="ink-poster" role="radio" aria-checked="false">Ink poster</button>
+          <button class="option" type="button" data-art-type="tattoo" role="radio" aria-checked="false">Tattoo</button>
+          <button class="option" type="button" data-art-type="album-cover" role="radio" aria-checked="false">Album cover</button>
+          <button class="option" type="button" data-art-type="character-concept" role="radio" aria-checked="false">Character concept</button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <div class="control-title">Vibe</div>
+        <div id="vibeGroup" class="chip-grid" role="radiogroup" aria-label="Vibe">
+          <button class="chip active" type="button" data-vibe="whimsical" role="radio" aria-checked="true">Whimsical</button>
+          <button class="chip" type="button" data-vibe="cinematic" role="radio" aria-checked="false">Cinematic</button>
+          <button class="chip" type="button" data-vibe="cozy" role="radio" aria-checked="false">Cozy</button>
+          <button class="chip" type="button" data-vibe="electric" role="radio" aria-checked="false">Electric</button>
+          <button class="chip" type="button" data-vibe="botanical" role="radio" aria-checked="false">Botanical</button>
+          <button class="chip" type="button" data-vibe="editorial" role="radio" aria-checked="false">Editorial</button>
+        </div>
+      </div>
+
+      <div class="control-group source-library">
+        <div class="library-head">
+          <div>
+            <div class="control-title">Open Sources</div>
+            <span id="sourceLibraryStatus" class="library-status">Not loaded</span>
+          </div>
+          <button id="loadSourcesButton" class="mini-button" type="button">Load</button>
+        </div>
+        <div class="library-actions">
+          <button id="loadAllSourcesButton" class="mini-button secondary" type="button">Load 600</button>
+          <button id="addSourceBatchButton" class="mini-button secondary" type="button">Add 12</button>
+        </div>
+        <div id="sourceLibraryGrid" class="source-library-grid" aria-label="Open-license source images"></div>
+      </div>
+    </aside>
+
+    <section class="workspace" aria-label="Creation workspace">
+      <div class="workspace-toolbar">
+        <div class="segmented" aria-label="Canvas output format">
+          <button class="active" type="button" data-format="square">Square</button>
+          <button type="button" data-format="portrait">Portrait</button>
+          <button type="button" data-format="story">Story</button>
+          <button type="button" data-format="landscape">Landscape</button>
+          <button type="button" data-format="banner">Banner</button>
+        </div>
+        <div class="toolbar-cluster">
+          <button id="shuffleButton" class="tool-button" type="button" title="Shuffle composition" aria-label="Shuffle composition">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M16 3h5v5"/>
+              <path d="M4 20 21 3"/>
+              <path d="M21 16v5h-5"/>
+              <path d="m15 15 6 6"/>
+              <path d="M4 4l5 5"/>
+            </svg>
+          </button>
+          <button id="fitButton" class="tool-button" type="button" title="Fit selected layer" aria-label="Fit selected layer">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 9V4h5"/>
+              <path d="M20 9V4h-5"/>
+              <path d="M4 15v5h5"/>
+              <path d="M20 15v5h-5"/>
+            </svg>
+          </button>
+          <button id="removeButton" class="tool-button danger" type="button" title="Remove selected layer" aria-label="Remove selected layer">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 7h16"/>
+              <path d="M10 11v6"/>
+              <path d="M14 11v6"/>
+              <path d="M6 7l1 13h10l1-13"/>
+              <path d="M9 7V4h6v3"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="artboard-frame">
+        <canvas id="artCanvas" width="1400" height="1400" aria-label="Generated artwork canvas"></canvas>
+        <div id="emptyState" class="empty-state">
+          <strong>Drop in source images</strong>
+          <span>Or start with the sample reactants.</span>
+        </div>
+      </div>
+
+      <div class="reaction-bench" aria-label="Chemical blend animation timeline">
+        <div class="beaker-track" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <button id="blendButton" class="blend-button" type="button">
+          <span class="blend-icon" aria-hidden="true">
+            <svg viewBox="0 0 64 64">
+              <path d="M25 5h14v18l13.8 23.2A8.5 8.5 0 0 1 45.5 59h-27a8.5 8.5 0 0 1-7.3-12.8L25 23V5Z"/>
+              <path d="M18 45c6.5-6 11.3 5.4 18-.6 5.1-4.5 8.6.5 12.6-1.4"/>
+              <circle cx="23" cy="40" r="3"/>
+              <circle cx="39" cy="49" r="2.5"/>
+              <circle cx="34" cy="35" r="1.8"/>
+            </svg>
+          </span>
+          <span>Blend</span>
+        </button>
+        <div id="reactionStatus" class="reaction-status">Ready</div>
+      </div>
     </section>
+
+    <aside class="panel inspector-panel" aria-label="Layer and output settings">
+      <div class="panel-head">
+        <div>
+          <p class="eyebrow">Studio</p>
+          <h2>Inspector</h2>
+        </div>
+        <span id="aiScore" class="score">AI 0%</span>
+      </div>
+
+      <div class="control-group">
+        <label class="field-label" for="outputIntent">Preferred Output</label>
+        <select id="outputIntent">
+          <option value="finished-artwork">Finished artwork</option>
+          <option value="social-post">Social post</option>
+          <option value="print-poster">Print poster</option>
+          <option value="brand-concept">Brand concept</option>
+          <option value="character-sheet">Character sheet</option>
+          <option value="wallpaper">Wallpaper</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label class="field-label" for="textPrompt">Creative Direction</label>
+        <textarea id="textPrompt" rows="4" placeholder="dreamy tea garden, bright graphite lines, soft product poster"></textarea>
+      </div>
+
+      <div class="control-group selected-layer">
+        <div class="control-title">Selected Layer</div>
+        <div id="selectedLayerName" class="selected-name">None</div>
+        <label>Opacity
+          <input id="opacityRange" type="range" min="15" max="100" value="92">
+        </label>
+        <label>Scale
+          <input id="scaleRange" type="range" min="35" max="180" value="100">
+        </label>
+        <label>Rotation
+          <input id="rotationRange" type="range" min="-35" max="35" value="0">
+        </label>
+        <label>Blend Mode
+          <select id="blendModeSelect">
+            <option value="source-over">Normal</option>
+            <option value="multiply">Multiply</option>
+            <option value="screen">Screen</option>
+            <option value="overlay">Overlay</option>
+            <option value="soft-light">Soft light</option>
+            <option value="luminosity">Luminosity</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="control-group">
+        <div class="control-title">AI Recipe</div>
+        <div id="paletteStrip" class="palette-strip" aria-label="Detected color palette"></div>
+        <div id="recipeList" class="recipe-list"></div>
+      </div>
+
+      <div class="control-group">
+        <div class="control-title">Source Credits</div>
+        <div id="creditsList" class="credits-list"></div>
+      </div>
+    </aside>
   </main>
 
-  <footer class="site-footer"><strong>a quantum cupcake creation</strong></footer>
+  <div id="reactionOverlay" class="reaction-overlay" aria-hidden="true">
+    <div class="reaction-stage" role="status" aria-live="polite">
+      <div id="reactantOrbit" class="reactant-orbit"></div>
+      <div class="lab-flask" aria-hidden="true">
+        <svg viewBox="0 0 180 220">
+          <path class="glass" d="M70 10h40v70l49 84c10 18-3 40-24 40H45c-21 0-34-22-24-40l49-84V10Z"/>
+          <path class="liquid" d="M39 155c22-25 42 21 66-2 18-17 30 3 45-5l14 26c5 10-2 22-14 22H31c-12 0-19-13-13-23l21-18Z"/>
+          <circle cx="68" cy="147" r="7"/>
+          <circle cx="112" cy="168" r="5"/>
+          <circle cx="101" cy="132" r="4"/>
+        </svg>
+      </div>
+      <img id="finalPreview" class="final-preview" alt="Final blended output preview">
+      <div id="reactionWords" class="reaction-words">Mixing reactants</div>
+    </div>
+  </div>
 </body>
 </html>
