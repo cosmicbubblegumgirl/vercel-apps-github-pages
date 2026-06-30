@@ -38,12 +38,22 @@ const elements = {
   loadSourcesButton: document.querySelector("#loadSourcesButton"),
   loadAllSourcesButton: document.querySelector("#loadAllSourcesButton"),
   addSourceBatchButton: document.querySelector("#addSourceBatchButton"),
+  addSelectedSourcesButton: document.querySelector("#addSelectedSourcesButton"),
+  clearSourceSelectionButton: document.querySelector("#clearSourceSelectionButton"),
+  selectedSourceCount: document.querySelector("#selectedSourceCount"),
   showMoreSourcesButton: document.querySelector("#showMoreSourcesButton"),
   sourceLibraryGrid: document.querySelector("#sourceLibraryGrid"),
   sourceLibraryStatus: document.querySelector("#sourceLibraryStatus"),
   sourceSearchInput: document.querySelector("#sourceSearchInput"),
   sourceSortSelect: document.querySelector("#sourceSortSelect"),
   sourceGalleryCount: document.querySelector("#sourceGalleryCount"),
+  sourcePreviewDialog: document.querySelector("#sourcePreviewDialog"),
+  sourcePreviewClose: document.querySelector("#sourcePreviewClose"),
+  sourcePreviewImage: document.querySelector("#sourcePreviewImage"),
+  sourcePreviewTitle: document.querySelector("#sourcePreviewTitle"),
+  sourcePreviewMeta: document.querySelector("#sourcePreviewMeta"),
+  sourcePreviewSelectButton: document.querySelector("#sourcePreviewSelectButton"),
+  sourcePreviewAddButton: document.querySelector("#sourcePreviewAddButton"),
   aiAssistToggle: document.querySelector("#aiAssistToggle"),
   tattooAdvisorList: document.querySelector("#tattooAdvisorList"),
   aiScore: document.querySelector("#aiScore"),
@@ -347,6 +357,8 @@ const state = {
   sourceFilter: "all",
   sourceSort: "curated",
   sourceVisibleCount: isTattooStudio ? tattooGalleryPageSize : defaultSourceLibraryLimit,
+  selectedSourceIds: new Set(),
+  previewSourceId: "",
   aiAssist: isTattooStudio
 };
 
@@ -643,6 +655,19 @@ function bindEvents() {
     });
   }
 
+  if (elements.addSelectedSourcesButton) {
+    elements.addSelectedSourcesButton.addEventListener("click", addSelectedSourcesToCanvas);
+  }
+
+  if (elements.clearSourceSelectionButton) {
+    elements.clearSourceSelectionButton.addEventListener("click", () => {
+      state.selectedSourceIds.clear();
+      state.previewSourceId = "";
+      syncSourceSelectionControls();
+      renderSourceLibrary();
+    });
+  }
+
   if (elements.sourceLibraryGrid) {
     elements.sourceLibraryGrid.addEventListener("scroll", () => {
       const distanceToEnd = elements.sourceLibraryGrid.scrollHeight - elements.sourceLibraryGrid.scrollTop - elements.sourceLibraryGrid.clientHeight;
@@ -651,6 +676,37 @@ function bindEvents() {
       }
     });
   }
+
+  if (elements.sourcePreviewClose) {
+    elements.sourcePreviewClose.addEventListener("click", closeSourcePreview);
+  }
+
+  if (elements.sourcePreviewDialog) {
+    elements.sourcePreviewDialog.addEventListener("click", (event) => {
+      if (event.target === elements.sourcePreviewDialog) closeSourcePreview();
+    });
+  }
+
+  if (elements.sourcePreviewSelectButton) {
+    elements.sourcePreviewSelectButton.addEventListener("click", () => {
+      const item = findSourceItemByKey(state.previewSourceId);
+      if (item) toggleSourceSelection(item);
+      renderSourcePreview();
+    });
+  }
+
+  if (elements.sourcePreviewAddButton) {
+    elements.sourcePreviewAddButton.addEventListener("click", async () => {
+      const item = findSourceItemByKey(state.previewSourceId);
+      if (!item) return;
+      await addSourceToCanvas(item);
+      closeSourcePreview();
+    });
+  }
+
+  window.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeSourcePreview();
+  });
 
   if (elements.aiAssistToggle) {
     elements.aiAssistToggle.addEventListener("click", () => {
@@ -1312,6 +1368,7 @@ function renderSourceLibrary(message = "") {
   const renderedItems = items.slice(0, Math.min(state.sourceVisibleCount, items.length, limit));
   elements.sourceLibraryGrid.replaceChildren();
   elements.sourceLibraryStatus.textContent = message || `${allItems.length}/${limit} ${label}`;
+  syncSourceSelectionControls();
   if (elements.sourceGalleryCount) {
     elements.sourceGalleryCount.textContent = `Showing ${renderedItems.length} of ${items.length} ideas`;
   }
@@ -1323,12 +1380,28 @@ function renderSourceLibrary(message = "") {
   }
 
   renderedItems.forEach((item) => {
+    const key = sourceItemKey(item);
+    const isSelected = state.selectedSourceIds.has(key);
     const card = document.createElement("div");
     card.className = "source-card";
+    card.dataset.sourceKey = key;
+    card.classList.toggle("selected", isSelected);
     if (item.localSample) card.classList.add("local-sample");
 
-    const thumb = document.createElement("div");
+    const selectButton = document.createElement("button");
+    selectButton.type = "button";
+    selectButton.className = "source-select-button";
+    selectButton.setAttribute("aria-pressed", isSelected ? "true" : "false");
+    selectButton.setAttribute("aria-label", `${isSelected ? "Remove" : "Select"} ${item.title || "reference idea"}`);
+    selectButton.title = isSelected ? "Remove from selection" : "Select idea";
+    selectButton.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4 10-10"/></svg>`;
+    selectButton.addEventListener("click", () => toggleSourceSelection(item));
+
+    const thumb = document.createElement("button");
+    thumb.type = "button";
     thumb.className = "source-thumb";
+    thumb.setAttribute("aria-label", `Preview ${item.title || "reference idea"}`);
+    thumb.addEventListener("click", () => openSourcePreview(item));
     const image = document.createElement("img");
     image.src = sourceImageUrl(item);
     image.alt = item.title;
@@ -1350,14 +1423,100 @@ function renderSourceLibrary(message = "") {
     meta.textContent = sourceMetaLine(item);
     body.append(title, meta);
 
-    const button = document.createElement("button");
-    button.type = "button";
-    button.textContent = "Use";
-    button.addEventListener("click", () => addSourceToCanvas(item));
+    const actions = document.createElement("div");
+    actions.className = "source-card-actions";
 
-    card.append(thumb, link, body, button);
+    const previewButton = document.createElement("button");
+    previewButton.type = "button";
+    previewButton.className = "source-card-action";
+    previewButton.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.6"/></svg><span>Preview</span>`;
+    previewButton.addEventListener("click", () => openSourcePreview(item));
+
+    const useButton = document.createElement("button");
+    useButton.type = "button";
+    useButton.className = "source-card-action primary";
+    useButton.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg><span>Use</span>`;
+    useButton.addEventListener("click", () => addSourceToCanvas(item));
+    actions.append(previewButton, useButton);
+
+    card.append(selectButton, thumb, link, body, actions);
     elements.sourceLibraryGrid.append(card);
   });
+}
+
+function sourceItemKey(item) {
+  return String(item?.id || item?.url || item?.thumb || item?.title || "");
+}
+
+function findSourceItemByKey(key) {
+  return (state.sourceLibrary[state.artType] || []).find((item) => sourceItemKey(item) === key) || null;
+}
+
+function selectedSourceItems() {
+  return [...state.selectedSourceIds].map(findSourceItemByKey).filter(Boolean);
+}
+
+function toggleSourceSelection(item) {
+  const key = sourceItemKey(item);
+  if (!key) return;
+  if (state.selectedSourceIds.has(key)) {
+    state.selectedSourceIds.delete(key);
+  } else {
+    state.selectedSourceIds.add(key);
+  }
+  syncSourceSelectionControls();
+  renderSourceLibrary();
+}
+
+function syncSourceSelectionControls() {
+  const selectedCount = selectedSourceItems().length;
+  if (elements.selectedSourceCount) {
+    elements.selectedSourceCount.textContent = `${selectedCount} selected`;
+  }
+  if (elements.addSelectedSourcesButton) {
+    elements.addSelectedSourcesButton.disabled = state.sourceLoading || selectedCount === 0;
+  }
+  if (elements.clearSourceSelectionButton) {
+    elements.clearSourceSelectionButton.disabled = state.sourceLoading || selectedCount === 0;
+  }
+}
+
+function openSourcePreview(item) {
+  state.previewSourceId = sourceItemKey(item);
+  renderSourcePreview();
+  if (elements.sourcePreviewDialog) {
+    elements.sourcePreviewDialog.setAttribute("aria-hidden", "false");
+  }
+}
+
+function closeSourcePreview() {
+  if (elements.sourcePreviewDialog) {
+    elements.sourcePreviewDialog.setAttribute("aria-hidden", "true");
+  }
+}
+
+function renderSourcePreview() {
+  const item = findSourceItemByKey(state.previewSourceId);
+  if (!item) return;
+  const isSelected = state.selectedSourceIds.has(sourceItemKey(item));
+  if (elements.sourcePreviewImage) {
+    elements.sourcePreviewImage.src = sourceImageUrl(item);
+    elements.sourcePreviewImage.alt = item.title || "Reference idea preview";
+  }
+  if (elements.sourcePreviewTitle) {
+    elements.sourcePreviewTitle.textContent = item.title || "Reference idea";
+  }
+  if (elements.sourcePreviewMeta) {
+    elements.sourcePreviewMeta.textContent = [
+      sourceMetaLine(item),
+      item.license || "",
+      item.tags ? item.tags.split(",").filter(Boolean).slice(0, 4).join(" / ") : ""
+    ].filter(Boolean).join(" - ");
+  }
+  if (elements.sourcePreviewSelectButton) {
+    elements.sourcePreviewSelectButton.textContent = isSelected ? "Selected" : "Select idea";
+    elements.sourcePreviewSelectButton.classList.toggle("active", isSelected);
+  }
 }
 
 function visibleSourceItems(items) {
@@ -1659,6 +1818,7 @@ function syncStudioControls() {
   syncCreativeControls();
   syncTattooControls();
   syncSourceGalleryControls();
+  syncSourceSelectionControls();
 }
 
 function syncCreativeControls() {
@@ -1718,6 +1878,25 @@ async function addSourceBatch() {
   layoutLayers(true);
   state.sourceLoading = false;
   selectLayer(state.images.at(-1)?.id || state.selectedId);
+  renderSourceLibrary();
+}
+
+async function addSelectedSourcesToCanvas() {
+  const items = selectedSourceItems();
+  if (!items.length || state.sourceLoading) return;
+
+  state.sourceLoading = true;
+  renderSourceLibrary(`Adding ${items.length} selected ${items.length === 1 ? "idea" : "ideas"}`);
+  for (const item of items) {
+    await addSourceToCanvas(item, false);
+  }
+
+  state.selectedSourceIds.clear();
+  state.seed = Math.random() * 20;
+  layoutLayers(true);
+  state.sourceLoading = false;
+  selectLayer(state.images.at(-1)?.id || state.selectedId);
+  closeSourcePreview();
   renderSourceLibrary();
 }
 

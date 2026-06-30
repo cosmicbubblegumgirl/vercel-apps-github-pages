@@ -14,6 +14,10 @@
     <a class="brand" href="./" aria-label="Variation of Creation home">
       <img class="brand-logo" src="./assets/logo.svg" alt="Variation of Creation Blend Studio">
     </a>
+    <nav class="studio-switcher" aria-label="Studio modes">
+      <a class="active" href="./index.html">Blend Studio</a>
+      <a href="./tattoos.html">Tattoo Studio</a>
+    </nav>
     <nav class="header-actions" aria-label="Studio actions">
       <button id="sampleButton" class="ghost-button" type="button" title="Load samples" aria-label="Load samples">
         <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -91,6 +95,11 @@
         <div class="library-actions">
           <button id="loadAllSourcesButton" class="mini-button secondary" type="button">Load 600</button>
           <button id="addSourceBatchButton" class="mini-button secondary" type="button">Add 12</button>
+        </div>
+        <div class="source-selection-bar" aria-live="polite">
+          <span id="selectedSourceCount">0 selected</span>
+          <button id="addSelectedSourcesButton" class="mini-button" type="button" disabled>Add selected</button>
+          <button id="clearSourceSelectionButton" class="mini-button secondary" type="button" disabled>Clear</button>
         </div>
         <div id="sourceLibraryGrid" class="source-library-grid" aria-label="Open-license source images"></div>
       </div>
@@ -292,6 +301,31 @@
       </div>
     </aside>
   </main>
+
+  <footer class="site-footer"><strong>A Quantum Cupcake Creation</strong></footer>
+
+  <div id="sourcePreviewDialog" class="source-preview-dialog" aria-hidden="true">
+    <div class="source-preview-panel" role="dialog" aria-modal="true" aria-labelledby="sourcePreviewTitle">
+      <button id="sourcePreviewClose" class="source-preview-close" type="button" aria-label="Close idea preview">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 6l12 12"/>
+          <path d="M18 6 6 18"/>
+        </svg>
+      </button>
+      <div class="source-preview-media">
+        <img id="sourcePreviewImage" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="">
+      </div>
+      <div class="source-preview-content">
+        <p class="eyebrow">Idea Preview</p>
+        <h2 id="sourcePreviewTitle">Reference idea</h2>
+        <p id="sourcePreviewMeta">Open source reference</p>
+        <div class="source-preview-actions">
+          <button id="sourcePreviewSelectButton" class="mini-button secondary" type="button">Select idea</button>
+          <button id="sourcePreviewAddButton" class="mini-button" type="button">Use in creation</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div id="reactionOverlay" class="reaction-overlay" aria-hidden="true">
     <div class="reaction-stage" role="status" aria-live="polite">
