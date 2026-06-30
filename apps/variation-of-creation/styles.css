@@ -38,6 +38,13 @@ body {
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
+body[data-studio="tattoo"] {
+  --teal: #176f65;
+  --coral: #b84c3e;
+  --gold: #b9892d;
+  --berry: #713e58;
+}
+
 button,
 input,
 select,
@@ -72,44 +79,16 @@ svg {
   display: inline-flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
   color: inherit;
   text-decoration: none;
 }
 
-.brand-mark {
-  display: grid;
-  width: 46px;
-  height: 46px;
-  place-items: center;
-  color: var(--teal);
-  border: 1px solid color-mix(in srgb, var(--teal), white 65%);
-  border-radius: var(--radius);
-  background: #fff;
-  box-shadow: 0 10px 24px rgba(14, 128, 117, 0.14);
-}
-
-.brand-mark svg {
-  width: 34px;
-  height: 34px;
-}
-
-.brand strong,
-.brand small {
+.brand-logo {
   display: block;
-  letter-spacing: 0;
-}
-
-.brand strong {
-  font-size: 1.05rem;
-  line-height: 1.05;
-}
-
-.brand small {
-  margin-top: 3px;
-  color: var(--muted);
-  font-size: 0.78rem;
-  font-weight: 750;
-  text-transform: uppercase;
+  width: 286px;
+  max-width: min(44vw, 286px);
+  height: auto;
 }
 
 .header-actions,
@@ -188,6 +167,7 @@ svg {
   display: grid;
   grid-template-rows: auto minmax(420px, 1fr) auto;
   gap: 12px;
+  min-width: 0;
   min-height: calc(100vh - 98px);
   padding: 14px;
 }
@@ -224,7 +204,7 @@ h2 {
 
 h1 {
   margin-top: 4px;
-  font-size: clamp(1.25rem, 2.4vw, 1.7rem);
+  font-size: 1.55rem;
 }
 
 h2 {
@@ -376,7 +356,12 @@ h2 {
 }
 
 .option-grid,
-.chip-grid {
+.chip-grid,
+.effect-grid,
+.mode-grid,
+.tone-grid,
+.spark-grid,
+.variation-deck {
   display: grid;
   gap: 8px;
 }
@@ -385,12 +370,18 @@ h2 {
   grid-template-columns: 1fr 1fr;
 }
 
-.chip-grid {
+.chip-grid,
+.effect-grid,
+.mode-grid,
+.tone-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .option,
 .chip,
+.effect,
+.mode,
+.spark-button,
 .segmented button {
   min-height: 38px;
   padding: 8px 10px;
@@ -406,6 +397,9 @@ h2 {
 
 .option:hover,
 .chip:hover,
+.effect:hover,
+.mode:hover,
+.spark-button:hover,
 .segmented button:hover {
   transform: translateY(-1px);
   border-color: color-mix(in srgb, var(--teal), var(--line) 45%);
@@ -413,10 +407,314 @@ h2 {
 
 .option.active,
 .chip.active,
+.effect.active,
+.mode.active,
 .segmented button.active {
   color: white;
   border-color: transparent;
   background: var(--ink);
+}
+
+.mode-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.mode {
+  min-height: 36px;
+  padding: 7px 8px;
+  font-size: 0.76rem;
+}
+
+.dna-list {
+  display: grid;
+  gap: 8px;
+}
+
+.dna-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 10px;
+  min-height: 38px;
+  padding: 9px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--raised);
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 780;
+}
+
+.dna-card strong {
+  color: var(--ink);
+  font-size: 0.76rem;
+}
+
+.dna-card span {
+  min-width: 0;
+}
+
+.spark-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.spark-button {
+  min-height: 34px;
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.2;
+  text-align: left;
+}
+
+.creative-lab label {
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 820;
+}
+
+.tattoo-shell {
+  grid-template-columns: minmax(320px, 390px) minmax(0, 1fr) minmax(286px, 344px);
+}
+
+.tattoo-drop {
+  background:
+    linear-gradient(135deg, rgba(23, 32, 30, 0.06), rgba(184, 76, 62, 0.08)),
+    var(--raised);
+}
+
+.tattoo-artboard {
+  background:
+    linear-gradient(45deg, rgba(23, 32, 30, 0.035) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(23, 32, 30, 0.035) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(23, 32, 30, 0.035) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(23, 32, 30, 0.035) 75%),
+    #eadfce;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0;
+  background-size: 20px 20px;
+}
+
+body[data-studio="tattoo"] #artCanvas {
+  max-height: min(78vh, 760px);
+}
+
+.tattoo-bench {
+  background: linear-gradient(90deg, rgba(23, 32, 30, 0.08), rgba(184, 76, 62, 0.12), rgba(185, 137, 45, 0.1)), #fffdf8;
+}
+
+.tattoo-fit {
+  padding: 12px;
+  border: 1px solid color-mix(in srgb, var(--ink), var(--line) 82%);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.48);
+}
+
+.fit-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.ai-toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 36px;
+  padding: 5px 9px 5px 5px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--raised);
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.76rem;
+  font-weight: 900;
+  transition: transform 160ms ease, color 160ms ease, background 160ms ease, border-color 160ms ease;
+}
+
+.ai-toggle:hover {
+  transform: translateY(-1px);
+}
+
+.ai-toggle.active {
+  color: #fff;
+  border-color: transparent;
+  background: linear-gradient(135deg, var(--ink), var(--teal) 58%, var(--coral));
+}
+
+.ai-toggle-icon {
+  display: grid;
+  width: 26px;
+  height: 26px;
+  place-items: center;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.ai-toggle-icon svg {
+  width: 19px;
+  height: 19px;
+}
+
+.ai-toggle-icon path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ai-toggle.active .ai-toggle-icon {
+  animation: aiSignal 1800ms ease-in-out infinite;
+}
+
+.tattoo-fit label {
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 820;
+}
+
+.small-title {
+  margin-top: 2px;
+  color: color-mix(in srgb, var(--teal), var(--muted) 28%);
+  font-size: 0.68rem;
+}
+
+.skin-mode {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 7px;
+  min-width: 0;
+}
+
+.skin-swatch {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  border: 1px solid rgba(20, 20, 20, 0.22);
+  border-radius: 999px;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.45);
+}
+
+.skin-swatch.paper {
+  background: #f7f4ed;
+}
+
+.skin-swatch.light {
+  background: #f2c5aa;
+}
+
+.skin-swatch.tan {
+  background: #c99063;
+}
+
+.skin-swatch.deep {
+  background: #5f392f;
+}
+
+.advisor-list {
+  display: grid;
+  gap: 8px;
+}
+
+.advisor-card {
+  display: grid;
+  gap: 5px;
+  padding: 10px;
+  border: 1px solid color-mix(in srgb, var(--teal), var(--line) 72%);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(135deg, rgba(23, 111, 101, 0.08), rgba(184, 76, 62, 0.055)),
+    var(--raised);
+  animation: advisorIn 260ms ease both;
+}
+
+.advisor-card strong {
+  color: var(--ink);
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.advisor-card span {
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 760;
+  line-height: 1.38;
+}
+
+.creative-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.variation-deck {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.variation-card {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--raised);
+  cursor: pointer;
+  text-align: left;
+  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.variation-card:hover,
+.variation-card.active {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--berry), var(--line) 40%);
+  box-shadow: 0 13px 26px rgba(23, 32, 30, 0.12);
+}
+
+.variation-card img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 6px;
+  background: #ebe7df;
+}
+
+.variation-card strong,
+.variation-card span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.variation-card strong {
+  color: var(--ink);
+  font-size: 0.74rem;
+  font-weight: 880;
+}
+
+.variation-card span {
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 760;
+}
+
+.variation-empty {
+  grid-column: 1 / -1;
+  min-height: 36px;
+  padding: 9px 10px;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.56);
+  font-size: 0.78rem;
+  font-weight: 780;
 }
 
 .workspace-toolbar {
@@ -442,6 +740,8 @@ h2 {
 .artboard-frame {
   position: relative;
   display: grid;
+  width: 100%;
+  min-width: 0;
   place-items: center;
   min-height: 0;
   overflow: hidden;
@@ -459,6 +759,7 @@ h2 {
 
 #artCanvas {
   display: block;
+  min-width: 0;
   max-width: min(100%, 980px);
   max-height: calc(100vh - 248px);
   width: auto;
@@ -706,6 +1007,95 @@ input[type="range"] {
   font-weight: 760;
 }
 
+.source-gallery-tools {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  margin: 10px 0 8px;
+}
+
+.source-search {
+  position: relative;
+  display: grid;
+  min-width: 0;
+}
+
+.source-search svg {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  width: 17px;
+  height: 17px;
+  color: var(--muted);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.source-search path,
+.source-search circle {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+}
+
+.source-search input {
+  min-width: 0;
+  width: 100%;
+  min-height: 38px;
+  padding: 0 10px 0 34px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--raised);
+  color: var(--ink);
+  font-weight: 760;
+}
+
+.source-gallery-tools select {
+  width: 116px;
+  min-height: 38px;
+  font-size: 0.78rem;
+  font-weight: 820;
+}
+
+.source-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.filter-chip {
+  min-height: 30px;
+  padding: 5px 9px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--raised);
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 860;
+  transition: transform 160ms ease, color 160ms ease, background 160ms ease;
+}
+
+.filter-chip:hover {
+  transform: translateY(-1px);
+}
+
+.filter-chip.active {
+  color: #fff;
+  border-color: transparent;
+  background: var(--ink);
+}
+
+.gallery-count {
+  display: block;
+  margin: 8px 0;
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 820;
+}
+
 .mini-button {
   min-height: 34px;
   padding: 7px 11px;
@@ -752,24 +1142,85 @@ input[type="range"] {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--raised);
+  box-shadow: 0 8px 18px rgba(23, 32, 30, 0.06);
+  animation: galleryRise 320ms ease both;
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
 }
 
-.source-card img {
+.source-card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--teal), var(--line) 46%);
+  box-shadow: 0 16px 30px rgba(23, 32, 30, 0.13);
+}
+
+.source-thumb {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  min-height: 0;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, rgba(23, 32, 30, 0.05), rgba(185, 137, 45, 0.08)),
+    #ebe7df;
+}
+
+.source-thumb img,
+.source-card > img {
   display: block;
   width: 100%;
-  aspect-ratio: 1;
+  height: 100%;
+  aspect-ratio: 1 / 1;
   object-fit: cover;
   background: #ebe7df;
+  transition: transform 220ms ease, filter 220ms ease;
+}
+
+.source-card:hover .source-thumb img {
+  transform: scale(1.04);
+  filter: contrast(1.06);
+}
+
+.source-card-body {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  padding: 8px 8px 7px;
+}
+
+.source-card-body strong,
+.source-card-body span {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.source-card-body strong {
+  color: var(--ink);
+  font-size: 0.74rem;
+  font-weight: 900;
+}
+
+.source-card-body span {
+  color: var(--muted);
+  font-size: 0.67rem;
+  font-weight: 740;
 }
 
 .source-card button {
-  min-height: 30px;
+  min-height: 32px;
   border: 0;
   border-top: 1px solid var(--line);
   background: #fff;
   cursor: pointer;
   font-size: 0.72rem;
-  font-weight: 850;
+  font-weight: 900;
+  transition: color 160ms ease, background 160ms ease;
+}
+
+.source-card button:hover {
+  color: #fff;
+  background: var(--teal);
 }
 
 .source-card a {
@@ -786,6 +1237,18 @@ input[type="range"] {
   font-size: 0.72rem;
   font-weight: 900;
   text-decoration: none;
+}
+
+body[data-studio="tattoo"] .source-library-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  max-height: min(62vh, 690px);
+  padding: 2px 6px 2px 2px;
+  scroll-behavior: smooth;
+}
+
+body[data-studio="tattoo"] .source-card.local-sample .source-card-body span::before {
+  content: "Studio / ";
 }
 
 .credits-list {
@@ -959,6 +1422,21 @@ input[type="range"] {
   100% { transform: translateY(0) rotate(0deg); }
 }
 
+@keyframes aiSignal {
+  0%, 100% { box-shadow: inset 0 0 0 rgba(255, 255, 255, 0); transform: scale(1); }
+  50% { box-shadow: inset 0 0 18px rgba(255, 255, 255, 0.28); transform: scale(1.04); }
+}
+
+@keyframes advisorIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes galleryRise {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 @keyframes reactantDrop {
   0% {
     opacity: 0;
@@ -1005,6 +1483,10 @@ input[type="range"] {
     grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
   }
 
+  body[data-studio="tattoo"] .tattoo-shell {
+    grid-template-columns: minmax(300px, 360px) minmax(0, 1fr);
+  }
+
   .inspector-panel {
     grid-column: 1 / -1;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1021,14 +1503,30 @@ input[type="range"] {
   }
 }
 
+@media (max-width: 980px) {
+  body[data-studio="tattoo"] .tattoo-shell {
+    grid-template-columns: 1fr;
+    width: min(780px, calc(100% - 18px));
+  }
+
+  body[data-studio="tattoo"] .source-library-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    max-height: min(58vh, 560px);
+  }
+}
+
 @media (max-width: 860px) {
   .app-header {
     position: relative;
+    min-height: 62px;
+    padding: 10px 12px;
   }
 
   .studio-shell {
     grid-template-columns: 1fr;
     width: min(680px, calc(100% - 18px));
+    min-height: 0;
+    margin-top: 9px;
   }
 
   .panel,
@@ -1041,11 +1539,13 @@ input[type="range"] {
   }
 
   .workspace {
-    min-height: 620px;
+    grid-template-rows: auto auto auto;
+    min-height: 0;
   }
 
   .workspace-toolbar,
   .reaction-bench {
+    min-width: 0;
     align-items: stretch;
     flex-direction: column;
   }
@@ -1055,23 +1555,54 @@ input[type="range"] {
     justify-content: center;
   }
 
+  .artboard-frame {
+    min-height: 430px;
+  }
+
   #artCanvas {
-    max-height: 560px;
+    max-width: 100%;
+    max-height: min(62vh, 560px);
+  }
+}
+
+@media (max-width: 640px) {
+  .source-gallery-tools {
+    grid-template-columns: 1fr;
+  }
+
+  .source-gallery-tools select {
+    width: 100%;
+  }
+
+  .source-filter-row {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .filter-chip {
+    flex: 0 0 auto;
+  }
+
+  body[data-studio="tattoo"] .source-library-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-height: min(56vh, 460px);
   }
 }
 
 @media (max-width: 520px) {
-  .brand strong {
-    font-size: 0.95rem;
+  body {
+    background-size: 24px 24px;
   }
 
-  .brand small {
-    font-size: 0.68rem;
+  .app-header {
+    gap: 8px;
+    align-items: center;
   }
 
-  .brand-mark {
-    width: 42px;
-    height: 42px;
+  .brand-logo {
+    width: 222px;
+    max-width: calc(100vw - 116px);
   }
 
   .header-actions {
@@ -1086,12 +1617,155 @@ input[type="range"] {
 
   .panel,
   .workspace {
-    padding: 12px;
+    padding: 10px;
+  }
+
+  .panel {
+    border-radius: 8px;
+  }
+
+  .panel-head {
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-size: 1.32rem;
+  }
+
+  h2 {
+    font-size: 1.16rem;
+  }
+
+  .drop-zone {
+    min-height: 132px;
+    margin-bottom: 12px;
+    padding: 14px;
+  }
+
+  .drop-zone span {
+    width: 46px;
+    height: 46px;
   }
 
   .asset-grid,
   .option-grid,
   .chip-grid,
+  .effect-grid,
+  .mode-grid,
+  .tone-grid,
+  .spark-grid,
+  .variation-deck,
+  .source-library-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .option,
+  .chip,
+  .effect,
+  .mode,
+  .spark-button {
+    min-height: 40px;
+    padding: 8px;
+    font-size: 0.78rem;
+    white-space: normal;
+  }
+
+  .control-group {
+    margin-top: 14px;
+  }
+
+  .library-actions {
+    align-items: stretch;
+  }
+
+  .mini-button {
+    flex: 1;
+    padding-right: 8px;
+    padding-left: 8px;
+  }
+
+  .source-library-grid {
+    max-height: 250px;
+  }
+
+  .workspace-toolbar {
+    gap: 8px;
+  }
+
+  .segmented {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    padding-bottom: 6px;
+  }
+
+  .segmented button {
+    flex: 0 0 auto;
+  }
+
+  .toolbar-cluster {
+    justify-content: space-between;
+  }
+
+  .artboard-frame {
+    min-height: min(92vw, 390px);
+  }
+
+  #artCanvas {
+    max-height: min(54vh, 390px);
+    box-shadow: 0 16px 42px rgba(23, 32, 30, 0.18);
+  }
+
+  body[data-studio="tattoo"] #artCanvas {
+    max-height: min(62vh, 430px);
+  }
+
+  .reaction-bench {
+    min-height: 0;
+    padding: 10px;
+  }
+
+  .blend-button {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .reaction-status {
+    text-align: center;
+  }
+
+  .reaction-overlay {
+    padding: 12px;
+  }
+
+  .reaction-stage {
+    width: 100%;
+    min-height: min(560px, calc(100vh - 24px));
+  }
+
+  .reaction-words {
+    right: 10px;
+    left: 10px;
+    font-size: 0.88rem;
+  }
+}
+
+@media (max-width: 330px) {
+  .brand-logo {
+    width: 190px;
+    max-width: calc(100vw - 104px);
+  }
+
+  .asset-grid,
+  .option-grid,
+  .chip-grid,
+  .effect-grid,
+  .mode-grid,
+  .tone-grid,
+  .spark-grid,
+  .variation-deck,
   .source-library-grid {
     grid-template-columns: 1fr;
   }

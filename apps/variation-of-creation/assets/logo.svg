@@ -1,35 +1,36 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 790 190" role="img" aria-labelledby="title desc">
-  <title id="title">Variation of Creation logo</title>
-  <desc id="desc">A quirky whimsical wordmark with a tilted creation badge and colorful handmade strokes.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 170" role="img" aria-labelledby="title desc">
+  <title id="title">Variation of Creation Blend Studio logo</title>
+  <desc id="desc">A tilted creative lab mark beside the Variation of Creation wordmark.</desc>
   <defs>
-    <linearGradient id="logo-paper" x1="28" y1="22" x2="166" y2="166" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#fff8e8"/>
-      <stop offset=".55" stop-color="#effaf6"/>
-      <stop offset="1" stop-color="#f8ecff"/>
+    <linearGradient id="paper" x1="20" y1="18" x2="142" y2="148" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fffdf8"/>
+      <stop offset="0.52" stop-color="#e7f7f1"/>
+      <stop offset="1" stop-color="#ffe7cf"/>
     </linearGradient>
-    <linearGradient id="logo-pop" x1="49" y1="43" x2="154" y2="150" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#08a79b"/>
-      <stop offset=".45" stop-color="#ff7548"/>
-      <stop offset="1" stop-color="#7a5cff"/>
+    <linearGradient id="reaction" x1="42" y1="45" x2="116" y2="132" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0e8075"/>
+      <stop offset="0.47" stop-color="#3868a7"/>
+      <stop offset="1" stop-color="#d55d42"/>
+    </linearGradient>
+    <linearGradient id="word" x1="180" y1="40" x2="724" y2="120" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#17201e"/>
+      <stop offset="0.52" stop-color="#0e8075"/>
+      <stop offset="1" stop-color="#97406d"/>
     </linearGradient>
   </defs>
-
-  <g transform="rotate(-4 96 95)">
-    <rect x="8" y="8" width="174" height="174" rx="38" fill="#101515"/>
-    <rect x="23" y="23" width="144" height="144" rx="30" fill="url(#logo-paper)"/>
-    <path d="M50 68c17-17 82-20 105 0 10 9 10 30 3 41-12 16-13 35-5 54-25 11-79 15-106-2 9-20 8-36-3-52-8-12-6-31 6-41Z" fill="#fffdf8" stroke="#101515" stroke-width="7" stroke-linejoin="round"/>
-    <path d="M67 109c7-28 26-42 45-40 23 2 34 21 27 38 15 4 23 15 18 28-6 15-25 15-38 8-9 15-27 19-42 9-15-10-14-30-10-43Z" fill="url(#logo-pop)" stroke="#101515" stroke-width="6" stroke-linejoin="round"/>
-    <circle cx="108" cy="112" r="19" fill="#fff8e8" stroke="#101515" stroke-width="6"/>
-    <path d="M99 112c4 6 14 6 18 0" fill="none" stroke="#101515" stroke-width="4.5" stroke-linecap="round"/>
-    <circle cx="102" cy="105" r="3" fill="#101515"/>
-    <circle cx="116" cy="105" r="3" fill="#101515"/>
-    <path d="M58 80 67 84 76 80 72 90 76 99 67 95 58 99 62 90Z" fill="#ffd33d" stroke="#101515" stroke-width="4" stroke-linejoin="round"/>
-    <path d="M138 58 145 71 158 74 148 83 150 97 138 90 126 97 128 83 118 74 132 71Z" fill="#08a79b" stroke="#101515" stroke-width="4" stroke-linejoin="round"/>
+  <g transform="rotate(-4 82 84)">
+    <rect x="9" y="9" width="146" height="146" rx="31" fill="#17201e"/>
+    <rect x="22" y="22" width="120" height="120" rx="25" fill="url(#paper)"/>
+    <path d="M68 34h29v37l25.6 43.8A11.8 11.8 0 0 1 112.5 132h-59A11.8 11.8 0 0 1 43.4 114.8L69 71V34Z" fill="#fffdf8" stroke="#17201e" stroke-width="7" stroke-linejoin="round"/>
+    <path d="M51 104c11.8-11.8 20.6 10.3 33.6-2.1 9-8.6 16.5 1.2 23.4-3.4l8.4 14.5A11.8 11.8 0 0 1 106.1 132H59.9a11.8 11.8 0 0 1-10.3-17.5L51 104Z" fill="url(#reaction)"/>
+    <path d="M67 49h32" fill="none" stroke="#17201e" stroke-width="7" stroke-linecap="round"/>
+    <path d="M112 28l5.1 11.4 12 4.5-12 4.9L112 60l-5.2-11.2-11.9-4.9 11.9-4.5L112 28Z" fill="#f2bd4e" stroke="#17201e" stroke-width="4" stroke-linejoin="round"/>
+    <circle cx="62" cy="105" r="5" fill="#f2bd4e"/>
+    <circle cx="86" cy="118" r="4.5" fill="#fffdf8"/>
   </g>
-
-  <text x="218" y="76" fill="#101515" font-family="Trebuchet MS, Inter, Arial, sans-serif" font-size="47" font-weight="800">Variation</text>
-  <text x="218" y="130" fill="#101515" font-family="Trebuchet MS, Inter, Arial, sans-serif" font-size="47" font-weight="800">of Creation</text>
-  <path d="M220 151c58 8 122 7 188-2 55-8 109-7 162 4" fill="none" stroke="#ff7548" stroke-width="9" stroke-linecap="round"/>
-  <path d="M598 151c30-6 58-6 84 0" fill="none" stroke="#08a79b" stroke-width="9" stroke-linecap="round"/>
-  <path d="M704 64 713 81 731 85 717 97 720 116 704 106 688 116 691 97 677 85 695 81Z" fill="#ffd33d" stroke="#101515" stroke-width="5" stroke-linejoin="round"/>
+  <text x="184" y="76" fill="url(#word)" font-family="Trebuchet MS, Inter, Arial, sans-serif" font-size="45" font-weight="900" letter-spacing="0">Variation of Creation</text>
+  <text x="187" y="118" fill="#64706c" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="23" font-weight="850" letter-spacing="4">BLEND STUDIO</text>
+  <path d="M489 113h183" fill="none" stroke="#d55d42" stroke-width="7" stroke-linecap="round"/>
+  <path d="M489 96c28-19 52 18 81-1 24-16 46 5 75-11" fill="none" stroke="#0e8075" stroke-width="7" stroke-linecap="round"/>
+  <path d="M706 43l7.1 15.2 16.1 5.7-16.1 6.1L706 85l-7.2-15-16-6.1 16-5.7L706 43Z" fill="#f2bd4e" stroke="#17201e" stroke-width="4" stroke-linejoin="round"/>
 </svg>

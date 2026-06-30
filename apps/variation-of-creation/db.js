@@ -11,9 +11,7 @@
     "data/generated-logos-200.csv",
     "data/svgrepo-tattoo.csv",
     "data/tattoos.csv",
-    "data/generated-tattoos-200.csv",
-    "data/generated-comics-200.csv",
-    "data/comics.csv"
+    "data/generated-tattoos-200.csv"
   ];
 
   const fallbackSeeds = [
@@ -71,20 +69,6 @@
       intensity: "6",
       prompt: "Draw a fine-line botanical forearm tattoo with a quiet moon rhythm",
       tags: "tattoo,forearm,botanical",
-      license: "Original free-to-use seed"
-    },
-    {
-      id: "comic-001",
-      kind: "comic",
-      title: "Pixel Nova",
-      vibe: "neon chase opening",
-      palette: "citrusCircuit",
-      control_a: "three",
-      control_b: "neon",
-      control_c: "Pixel Nova",
-      intensity: "7",
-      prompt: "Make a three-panel chase where color becomes the getaway route",
-      tags: "comic,neon,chase",
       license: "Original free-to-use seed"
     }
   ];

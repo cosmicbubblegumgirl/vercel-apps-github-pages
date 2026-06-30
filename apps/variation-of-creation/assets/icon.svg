@@ -1,32 +1,28 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
   <title id="title">Variation of Creation icon</title>
-  <desc id="desc">A whimsical browser icon with a tilted art tile, smiling creation swirl, and bright star.</desc>
+  <desc id="desc">A creative chemistry flask with colorful blended reactants.</desc>
   <defs>
-    <linearGradient id="tile" x1="36" y1="28" x2="221" y2="226" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#fff8e8"/>
-      <stop offset=".52" stop-color="#effaf6"/>
-      <stop offset="1" stop-color="#f8ecff"/>
+    <linearGradient id="tile" x1="30" y1="24" x2="226" y2="226" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fffdf8"/>
+      <stop offset="0.52" stop-color="#e7f7f1"/>
+      <stop offset="1" stop-color="#ffe7cf"/>
     </linearGradient>
-    <linearGradient id="swirl" x1="64" y1="61" x2="180" y2="188" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#08a79b"/>
-      <stop offset=".45" stop-color="#ff7548"/>
-      <stop offset="1" stop-color="#7a5cff"/>
+    <linearGradient id="mix" x1="68" y1="70" x2="186" y2="208" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0e8075"/>
+      <stop offset="0.45" stop-color="#3868a7"/>
+      <stop offset="1" stop-color="#d55d42"/>
     </linearGradient>
   </defs>
-
-  <rect width="256" height="256" rx="52" fill="#101515"/>
-  <g transform="rotate(-6 128 128)">
-    <rect x="32" y="30" width="192" height="194" rx="42" fill="url(#tile)"/>
-    <rect x="32" y="30" width="192" height="194" rx="42" fill="none" stroke="#101515" stroke-width="12"/>
-
-    <path d="M74 142c6-50 46-78 85-63 28 11 33 39 14 55 25 5 39 23 29 43-11 21-43 18-62 2-15 23-51 26-68 2-9-12-5-28 2-39Z" fill="url(#swirl)" stroke="#101515" stroke-width="11" stroke-linejoin="round"/>
-    <circle cx="128" cy="139" r="36" fill="#fff8e8" stroke="#101515" stroke-width="10"/>
-    <circle cx="116" cy="130" r="5" fill="#101515"/>
-    <circle cx="140" cy="130" r="5" fill="#101515"/>
-    <path d="M114 147c8 10 22 10 30 0" fill="none" stroke="#101515" stroke-width="7" stroke-linecap="round"/>
-
-    <path d="M175 53 186 74 209 78 192 94 196 117 175 106 154 117 158 94 141 78 164 74Z" fill="#ffd33d" stroke="#101515" stroke-width="7" stroke-linejoin="round"/>
-    <path d="M65 80c18-12 41-16 67-12" fill="none" stroke="#ff7548" stroke-width="9" stroke-linecap="round"/>
-    <path d="M58 190c31-8 59-5 84 10 20 11 38 11 56 0" fill="none" stroke="#08a79b" stroke-width="9" stroke-linecap="round"/>
+  <rect width="256" height="256" rx="54" fill="#17201e"/>
+  <g transform="rotate(-5 128 128)">
+    <rect x="34" y="32" width="188" height="190" rx="43" fill="url(#tile)"/>
+    <rect x="34" y="32" width="188" height="190" rx="43" fill="none" stroke="#17201e" stroke-width="12"/>
+    <path d="M105 54h48v69l43 73.5A20 20 0 0 1 178.8 226H79.2A20 20 0 0 1 62 196.5l43-73.5V54Z" fill="#fffdf8" stroke="#17201e" stroke-width="12" stroke-linejoin="round"/>
+    <path d="M76 183c23-22 40 20 65.5-3.6 18-16.7 32.5 2.5 45.5-6.4l14.2 24.6A20 20 0 0 1 184 226H74A20 20 0 0 1 56.9 196.5L76 183Z" fill="url(#mix)"/>
+    <path d="M101 82h55" fill="none" stroke="#17201e" stroke-width="12" stroke-linecap="round"/>
+    <path d="M176 42l10.2 22.7 23.8 8.6-23.8 9.3L176 105l-10.5-22.4-23.5-9.3 23.5-8.6L176 42Z" fill="#f2bd4e" stroke="#17201e" stroke-width="8" stroke-linejoin="round"/>
+    <circle cx="95" cy="181" r="10" fill="#f2bd4e"/>
+    <circle cx="139" cy="203" r="8" fill="#fffdf8"/>
+    <circle cx="155" cy="164" r="7" fill="#f2bd4e"/>
   </g>
 </svg>

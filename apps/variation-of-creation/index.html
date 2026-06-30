@@ -5,25 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Variation of Creation | Blend Studio</title>
   <meta name="description" content="A browser-based image blending studio for combining uploaded artwork, drawings, and pictures into a polished generated output.">
+  <link rel="icon" href="./assets/icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./styles.css">
   <script defer src="./app.js"></script>
 </head>
 <body>
   <header class="app-header">
     <a class="brand" href="./" aria-label="Variation of Creation home">
-      <span class="brand-mark" aria-hidden="true">
-        <svg viewBox="0 0 44 44" role="img">
-          <path d="M18 4h8v11l9.8 15.9A6 6 0 0 1 30.7 40H13.3a6 6 0 0 1-5.1-9.1L18 15V4Z" fill="currentColor" opacity=".18"/>
-          <path d="M18 4h8M20 4v12L9.9 32.5A5 5 0 0 0 14.1 40h15.8a5 5 0 0 0 4.2-7.5L26 16V4" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/>
-          <path d="M14 31c3.8-3.8 6.8 3.5 10.6-.3 2.9-2.9 5.1.3 7.4-.9" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/>
-          <circle cx="18" cy="27" r="1.8" fill="currentColor"/>
-          <circle cx="27" cy="33" r="1.5" fill="currentColor"/>
-        </svg>
-      </span>
-      <span>
-        <strong>Variation of Creation</strong>
-        <small>Blend Studio</small>
-      </span>
+      <img class="brand-logo" src="./assets/logo.svg" alt="Variation of Creation Blend Studio">
     </a>
     <nav class="header-actions" aria-label="Studio actions">
       <button id="sampleButton" class="ghost-button" type="button" title="Load samples" aria-label="Load samples">
@@ -202,6 +191,70 @@
         <textarea id="textPrompt" rows="4" placeholder="dreamy tea garden, bright graphite lines, soft product poster"></textarea>
       </div>
 
+      <div class="control-group prompt-sparks">
+        <div class="control-title">Prompt Sparks</div>
+        <div id="promptSparkGrid" class="spark-grid"></div>
+      </div>
+
+      <div class="control-group creative-lab">
+        <div class="control-title">Creative Lab</div>
+        <div id="effectGroup" class="effect-grid" role="radiogroup" aria-label="Creative effect">
+          <button class="effect active" type="button" data-effect="clean" role="radio" aria-checked="true">Clean</button>
+          <button class="effect" type="button" data-effect="bloom" role="radio" aria-checked="false">Bloom</button>
+          <button class="effect" type="button" data-effect="glyphs" role="radio" aria-checked="false">Glyphs</button>
+          <button class="effect" type="button" data-effect="prism" role="radio" aria-checked="false">Prism</button>
+          <button class="effect" type="button" data-effect="blueprint" role="radio" aria-checked="false">Blueprint</button>
+        </div>
+        <label>Alchemy
+          <input id="mutationRange" type="range" min="0" max="100" value="55">
+        </label>
+        <label>Detail
+          <input id="detailRange" type="range" min="0" max="100" value="62">
+        </label>
+        <div class="creative-actions">
+          <button id="autoBriefButton" class="mini-button" type="button">Brief</button>
+          <button id="variationButton" class="mini-button secondary" type="button">Variations</button>
+        </div>
+      </div>
+
+      <div class="control-group composition-lab">
+        <div class="control-title">Composition Map</div>
+        <div id="compositionGroup" class="mode-grid" role="radiogroup" aria-label="Composition map">
+          <button class="mode active" type="button" data-composition="orbit" role="radio" aria-checked="true">Orbit</button>
+          <button class="mode" type="button" data-composition="hero" role="radio" aria-checked="false">Hero</button>
+          <button class="mode" type="button" data-composition="mosaic" role="radio" aria-checked="false">Mosaic</button>
+          <button class="mode" type="button" data-composition="cascade" role="radio" aria-checked="false">Cascade</button>
+          <button class="mode" type="button" data-composition="triptych" role="radio" aria-checked="false">Triptych</button>
+        </div>
+      </div>
+
+      <div class="control-group chemistry-lab">
+        <div class="control-title">Color Chemistry</div>
+        <div id="harmonyGroup" class="mode-grid" role="radiogroup" aria-label="Color chemistry">
+          <button class="mode active" type="button" data-harmony="source" role="radio" aria-checked="true">Source</button>
+          <button class="mode" type="button" data-harmony="analog" role="radio" aria-checked="false">Analog</button>
+          <button class="mode" type="button" data-harmony="complement" role="radio" aria-checked="false">Complement</button>
+          <button class="mode" type="button" data-harmony="heat" role="radio" aria-checked="false">Heat</button>
+          <button class="mode" type="button" data-harmony="mono-ink" role="radio" aria-checked="false">Mono ink</button>
+        </div>
+      </div>
+
+      <div class="control-group finish-lab">
+        <div class="control-title">Finish Pass</div>
+        <div id="finishGroup" class="mode-grid" role="radiogroup" aria-label="Finish pass">
+          <button class="mode active" type="button" data-finish="matte" role="radio" aria-checked="true">Matte</button>
+          <button class="mode" type="button" data-finish="gloss" role="radio" aria-checked="false">Gloss</button>
+          <button class="mode" type="button" data-finish="riso" role="radio" aria-checked="false">Riso</button>
+          <button class="mode" type="button" data-finish="cutline" role="radio" aria-checked="false">Cutline</button>
+          <button class="mode" type="button" data-finish="tape" role="radio" aria-checked="false">Tape</button>
+        </div>
+      </div>
+
+      <div class="control-group variation-lab">
+        <div class="control-title">Variation Deck</div>
+        <div id="variationDeck" class="variation-deck"></div>
+      </div>
+
       <div class="control-group selected-layer">
         <div class="control-title">Selected Layer</div>
         <div id="selectedLayerName" class="selected-name">None</div>
@@ -229,6 +282,7 @@
       <div class="control-group">
         <div class="control-title">AI Recipe</div>
         <div id="paletteStrip" class="palette-strip" aria-label="Detected color palette"></div>
+        <div id="dnaList" class="dna-list" aria-label="Fusion DNA"></div>
         <div id="recipeList" class="recipe-list"></div>
       </div>
 
@@ -251,7 +305,7 @@
           <circle cx="101" cy="132" r="4"/>
         </svg>
       </div>
-      <img id="finalPreview" class="final-preview" alt="Final blended output preview">
+      <img id="finalPreview" class="final-preview" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="Final blended output preview">
       <div id="reactionWords" class="reaction-words">Mixing reactants</div>
     </div>
   </div>
