@@ -3,345 +3,544 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Variation of Creation | Blend Studio</title>
-  <meta name="description" content="A browser-based image blending studio for combining uploaded artwork, drawings, and pictures into a polished generated output.">
+  <title>Quirkboards | Creative Design Workspace</title>
+  <meta name="description" content="Quirkboards is a sleek, interactive creative design workspace for boards, brands, prototypes, templates, AI assets, and digital products.">
   <link rel="icon" href="./assets/icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./styles.css">
   <script defer src="./app.js"></script>
 </head>
 <body>
-  <header class="app-header">
-    <a class="brand" href="./" aria-label="Variation of Creation home">
-      <img class="brand-logo" src="./assets/logo.svg" alt="Variation of Creation Blend Studio">
+  <svg class="icon-sheet" aria-hidden="true">
+    <symbol id="icon-board" viewBox="0 0 24 24">
+      <rect x="4" y="4" width="16" height="16" rx="3"></rect><path d="M8 9h8M8 13h5M16 16h.01"></path>
+    </symbol>
+    <symbol id="icon-dashboard" viewBox="0 0 24 24">
+      <rect x="4" y="4" width="7" height="7" rx="2"></rect><rect x="13" y="4" width="7" height="5" rx="2"></rect><rect x="13" y="11" width="7" height="9" rx="2"></rect><rect x="4" y="13" width="7" height="7" rx="2"></rect>
+    </symbol>
+    <symbol id="icon-prototype" viewBox="0 0 24 24">
+      <rect x="3" y="5" width="7" height="6" rx="2"></rect><rect x="14" y="13" width="7" height="6" rx="2"></rect><path d="M10 8h3a3 3 0 0 1 3 3v2M13 16H8a3 3 0 0 1-3-3v-2"></path>
+    </symbol>
+    <symbol id="icon-brand" viewBox="0 0 24 24">
+      <path d="M12 3l8 4v10l-8 4-8-4V7l8-4Z"></path><path d="M8.5 10.5 12 8l3.5 2.5V15L12 17l-3.5-2v-4.5Z"></path>
+    </symbol>
+    <symbol id="icon-market" viewBox="0 0 24 24">
+      <path d="M5 9h14l-1 11H6L5 9Z"></path><path d="M8 9a4 4 0 0 1 8 0"></path><path d="M8 13h8"></path>
+    </symbol>
+    <symbol id="icon-home" viewBox="0 0 24 24">
+      <path d="m4 11 8-7 8 7"></path><path d="M7 10.5V20h10v-9.5"></path><path d="M10 20v-5h4v5"></path>
+    </symbol>
+    <symbol id="icon-spark" viewBox="0 0 24 24">
+      <path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3Z"></path><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15Z"></path>
+    </symbol>
+    <symbol id="icon-text" viewBox="0 0 24 24">
+      <path d="M5 5h14M12 5v14M9 19h6"></path>
+    </symbol>
+    <symbol id="icon-shape" viewBox="0 0 24 24">
+      <rect x="4" y="4" width="9" height="9" rx="2"></rect><path d="M16.5 11.5 21 20h-9l4.5-8.5Z"></path>
+    </symbol>
+    <symbol id="icon-upload" viewBox="0 0 24 24">
+      <path d="M12 16V4"></path><path d="m7 9 5-5 5 5"></path><path d="M5 20h14"></path>
+    </symbol>
+    <symbol id="icon-comment" viewBox="0 0 24 24">
+      <path d="M5 5h14v10H8l-3 4V5Z"></path><path d="M8 9h8M8 12h5"></path>
+    </symbol>
+    <symbol id="icon-share" viewBox="0 0 24 24">
+      <circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="m8.7 10.7 6.6-4.4M8.7 13.3l6.6 4.4"></path>
+    </symbol>
+    <symbol id="icon-export" viewBox="0 0 24 24">
+      <path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path>
+    </symbol>
+    <symbol id="icon-undo" viewBox="0 0 24 24">
+      <path d="M9 7 5 11l4 4"></path><path d="M5 11h9a5 5 0 0 1 0 10h-3"></path>
+    </symbol>
+    <symbol id="icon-redo" viewBox="0 0 24 24">
+      <path d="m15 7 4 4-4 4"></path><path d="M19 11h-9a5 5 0 0 0 0 10h3"></path>
+    </symbol>
+    <symbol id="icon-play" viewBox="0 0 24 24">
+      <path d="M8 5v14l11-7-11-7Z"></path>
+    </symbol>
+    <symbol id="icon-plus" viewBox="0 0 24 24">
+      <path d="M12 5v14M5 12h14"></path>
+    </symbol>
+    <symbol id="icon-layers" viewBox="0 0 24 24">
+      <path d="m12 3 8 4-8 4-8-4 8-4Z"></path><path d="m4 12 8 4 8-4"></path><path d="m4 17 8 4 8-4"></path>
+    </symbol>
+    <symbol id="icon-check" viewBox="0 0 24 24">
+      <path d="m5 12 4 4L19 6"></path>
+    </symbol>
+    <symbol id="icon-filter" viewBox="0 0 24 24">
+      <path d="M4 6h16M7 12h10M10 18h4"></path>
+    </symbol>
+  </svg>
+
+  <header class="topbar">
+    <a class="brand" href="#studio" data-view-link="studio" aria-label="Quirkboards studio">
+      <img class="brand-mark" src="./assets/logo.svg" alt="Quirkboards">
     </a>
-    <nav class="studio-switcher" aria-label="Studio modes">
-      <a class="active" href="./index.html">Blend Studio</a>
-      <a href="./tattoos.html">Tattoo Studio</a>
+
+    <nav class="top-nav" aria-label="Primary">
+      <button class="active" type="button" data-view-link="studio">Studio</button>
+      <button type="button" data-view-link="dashboard">Dashboard</button>
+      <button type="button" data-view-link="prototype">Prototype</button>
+      <button type="button" data-view-link="brand">Brand Kit</button>
+      <button type="button" data-view-link="market">Market</button>
     </nav>
-    <nav class="header-actions" aria-label="Studio actions">
-      <button id="sampleButton" class="ghost-button" type="button" title="Load samples" aria-label="Load samples">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M4 7.5 12 3l8 4.5v9L12 21l-8-4.5v-9Z"/>
-          <path d="m8.5 9.5 7 4M15.5 9.5l-7 4"/>
-        </svg>
-      </button>
-      <button id="downloadButton" class="ghost-button" type="button" title="Download artwork" aria-label="Download artwork">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M12 3v12"/>
-          <path d="m7 10 5 5 5-5"/>
-          <path d="M5 20h14"/>
-        </svg>
-      </button>
-    </nav>
+
+    <div class="top-actions" aria-label="Workspace actions">
+      <button class="icon-button" type="button" data-action="undo" title="Undo" aria-label="Undo"><svg><use href="#icon-undo"></use></svg></button>
+      <button class="icon-button" type="button" data-action="redo" title="Redo" aria-label="Redo"><svg><use href="#icon-redo"></use></svg></button>
+      <button class="icon-button" type="button" data-action="comments" title="Comments" aria-label="Comments"><svg><use href="#icon-comment"></use></svg></button>
+      <button class="pill-button" type="button" data-action="share"><svg><use href="#icon-share"></use></svg><span>Share</span></button>
+    </div>
   </header>
 
-  <main class="studio-shell">
-    <aside class="panel source-panel" aria-label="Source images">
-      <div class="panel-head">
-        <div>
-          <p class="eyebrow">Reactants</p>
-          <h1>Image Sources</h1>
-        </div>
-        <span id="imageCount" class="counter">0</span>
-      </div>
-
-      <label id="dropZone" class="drop-zone" for="imageInput">
-        <input id="imageInput" type="file" accept="image/*" multiple>
-        <span aria-hidden="true">
-          <svg viewBox="0 0 24 24">
-            <path d="M12 5v14"/>
-            <path d="M5 12h14"/>
-          </svg>
-        </span>
-        <strong>Add pictures</strong>
-        <small>PNG, JPG, SVG, WEBP</small>
-      </label>
-
-      <div id="assetGrid" class="asset-grid" aria-label="Uploaded image layers"></div>
-
-      <div class="control-group">
-        <div class="control-title">Art Type</div>
-        <div id="artTypeGroup" class="option-grid" role="radiogroup" aria-label="Art type">
-          <button class="option active" type="button" data-art-type="mixed-media" role="radio" aria-checked="true">Mixed media</button>
-          <button class="option" type="button" data-art-type="watercolor" role="radio" aria-checked="false">Watercolor</button>
-          <button class="option" type="button" data-art-type="surreal-collage" role="radio" aria-checked="false">Surreal collage</button>
-          <button class="option" type="button" data-art-type="ink-poster" role="radio" aria-checked="false">Ink poster</button>
-          <button class="option" type="button" data-art-type="tattoo" role="radio" aria-checked="false">Tattoo</button>
-          <button class="option" type="button" data-art-type="album-cover" role="radio" aria-checked="false">Album cover</button>
-          <button class="option" type="button" data-art-type="character-concept" role="radio" aria-checked="false">Character concept</button>
-        </div>
-      </div>
-
-      <div class="control-group">
-        <div class="control-title">Vibe</div>
-        <div id="vibeGroup" class="chip-grid" role="radiogroup" aria-label="Vibe">
-          <button class="chip active" type="button" data-vibe="whimsical" role="radio" aria-checked="true">Whimsical</button>
-          <button class="chip" type="button" data-vibe="cinematic" role="radio" aria-checked="false">Cinematic</button>
-          <button class="chip" type="button" data-vibe="cozy" role="radio" aria-checked="false">Cozy</button>
-          <button class="chip" type="button" data-vibe="electric" role="radio" aria-checked="false">Electric</button>
-          <button class="chip" type="button" data-vibe="botanical" role="radio" aria-checked="false">Botanical</button>
-          <button class="chip" type="button" data-vibe="editorial" role="radio" aria-checked="false">Editorial</button>
-        </div>
-      </div>
-
-      <div class="control-group source-library">
-        <div class="library-head">
-          <div>
-            <div class="control-title">Open Sources</div>
-            <span id="sourceLibraryStatus" class="library-status">Not loaded</span>
-          </div>
-          <button id="loadSourcesButton" class="mini-button" type="button">Load</button>
-        </div>
-        <div class="library-actions">
-          <button id="loadAllSourcesButton" class="mini-button secondary" type="button">Load 600</button>
-          <button id="addSourceBatchButton" class="mini-button secondary" type="button">Add 12</button>
-        </div>
-        <div class="source-selection-bar" aria-live="polite">
-          <span id="selectedSourceCount">0 selected</span>
-          <button id="addSelectedSourcesButton" class="mini-button" type="button" disabled>Add selected</button>
-          <button id="clearSourceSelectionButton" class="mini-button secondary" type="button" disabled>Clear</button>
-        </div>
-        <div id="sourceLibraryGrid" class="source-library-grid" aria-label="Open-license source images"></div>
-      </div>
+  <main class="app-shell">
+    <aside class="side-rail" aria-label="Quirkboards sections">
+      <button class="rail-button active" type="button" data-view-link="studio" title="Studio" aria-label="Studio"><svg><use href="#icon-board"></use></svg></button>
+      <button class="rail-button" type="button" data-view-link="dashboard" title="Dashboard" aria-label="Dashboard"><svg><use href="#icon-dashboard"></use></svg></button>
+      <button class="rail-button" type="button" data-view-link="prototype" title="Prototype" aria-label="Prototype"><svg><use href="#icon-prototype"></use></svg></button>
+      <button class="rail-button" type="button" data-view-link="brand" title="Brand Kit" aria-label="Brand Kit"><svg><use href="#icon-brand"></use></svg></button>
+      <button class="rail-button" type="button" data-view-link="market" title="Marketplace" aria-label="Marketplace"><svg><use href="#icon-market"></use></svg></button>
+      <button class="rail-button" type="button" data-view-link="home" title="Home" aria-label="Home"><svg><use href="#icon-home"></use></svg></button>
+      <button class="rail-create" type="button" data-action="new-board" title="Create New Board" aria-label="Create New Board"><svg><use href="#icon-plus"></use></svg></button>
     </aside>
 
-    <section class="workspace" aria-label="Creation workspace">
-      <div class="workspace-toolbar">
-        <div class="segmented" aria-label="Canvas output format">
-          <button class="active" type="button" data-format="square">Square</button>
-          <button type="button" data-format="portrait">Portrait</button>
-          <button type="button" data-format="story">Story</button>
-          <button type="button" data-format="landscape">Landscape</button>
-          <button type="button" data-format="banner">Banner</button>
-        </div>
-        <div class="toolbar-cluster">
-          <button id="shuffleButton" class="tool-button" type="button" title="Shuffle composition" aria-label="Shuffle composition">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M16 3h5v5"/>
-              <path d="M4 20 21 3"/>
-              <path d="M21 16v5h-5"/>
-              <path d="m15 15 6 6"/>
-              <path d="M4 4l5 5"/>
-            </svg>
-          </button>
-          <button id="fitButton" class="tool-button" type="button" title="Fit selected layer" aria-label="Fit selected layer">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M4 9V4h5"/>
-              <path d="M20 9V4h-5"/>
-              <path d="M4 15v5h5"/>
-              <path d="M20 15v5h-5"/>
-            </svg>
-          </button>
-          <button id="removeButton" class="tool-button danger" type="button" title="Remove selected layer" aria-label="Remove selected layer">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M4 7h16"/>
-              <path d="M10 11v6"/>
-              <path d="M14 11v6"/>
-              <path d="M6 7l1 13h10l1-13"/>
-              <path d="M9 7V4h6v3"/>
-            </svg>
-          </button>
-        </div>
-      </div>
+    <section class="view active" data-view-panel="studio" aria-label="Design editor">
+      <div class="studio-grid">
+        <aside class="glass-panel tool-panel" aria-label="Tools">
+          <div class="panel-title">
+            <span>Tools</span>
+            <strong>Summon a layout. Tame the pixels.</strong>
+          </div>
 
-      <div class="artboard-frame">
-        <canvas id="artCanvas" width="1400" height="1400" aria-label="Generated artwork canvas"></canvas>
-        <div id="emptyState" class="empty-state">
-          <strong>Drop in source images</strong>
-          <span>Or start with the sample reactants.</span>
-        </div>
-      </div>
+          <div class="tool-stack" role="list">
+            <button class="tool-tile active" type="button" data-tool="select" role="listitem"><svg><use href="#icon-board"></use></svg><span>Select</span></button>
+            <button class="tool-tile" type="button" data-add="text" role="listitem"><svg><use href="#icon-text"></use></svg><span>Text</span></button>
+            <button class="tool-tile" type="button" data-add="shape" role="listitem"><svg><use href="#icon-shape"></use></svg><span>Shape</span></button>
+            <button class="tool-tile" type="button" data-add="note" role="listitem"><svg><use href="#icon-comment"></use></svg><span>Note</span></button>
+            <button class="tool-tile" type="button" data-add="asset" role="listitem"><svg><use href="#icon-spark"></use></svg><span>AI Asset</span></button>
+            <button class="tool-tile" type="button" data-add="frame" role="listitem"><svg><use href="#icon-layers"></use></svg><span>Frame</span></button>
+            <button class="tool-tile" type="button" data-add="upload" role="listitem"><svg><use href="#icon-upload"></use></svg><span>Upload</span></button>
+          </div>
 
-      <div class="reaction-bench" aria-label="Chemical blend animation timeline">
-        <div class="beaker-track" aria-hidden="true">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-        <button id="blendButton" class="blend-button" type="button">
-          <span class="blend-icon" aria-hidden="true">
-            <svg viewBox="0 0 64 64">
-              <path d="M25 5h14v18l13.8 23.2A8.5 8.5 0 0 1 45.5 59h-27a8.5 8.5 0 0 1-7.3-12.8L25 23V5Z"/>
-              <path d="M18 45c6.5-6 11.3 5.4 18-.6 5.1-4.5 8.6.5 12.6-1.4"/>
-              <circle cx="23" cy="40" r="3"/>
-              <circle cx="39" cy="49" r="2.5"/>
-              <circle cx="34" cy="35" r="1.8"/>
-            </svg>
-          </span>
-          <span>Blend</span>
-        </button>
-        <div id="reactionStatus" class="reaction-status">Ready</div>
+          <div class="panel-section">
+            <div class="section-label">Templates</div>
+            <button class="template-card active" type="button" data-template="launch">
+              <span class="template-thumb launch"></span>
+              <strong>Launch deck</strong>
+              <small>Presentation, landing page, social set</small>
+            </button>
+            <button class="template-card" type="button" data-template="bakery">
+              <span class="template-thumb bakery"></span>
+              <strong>Bakery carousel</strong>
+              <small>Instagram, stickers, menu mockup</small>
+            </button>
+            <button class="template-card" type="button" data-template="mobile">
+              <span class="template-thumb mobile"></span>
+              <strong>Mobile app kit</strong>
+              <small>Screens, components, prototype flow</small>
+            </button>
+          </div>
+
+          <div class="panel-section">
+            <div class="section-label">AI Quick Starts</div>
+            <button class="prompt-chip" type="button" data-prompt="Create an Instagram carousel for my bakery.">Bakery carousel</button>
+            <button class="prompt-chip" type="button" data-prompt="Turn this wireframe into a polished mobile app screen.">Wireframe polish</button>
+            <button class="prompt-chip" type="button" data-prompt="Generate a logo, colour palette, and landing page hero.">Brand launch</button>
+          </div>
+        </aside>
+
+        <section class="canvas-column" aria-label="Canvas">
+          <div class="editor-bar">
+            <div class="project-name">
+              <span class="status-dot"></span>
+              <div>
+                <small>Team workspace</small>
+                <strong id="projectName">Quirkboards / Delightful chaos system</strong>
+              </div>
+            </div>
+            <div class="editor-actions">
+              <button class="icon-button" type="button" data-action="undo" title="Undo" aria-label="Undo"><svg><use href="#icon-undo"></use></svg></button>
+              <button class="icon-button" type="button" data-action="redo" title="Redo" aria-label="Redo"><svg><use href="#icon-redo"></use></svg></button>
+              <button class="pill-button muted" type="button" data-view-link="prototype"><svg><use href="#icon-play"></use></svg><span>Present</span></button>
+              <button class="pill-button" type="button" data-action="export"><svg><use href="#icon-export"></use></svg><span>Export</span></button>
+            </div>
+          </div>
+
+          <div class="canvas-shell" id="canvasShell">
+            <div class="canvas-controls" aria-label="Canvas controls">
+              <button class="mini-control active" type="button" data-size="social">Social</button>
+              <button class="mini-control" type="button" data-size="deck">Deck</button>
+              <button class="mini-control" type="button" data-size="web">Web</button>
+              <label class="zoom-control">Zoom <input id="zoomRange" type="range" min="58" max="110" value="78"></label>
+            </div>
+
+            <div class="creative-floor" id="creativeFloor">
+              <div class="snap-line horizontal" id="snapLineH"></div>
+              <div class="snap-line vertical" id="snapLineV"></div>
+              <div class="live-cursor cursor-one"><span></span>Mika</div>
+              <div class="live-cursor cursor-two"><span></span>Jay</div>
+
+              <article class="design-board main-board" id="mainBoard" aria-label="Primary board">
+                <div class="board-grid"></div>
+                <div class="design-object object-badge" data-object="spark-badge" data-kind="badge" style="left: 68%; top: 10%; width: 148px; height: 44px; --object-color: #f8d84a;">AI polish pass</div>
+                <div class="design-object object-heading selected" data-object="hero-title" data-kind="text" style="left: 9%; top: 17%; width: 470px; height: 155px; --object-color: #f5f7ff;">Design serious things without becoming a serious person.</div>
+                <div class="design-object object-copy" data-object="hero-copy" data-kind="text" style="left: 10%; top: 53%; width: 390px; height: 86px; --object-color: #b9c3d8;">Templates, brand kits, prototypes, mockups, AI assets, and collaboration on one delightfully organized board.</div>
+                <div class="design-object object-shape blob-one" data-object="orb-coral" data-kind="shape" style="left: 60%; top: 42%; width: 210px; height: 210px; --object-color: #ff6b6b;"></div>
+                <div class="design-object object-shape blob-two" data-object="orb-cyan" data-kind="shape" style="left: 76%; top: 32%; width: 150px; height: 150px; --object-color: #21d7c4;"></div>
+                <div class="design-object object-card-mini" data-object="mini-card" data-kind="asset" style="left: 54%; top: 60%; width: 250px; height: 145px; --object-color: #f5f7ff;">
+                  <span>Brand kit called</span>
+                  <strong>It wants boundaries.</strong>
+                  <i></i>
+                </div>
+                <div class="design-object object-note" data-object="sticky-note" data-kind="note" style="left: 11%; top: 73%; width: 190px; height: 120px; --object-color: #fde68a;">Big ideas, tiny sticky notes, zero chaos... mostly.</div>
+              </article>
+
+              <article class="design-board mobile-board" aria-label="Mobile app screen">
+                <div class="phone-top"></div>
+                <strong>QuirkBot</strong>
+                <p>Make it clean. Make it clever.</p>
+                <span class="mobile-pill"></span>
+                <span class="mobile-line"></span>
+                <span class="mobile-line short"></span>
+                <button type="button">Polish This</button>
+              </article>
+            </div>
+          </div>
+
+          <div class="collab-strip" id="collabStrip">
+            <div class="avatar-stack" aria-label="Collaborators">
+              <span style="--avatar: #21d7c4;">M</span>
+              <span style="--avatar: #ff6b6b;">J</span>
+              <span style="--avatar: #f8d84a;">S</span>
+            </div>
+            <div class="comment-feed">
+              <strong>Comments</strong>
+              <span>Your pixels are behaving suspiciously well today.</span>
+            </div>
+            <button class="mini-link" type="button" data-action="approve">Approve board</button>
+          </div>
+        </section>
+
+        <aside class="glass-panel inspector-panel" aria-label="Inspector and AI assistant">
+          <div class="panel-tabs" role="tablist" aria-label="Inspector tabs">
+            <button class="active" type="button" data-inspector-tab="properties">Properties</button>
+            <button type="button" data-inspector-tab="layers">Layers</button>
+            <button type="button" data-inspector-tab="bot">QuirkBot</button>
+          </div>
+
+          <section class="inspector-tab active" data-inspector-panel="properties">
+            <div class="panel-title compact">
+              <span>Inspector</span>
+              <strong id="selectedName">hero-title</strong>
+            </div>
+            <label class="field">Content
+              <textarea id="propertyText" rows="3">Design serious things without becoming a serious person.</textarea>
+            </label>
+            <label class="field">Colour
+              <input id="propertyColor" type="color" value="#f5f7ff">
+            </label>
+            <label class="field">Size
+              <input id="propertySize" type="range" min="70" max="140" value="100">
+            </label>
+            <label class="field">Opacity
+              <input id="propertyOpacity" type="range" min="30" max="100" value="100">
+            </label>
+            <label class="field">Rotation
+              <input id="propertyRotation" type="range" min="-18" max="18" value="0">
+            </label>
+            <div class="export-grid">
+              <button type="button" data-action="export-format" data-format="PNG">PNG</button>
+              <button type="button" data-action="export-format" data-format="SVG">SVG</button>
+              <button type="button" data-action="export-format" data-format="PDF">PDF</button>
+              <button type="button" data-action="export-format" data-format="HTML/CSS">HTML</button>
+            </div>
+          </section>
+
+          <section class="inspector-tab" data-inspector-panel="layers">
+            <div class="panel-title compact">
+              <span>Layers</span>
+              <strong>Frames, grids, constraints</strong>
+            </div>
+            <div class="layer-list" id="layerList"></div>
+            <div class="constraint-box">
+              <span>Responsive sizing</span>
+              <div class="segmented-row">
+                <button class="active" type="button">Pin left</button>
+                <button type="button">Scale</button>
+                <button type="button">Hug</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="inspector-tab" data-inspector-panel="bot">
+            <div class="quirkbot-head">
+              <span class="bot-orb"></span>
+              <div>
+                <span>QuirkBot</span>
+                <strong>Make this brand more playful.</strong>
+              </div>
+            </div>
+            <textarea id="botPrompt" rows="4" placeholder="Create a pitch deck from these notes."></textarea>
+            <div class="bot-actions">
+              <button type="button" data-action="bot-run">Generate</button>
+              <button type="button" data-action="bot-clean">Make It Cleaner</button>
+              <button type="button" data-action="bot-quirky">Make It Quirkier</button>
+              <button type="button" data-action="bot-polish">Polish This</button>
+            </div>
+            <div class="bot-response" id="botResponse">
+              <strong>QuirkBot</strong>
+              <span>Try a prompt and I will generate layouts, copy, palettes, icons, mockups, and suspiciously tidy suggestions.</span>
+            </div>
+          </section>
+        </aside>
       </div>
     </section>
 
-    <aside class="panel inspector-panel" aria-label="Layer and output settings">
-      <div class="panel-head">
-        <div>
-          <p class="eyebrow">Studio</p>
-          <h2>Inspector</h2>
+    <section class="view" data-view-panel="dashboard" aria-label="Dashboard">
+      <div class="workspace-page">
+        <div class="page-heading">
+          <span>Dashboard</span>
+          <h1>Recent boards, brand kits, teams, and AI starts.</h1>
+          <button class="hero-action" type="button" data-action="new-board"><svg><use href="#icon-plus"></use></svg>Create New Board</button>
         </div>
-        <span id="aiScore" class="score">AI 0%</span>
-      </div>
 
-      <div class="control-group">
-        <label class="field-label" for="outputIntent">Preferred Output</label>
-        <select id="outputIntent">
-          <option value="finished-artwork">Finished artwork</option>
-          <option value="social-post">Social post</option>
-          <option value="print-poster">Print poster</option>
-          <option value="brand-concept">Brand concept</option>
-          <option value="character-sheet">Character sheet</option>
-          <option value="wallpaper">Wallpaper</option>
-        </select>
-      </div>
-
-      <div class="control-group">
-        <label class="field-label" for="textPrompt">Creative Direction</label>
-        <textarea id="textPrompt" rows="4" placeholder="dreamy tea garden, bright graphite lines, soft product poster"></textarea>
-      </div>
-
-      <div class="control-group prompt-sparks">
-        <div class="control-title">Prompt Sparks</div>
-        <div id="promptSparkGrid" class="spark-grid"></div>
-      </div>
-
-      <div class="control-group creative-lab">
-        <div class="control-title">Creative Lab</div>
-        <div id="effectGroup" class="effect-grid" role="radiogroup" aria-label="Creative effect">
-          <button class="effect active" type="button" data-effect="clean" role="radio" aria-checked="true">Clean</button>
-          <button class="effect" type="button" data-effect="bloom" role="radio" aria-checked="false">Bloom</button>
-          <button class="effect" type="button" data-effect="glyphs" role="radio" aria-checked="false">Glyphs</button>
-          <button class="effect" type="button" data-effect="prism" role="radio" aria-checked="false">Prism</button>
-          <button class="effect" type="button" data-effect="blueprint" role="radio" aria-checked="false">Blueprint</button>
+        <div class="dashboard-grid">
+          <article class="board-card large">
+            <span class="board-preview preview-one"></span>
+            <strong>Delightful chaos system</strong>
+            <small>Social campaign, app hero, deck</small>
+          </article>
+          <article class="board-card">
+            <span class="board-preview preview-two"></span>
+            <strong>Bakery carousel</strong>
+            <small>12 posts, 4 stickers, 1 pastry-related mystery</small>
+          </article>
+          <article class="board-card">
+            <span class="board-preview preview-three"></span>
+            <strong>Mobile UI flow</strong>
+            <small>Prototype, components, comments</small>
+          </article>
+          <article class="empty-board">
+            <strong>No boards yet?</strong>
+            <span>Your pixels are waiting patiently.</span>
+          </article>
         </div>
-        <label>Alchemy
-          <input id="mutationRange" type="range" min="0" max="100" value="55">
-        </label>
-        <label>Detail
-          <input id="detailRange" type="range" min="0" max="100" value="62">
-        </label>
-        <div class="creative-actions">
-          <button id="autoBriefButton" class="mini-button" type="button">Brief</button>
-          <button id="variationButton" class="mini-button secondary" type="button">Variations</button>
-        </div>
-      </div>
 
-      <div class="control-group composition-lab">
-        <div class="control-title">Composition Map</div>
-        <div id="compositionGroup" class="mode-grid" role="radiogroup" aria-label="Composition map">
-          <button class="mode active" type="button" data-composition="orbit" role="radio" aria-checked="true">Orbit</button>
-          <button class="mode" type="button" data-composition="hero" role="radio" aria-checked="false">Hero</button>
-          <button class="mode" type="button" data-composition="mosaic" role="radio" aria-checked="false">Mosaic</button>
-          <button class="mode" type="button" data-composition="cascade" role="radio" aria-checked="false">Cascade</button>
-          <button class="mode" type="button" data-composition="triptych" role="radio" aria-checked="false">Triptych</button>
+        <div class="quick-grid">
+          <article>
+            <span>Brand kits</span>
+            <strong>3 active systems</strong>
+            <small>Logos, colors, typography, tone rules</small>
+          </article>
+          <article>
+            <span>Shared workspaces</span>
+            <strong>Studio Orbit</strong>
+            <small>7 collaborators, 18 live comments</small>
+          </article>
+          <article>
+            <span>Saved assets</span>
+            <strong>248 reusable bits</strong>
+            <small>Icons, stickers, mockups, font pairings</small>
+          </article>
+          <article>
+            <span>AI quick-start</span>
+            <strong>Generate a landing hero</strong>
+            <small>Copy, palette, layout, export sizes</small>
+          </article>
         </div>
       </div>
+    </section>
 
-      <div class="control-group chemistry-lab">
-        <div class="control-title">Color Chemistry</div>
-        <div id="harmonyGroup" class="mode-grid" role="radiogroup" aria-label="Color chemistry">
-          <button class="mode active" type="button" data-harmony="source" role="radio" aria-checked="true">Source</button>
-          <button class="mode" type="button" data-harmony="analog" role="radio" aria-checked="false">Analog</button>
-          <button class="mode" type="button" data-harmony="complement" role="radio" aria-checked="false">Complement</button>
-          <button class="mode" type="button" data-harmony="heat" role="radio" aria-checked="false">Heat</button>
-          <button class="mode" type="button" data-harmony="mono-ink" role="radio" aria-checked="false">Mono ink</button>
+    <section class="view" data-view-panel="prototype" aria-label="Prototype mode">
+      <div class="workspace-page prototype-page">
+        <div class="page-heading">
+          <span>Prototype Mode</span>
+          <h1>Connect screens, preview flows, and present the almost-magic.</h1>
+          <button class="hero-action" type="button" data-action="preview-flow"><svg><use href="#icon-play"></use></svg>Preview Flow</button>
+        </div>
+        <div class="prototype-stage">
+          <svg class="flow-lines" viewBox="0 0 1000 420" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M235 140 C360 80 430 105 535 145"></path>
+            <path d="M655 210 C760 275 805 265 890 210"></path>
+            <path d="M250 280 C390 345 505 330 620 265"></path>
+          </svg>
+          <article class="screen-card">
+            <span>01</span>
+            <strong>Landing</strong>
+            <p>Hero, CTA, brand proof</p>
+          </article>
+          <article class="screen-card">
+            <span>02</span>
+            <strong>Signup</strong>
+            <p>Friendly friction, zero drama</p>
+          </article>
+          <article class="screen-card">
+            <span>03</span>
+            <strong>Studio</strong>
+            <p>Canvas, comments, export</p>
+          </article>
+          <article class="screen-card device">
+            <span>Mobile</span>
+            <strong>Preview</strong>
+            <p>Tap, slide, dissolve</p>
+          </article>
+        </div>
+        <div class="prototype-controls">
+          <button class="active" type="button" data-transition="smart">Smart animate</button>
+          <button type="button" data-transition="slide">Slide</button>
+          <button type="button" data-transition="dissolve">Dissolve</button>
+          <button type="button" data-transition="spring">Spring pop</button>
+          <button type="button" data-action="add-comment">Add comment</button>
         </div>
       </div>
+    </section>
 
-      <div class="control-group finish-lab">
-        <div class="control-title">Finish Pass</div>
-        <div id="finishGroup" class="mode-grid" role="radiogroup" aria-label="Finish pass">
-          <button class="mode active" type="button" data-finish="matte" role="radio" aria-checked="true">Matte</button>
-          <button class="mode" type="button" data-finish="gloss" role="radio" aria-checked="false">Gloss</button>
-          <button class="mode" type="button" data-finish="riso" role="radio" aria-checked="false">Riso</button>
-          <button class="mode" type="button" data-finish="cutline" role="radio" aria-checked="false">Cutline</button>
-          <button class="mode" type="button" data-finish="tape" role="radio" aria-checked="false">Tape</button>
+    <section class="view" data-view-panel="brand" aria-label="Brand kit">
+      <div class="workspace-page brand-page">
+        <div class="page-heading">
+          <span>Brand Kit</span>
+          <h1>Your brand has entered its organised era.</h1>
+          <button class="hero-action" type="button" data-action="check-brand"><svg><use href="#icon-check"></use></svg>Check Consistency</button>
+        </div>
+
+        <div class="brand-grid">
+          <article class="brand-logo-card">
+            <img src="./assets/icon.svg" alt="Quirkboards icon preview">
+            <strong>Quirkboards</strong>
+            <small>Logo lockups, icons, favicons, social marks</small>
+          </article>
+          <article class="brand-system">
+            <span>Palette</span>
+            <div class="swatch-row" id="brandSwatches">
+              <button style="--swatch: #21d7c4;" type="button"></button>
+              <button style="--swatch: #ff6b6b;" type="button"></button>
+              <button style="--swatch: #f8d84a;" type="button"></button>
+              <button style="--swatch: #a8ff60;" type="button"></button>
+              <button style="--swatch: #f5f7ff;" type="button"></button>
+            </div>
+            <span>Fonts</span>
+            <div class="font-row">
+              <strong>Space Grotesk</strong>
+              <small>Inter</small>
+            </div>
+            <span>Voice</span>
+            <p id="brandVoice">Playful, polished, friendly, and useful.</p>
+          </article>
+          <article class="brand-sliders">
+            <label>Playful <input type="range" min="0" max="100" value="78" data-brand-meter></label>
+            <label>Premium <input type="range" min="0" max="100" value="71" data-brand-meter></label>
+            <label>Bold <input type="range" min="0" max="100" value="66" data-brand-meter></label>
+            <label>Minimal <input type="range" min="0" max="100" value="55" data-brand-meter></label>
+            <label>Quirky <input type="range" min="0" max="100" value="84" data-brand-meter></label>
+            <label>Corporate <input type="range" min="0" max="100" value="22" data-brand-meter></label>
+          </article>
+          <article class="checker-card">
+            <span>Consistency checker</span>
+            <strong id="brandScore">92%</strong>
+            <p id="brandAdvice">Spacing, tone, and color usage look tidy. Your brand kit called. It wants boundaries.</p>
+          </article>
         </div>
       </div>
+    </section>
 
-      <div class="control-group variation-lab">
-        <div class="control-title">Variation Deck</div>
-        <div id="variationDeck" class="variation-deck"></div>
-      </div>
+    <section class="view" data-view-panel="market" aria-label="Marketplace">
+      <div class="workspace-page market-page">
+        <div class="page-heading">
+          <span>Creator Marketplace</span>
+          <h1>Templates, UI kits, fonts, stickers, mockups, and AI asset packs.</h1>
+          <button class="hero-action" type="button" data-action="open-market"><svg><use href="#icon-filter"></use></svg>Filter</button>
+        </div>
 
-      <div class="control-group selected-layer">
-        <div class="control-title">Selected Layer</div>
-        <div id="selectedLayerName" class="selected-name">None</div>
-        <label>Opacity
-          <input id="opacityRange" type="range" min="15" max="100" value="92">
-        </label>
-        <label>Scale
-          <input id="scaleRange" type="range" min="35" max="180" value="100">
-        </label>
-        <label>Rotation
-          <input id="rotationRange" type="range" min="-35" max="35" value="0">
-        </label>
-        <label>Blend Mode
-          <select id="blendModeSelect">
-            <option value="source-over">Normal</option>
-            <option value="multiply">Multiply</option>
-            <option value="screen">Screen</option>
-            <option value="overlay">Overlay</option>
-            <option value="soft-light">Soft light</option>
-            <option value="luminosity">Luminosity</option>
-          </select>
-        </label>
-      </div>
+        <div class="market-filters">
+          <button class="active" type="button" data-market-filter="all">All</button>
+          <button type="button" data-market-filter="templates">Templates</button>
+          <button type="button" data-market-filter="ui">UI kits</button>
+          <button type="button" data-market-filter="stickers">Stickers</button>
+          <button type="button" data-market-filter="mockups">Mockups</button>
+          <button type="button" data-market-filter="ai">AI packs</button>
+        </div>
 
-      <div class="control-group">
-        <div class="control-title">AI Recipe</div>
-        <div id="paletteStrip" class="palette-strip" aria-label="Detected color palette"></div>
-        <div id="dnaList" class="dna-list" aria-label="Fusion DNA"></div>
-        <div id="recipeList" class="recipe-list"></div>
+        <div class="market-grid" id="marketGrid">
+          <article class="product-card" data-market-category="templates">
+            <span class="product-art art-one"></span>
+            <strong>Quirky SaaS Launch Kit</strong>
+            <small>By Pixel Parade - $24</small>
+          </article>
+          <article class="product-card" data-market-category="ui">
+            <span class="product-art art-two"></span>
+            <strong>Mobile App Components</strong>
+            <small>By Frame Friends - $18</small>
+          </article>
+          <article class="product-card" data-market-category="stickers">
+            <span class="product-art art-three"></span>
+            <strong>Bubbly Sticker Pack</strong>
+            <small>By Happy Vector - Free</small>
+          </article>
+          <article class="product-card" data-market-category="mockups">
+            <span class="product-art art-four"></span>
+            <strong>Device Mockup Stack</strong>
+            <small>By Mockup Moon - $12</small>
+          </article>
+          <article class="product-card" data-market-category="ai">
+            <span class="product-art art-five"></span>
+            <strong>AI Pattern Library</strong>
+            <small>By Prompt Loom - $16</small>
+          </article>
+          <article class="product-card" data-market-category="templates">
+            <span class="product-art art-six"></span>
+            <strong>Pitch Deck Mischief</strong>
+            <small>By Deck Lab - $29</small>
+          </article>
+        </div>
       </div>
+    </section>
 
-      <div class="control-group">
-        <div class="control-title">Source Credits</div>
-        <div id="creditsList" class="credits-list"></div>
+    <section class="view" data-view-panel="home" aria-label="Quirkboards landing preview">
+      <div class="workspace-page home-page">
+        <section class="home-hero">
+          <div>
+            <span>Quirkboards</span>
+            <h1>Design apps, posts, brands, decks, and delightful digital chaos - all on one quirky board.</h1>
+            <p>Canva-style templates, Figma-style frames and prototypes, Creative Fabrica-style AI assets, brand kits, live cursors, approvals, marketplace goodies, and export formats in one polished workspace.</p>
+            <div class="hero-actions">
+              <button type="button" data-action="new-board">Start a Board</button>
+              <button type="button" data-view-link="studio">Open the Studio</button>
+              <button type="button" data-action="make-quirky">Make It Quirky</button>
+            </div>
+          </div>
+          <div class="hero-visual" aria-hidden="true">
+            <span class="floating-board board-a"></span>
+            <span class="floating-board board-b"></span>
+            <span class="floating-board board-c"></span>
+          </div>
+        </section>
+
+        <div class="feature-grid">
+          <article><strong>Templates</strong><span>Social, decks, sites, apps, mockups</span></article>
+          <article><strong>AI generation</strong><span>Layouts, copy, icons, palettes, patterns</span></article>
+          <article><strong>Brand kits</strong><span>Logos, fonts, voice, rules, checks</span></article>
+          <article><strong>Prototyping</strong><span>Flows, transitions, device previews</span></article>
+          <article><strong>Collaboration</strong><span>Live cursors, comments, approvals</span></article>
+          <article><strong>Marketplace</strong><span>Creator packs and digital products</span></article>
+        </div>
+
+        <div class="pricing-row">
+          <article><span>Starter</span><strong>$0</strong><small>Personal boards and exports</small></article>
+          <article><span>Studio</span><strong>$18</strong><small>AI assets, prototypes, brand kits</small></article>
+          <article><span>Team</span><strong>$39</strong><small>Workspaces, approvals, version history</small></article>
+        </div>
+
+        <div class="testimonial-row">
+          <blockquote>"It feels like our team finally found a design tool with manners and confetti."</blockquote>
+          <blockquote>"Big ideas, tiny sticky notes, zero chaos... mostly."</blockquote>
+        </div>
       </div>
-    </aside>
+    </section>
   </main>
 
   <footer class="site-footer"><strong>A Quantum Cupcake Creation</strong></footer>
 
-  <div id="sourcePreviewDialog" class="source-preview-dialog" aria-hidden="true">
-    <div class="source-preview-panel" role="dialog" aria-modal="true" aria-labelledby="sourcePreviewTitle">
-      <button id="sourcePreviewClose" class="source-preview-close" type="button" aria-label="Close idea preview">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M6 6l12 12"/>
-          <path d="M18 6 6 18"/>
-        </svg>
-      </button>
-      <div class="source-preview-media">
-        <img id="sourcePreviewImage" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="">
-      </div>
-      <div class="source-preview-content">
-        <p class="eyebrow">Idea Preview</p>
-        <h2 id="sourcePreviewTitle">Reference idea</h2>
-        <p id="sourcePreviewMeta">Open source reference</p>
-        <div class="source-preview-actions">
-          <button id="sourcePreviewSelectButton" class="mini-button secondary" type="button">Select idea</button>
-          <button id="sourcePreviewAddButton" class="mini-button" type="button">Use in creation</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div id="reactionOverlay" class="reaction-overlay" aria-hidden="true">
-    <div class="reaction-stage" role="status" aria-live="polite">
-      <div id="reactantOrbit" class="reactant-orbit"></div>
-      <div class="lab-flask" aria-hidden="true">
-        <svg viewBox="0 0 180 220">
-          <path class="glass" d="M70 10h40v70l49 84c10 18-3 40-24 40H45c-21 0-34-22-24-40l49-84V10Z"/>
-          <path class="liquid" d="M39 155c22-25 42 21 66-2 18-17 30 3 45-5l14 26c5 10-2 22-14 22H31c-12 0-19-13-13-23l21-18Z"/>
-          <circle cx="68" cy="147" r="7"/>
-          <circle cx="112" cy="168" r="5"/>
-          <circle cx="101" cy="132" r="4"/>
-        </svg>
-      </div>
-      <img id="finalPreview" class="final-preview" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="Final blended output preview">
-      <div id="reactionWords" class="reaction-words">Mixing reactants</div>
-    </div>
-  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 </body>
 </html>
