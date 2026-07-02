@@ -1,176 +1,102 @@
 (() => {
-  const dbKey = "vocLocalDb";
-  const sessionKey = "vocSession";
-  const seedKey = "vocSeedRowsV2";
-  const seedFiles = [
-    "data/art.csv",
-    "data/generated-art-200.csv",
-    "data/icons.csv",
-    "data/generated-icons-200.csv",
-    "data/logos.csv",
-    "data/generated-logos-200.csv",
-    "data/svgrepo-tattoo.csv",
-    "data/tattoos.csv",
-    "data/generated-tattoos-200.csv"
-  ];
+  const DB_KEY = "sefirahAtelierDbV1";
+  const SESSION_KEY = "sefirahAtelierSessionV1";
 
-  const fallbackSeeds = [
+  const seedPosts = [
     {
-      id: "art-001",
-      kind: "art",
-      title: "Prism Bloom",
-      vibe: "soft radiant studio wall",
-      palette: "auroraInk",
-      control_a: "botanical",
-      control_b: "petals",
-      control_c: "Make a flower out of light",
-      intensity: "7",
-      prompt: "Layer botanical forms with luminous petals and inked orbit lines",
-      tags: "art,botanical,soft glow",
-      license: "Original free-to-use seed"
+      id: "post-seed-1",
+      authorId: "seed-archivist",
+      authorName: "Clockwork Archivist",
+      title: "Notes from a useful dream",
+      body: "I keep a notebook beside my bed because the clearest clues arrive between sleep and breakfast. Today's entry contains a door, a brass key, and a warning to question tidy prophecies.",
+      tags: ["dreams", "door", "theory"],
+      attachments: [],
+      mysterious: ["seed-moon", "seed-key"],
+      comments: [
+        {
+          id: "comment-seed-1",
+          authorName: "Velvet Oracle",
+          body: "The tidy prophecy part feels very familiar.",
+          createdAt: "2026-06-20T12:04:00.000Z"
+        }
+      ],
+      createdAt: "2026-06-20T11:30:00.000Z"
     },
     {
-      id: "icon-001",
-      kind: "icon",
-      title: "Cosmic Pin",
-      vibe: "bright app icon badge",
-      palette: "auroraInk",
-      control_a: "orbital",
-      control_b: "stars",
-      control_c: "Find the little universe",
-      intensity: "6",
-      prompt: "Create a rounded app icon with an orbital center and star bursts",
-      tags: "icon,app,badge",
-      license: "Original free-to-use seed"
-    },
-    {
-      id: "logo-001",
-      kind: "logo",
-      title: "Nova Craft",
-      vibe: "sleek maker studio",
-      palette: "auroraInk",
-      control_a: "badge",
-      control_b: "sleek",
-      control_c: "NC",
-      intensity: "5",
-      prompt: "Design a polished badge logo for a creative maker studio",
-      tags: "logo,badge,studio",
-      license: "Original free-to-use seed"
-    },
-    {
-      id: "tattoo-001",
-      kind: "tattoo",
-      title: "Moon Vine",
-      vibe: "delicate forearm flow",
-      palette: "monoStencil",
-      control_a: "botanical",
-      control_b: "forearm",
-      control_c: "vertical",
-      intensity: "6",
-      prompt: "Draw a fine-line botanical forearm tattoo with a quiet moon rhythm",
-      tags: "tattoo,forearm,botanical",
-      license: "Original free-to-use seed"
+      id: "post-seed-2",
+      authorId: "seed-artist",
+      authorName: "Velvet Oracle",
+      title: "Tarot prompt: choose the pathway that would survive a bad group project",
+      body: "My answer is Paragon if the deadline is real, Trickster-adjacent Error if the deadline is imaginary, and Guardian-coded Justiciar if someone touches the shared folder.",
+      tags: ["tarot", "quiz", "community"],
+      attachments: [],
+      mysterious: ["seed-archivist"],
+      comments: [],
+      createdAt: "2026-06-21T15:12:00.000Z"
     }
   ];
 
-  let seeds = [];
+  function emptyDb() {
+    return {
+      users: [],
+      posts: seedPosts,
+      cards: [],
+      quizResults: []
+    };
+  }
 
   function readDb() {
     try {
-      const parsed = JSON.parse(localStorage.getItem(dbKey) || "{}");
+      const parsed = JSON.parse(localStorage.getItem(DB_KEY) || "null");
+      const db = parsed && typeof parsed === "object" ? parsed : emptyDb();
       return {
-        users: Array.isArray(parsed.users) ? parsed.users : [],
-        creations: Array.isArray(parsed.creations) ? parsed.creations : []
+        users: Array.isArray(db.users) ? db.users : [],
+        posts: Array.isArray(db.posts) && db.posts.length ? db.posts : seedPosts,
+        cards: Array.isArray(db.cards) ? db.cards : [],
+        quizResults: Array.isArray(db.quizResults) ? db.quizResults : []
       };
     } catch (error) {
-      return { users: [], creations: [] };
+      return emptyDb();
     }
   }
 
   function writeDb(db) {
-    localStorage.setItem(dbKey, JSON.stringify({
+    localStorage.setItem(DB_KEY, JSON.stringify({
       users: db.users || [],
-      creations: db.creations || []
+      posts: db.posts || [],
+      cards: db.cards || [],
+      quizResults: db.quizResults || []
     }));
   }
 
-  function parseCsv(text) {
-    const rows = [];
-    let row = [];
-    let cell = "";
-    let quoted = false;
-
-    for (let i = 0; i < text.length; i += 1) {
-      const char = text[i];
-      const next = text[i + 1];
-
-      if (char === '"' && quoted && next === '"') {
-        cell += '"';
-        i += 1;
-      } else if (char === '"') {
-        quoted = !quoted;
-      } else if (char === "," && !quoted) {
-        row.push(cell);
-        cell = "";
-      } else if ((char === "\n" || char === "\r") && !quoted) {
-        if (char === "\r" && next === "\n") i += 1;
-        row.push(cell);
-        if (row.some((part) => part.trim() !== "")) rows.push(row);
-        row = [];
-        cell = "";
-      } else {
-        cell += char;
-      }
+  function init() {
+    const db = readDb();
+    const hasSeeds = db.posts.some((post) => post.id === "post-seed-1");
+    if (!hasSeeds) {
+      db.posts.push(...seedPosts);
+      writeDb(db);
     }
-
-    row.push(cell);
-    if (row.some((part) => part.trim() !== "")) rows.push(row);
-    const headers = rows.shift() || [];
-    return rows.map((parts) => {
-      const item = {};
-      headers.forEach((header, index) => {
-        item[header.trim()] = (parts[index] || "").trim();
-      });
-      return item;
-    });
+    return exportSnapshot();
   }
 
-  async function loadSeeds() {
-    const cached = localStorage.getItem(seedKey);
-    if (cached) {
-      try {
-        seeds = JSON.parse(cached);
-        if (Array.isArray(seeds) && seeds.length) return seeds;
-      } catch (error) {
-        seeds = [];
-      }
-    }
-
-    try {
-      const loaded = [];
-      for (const file of seedFiles) {
-        const response = await fetch(file);
-        if (!response.ok) throw new Error(`Could not load ${file}`);
-        loaded.push(...parseCsv(await response.text()));
-      }
-      seeds = loaded;
-      localStorage.setItem(seedKey, JSON.stringify(seeds));
-      return seeds;
-    } catch (error) {
-      seeds = fallbackSeeds;
-      return seeds;
-    }
+  function publicUser(user) {
+    return user ? {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      createdAt: user.createdAt
+    } : null;
   }
 
   function currentUser() {
-    const userId = localStorage.getItem(sessionKey);
+    const userId = localStorage.getItem(SESSION_KEY);
     if (!userId) return null;
     return readDb().users.find((user) => user.id === userId) || null;
   }
 
   async function hashPassword(password) {
     const input = String(password || "");
-    if (window.crypto && window.crypto.subtle) {
+    if (window.crypto && window.crypto.subtle && window.TextEncoder) {
       const data = new TextEncoder().encode(input);
       const hash = await window.crypto.subtle.digest("SHA-256", data);
       return Array.from(new Uint8Array(hash)).map((byte) => byte.toString(16).padStart(2, "0")).join("");
@@ -178,23 +104,23 @@
 
     let hash = 0;
     for (let i = 0; i < input.length; i += 1) {
-      hash = Math.imul(31, hash) + input.charCodeAt(i) | 0;
+      hash = (Math.imul(31, hash) + input.charCodeAt(i)) | 0;
     }
     return `fallback-${hash}`;
   }
 
   async function signUp({ name, email, password }) {
-    const cleanEmail = String(email || "").trim().toLowerCase();
     const cleanName = String(name || "").trim();
+    const cleanEmail = String(email || "").trim().toLowerCase();
     if (!cleanName || !cleanEmail || !password) throw new Error("Name, email, and password are required.");
     if (!cleanEmail.includes("@")) throw new Error("Use a valid email address.");
-    if (String(password).length < 6) throw new Error("Password must be at least 6 characters.");
+    if (String(password).length < 6) throw new Error("Use at least 6 characters for the password.");
 
     const db = readDb();
-    if (db.users.some((user) => user.email === cleanEmail)) throw new Error("That email already has an account.");
+    if (db.users.some((user) => user.email === cleanEmail)) throw new Error("That email already has a local account.");
 
     const user = {
-      id: `user-${Date.now()}`,
+      id: `user-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`,
       name: cleanName,
       email: cleanEmail,
       passwordHash: await hashPassword(password),
@@ -202,8 +128,8 @@
     };
     db.users.push(user);
     writeDb(db);
-    localStorage.setItem(sessionKey, user.id);
-    return { id: user.id, name: user.name, email: user.email };
+    localStorage.setItem(SESSION_KEY, user.id);
+    return publicUser(user);
   }
 
   async function logIn({ email, password }) {
@@ -211,76 +137,157 @@
     const db = readDb();
     const user = db.users.find((entry) => entry.email === cleanEmail);
     if (!user || user.passwordHash !== await hashPassword(password)) throw new Error("Email or password did not match.");
-    localStorage.setItem(sessionKey, user.id);
-    return { id: user.id, name: user.name, email: user.email };
+    localStorage.setItem(SESSION_KEY, user.id);
+    return publicUser(user);
   }
 
   function logOut() {
-    localStorage.removeItem(sessionKey);
+    localStorage.removeItem(SESSION_KEY);
   }
 
-  function publicUser(user) {
-    return user ? { id: user.id, name: user.name, email: user.email } : null;
-  }
-
-  function saveCreation(item) {
-    const db = readDb();
+  function actor() {
     const user = currentUser();
-    db.creations.unshift({
-      ...item,
-      ownerId: user ? user.id : "guest",
-      ownerName: user ? user.name : "Guest Studio",
-      createdAt: item.createdAt || new Date().toISOString()
-    });
-    db.creations = db.creations.slice(0, 60);
+    return user ? publicUser(user) : {
+      id: "guest",
+      name: "Guest under the Fog",
+      email: "",
+      createdAt: ""
+    };
+  }
+
+  function createPost({ title, body, tags, attachments }) {
+    const user = actor();
+    if (user.id === "guest") throw new Error("Log in locally before posting to the community.");
+    const cleanTitle = String(title || "").trim();
+    const cleanBody = String(body || "").trim();
+    if (!cleanTitle || !cleanBody) throw new Error("A title and post body are required.");
+
+    const db = readDb();
+    const post = {
+      id: `post-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`,
+      authorId: user.id,
+      authorName: user.name,
+      title: cleanTitle,
+      body: cleanBody,
+      tags: String(tags || "")
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter(Boolean)
+        .slice(0, 8),
+      attachments: Array.isArray(attachments) ? attachments.slice(0, 8) : [],
+      mysterious: [],
+      comments: [],
+      createdAt: new Date().toISOString()
+    };
+    db.posts.unshift(post);
     writeDb(db);
+    return post;
   }
 
-  function readCreations() {
-    const user = currentUser();
+  function getPosts() {
+    return readDb().posts.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  }
+
+  function toggleMysterious(postId) {
+    const user = actor();
     const db = readDb();
-    if (!user) return db.creations.filter((item) => item.ownerId === "guest");
-    return db.creations.filter((item) => item.ownerId === user.id);
-  }
-
-  function readGallery() {
-    const saved = readCreations();
-    const seedItems = seeds.map((seed) => ({
-      ...seed,
-      seed: true,
-      createdAt: "Seed CSV",
-      recipe: seed.prompt
-    }));
-    return [...saved, ...seedItems];
-  }
-
-  function clearCreations() {
-    const user = currentUser();
-    const ownerId = user ? user.id : "guest";
-    const db = readDb();
-    db.creations = db.creations.filter((item) => item.ownerId !== ownerId);
+    const post = db.posts.find((entry) => entry.id === postId);
+    if (!post) throw new Error("Post not found.");
+    post.mysterious = Array.isArray(post.mysterious) ? post.mysterious : [];
+    const index = post.mysterious.indexOf(user.id);
+    if (index >= 0) {
+      post.mysterious.splice(index, 1);
+    } else {
+      post.mysterious.push(user.id);
+    }
     writeDb(db);
+    return post;
+  }
+
+  function addComment(postId, body) {
+    const user = actor();
+    const cleanBody = String(body || "").trim();
+    if (!cleanBody) throw new Error("Write a comment first.");
+    const db = readDb();
+    const post = db.posts.find((entry) => entry.id === postId);
+    if (!post) throw new Error("Post not found.");
+    post.comments = Array.isArray(post.comments) ? post.comments : [];
+    const comment = {
+      id: `comment-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`,
+      authorName: user.name,
+      body: cleanBody,
+      createdAt: new Date().toISOString()
+    };
+    post.comments.push(comment);
+    writeDb(db);
+    return comment;
+  }
+
+  function saveCard(card) {
+    const user = actor();
+    const db = readDb();
+    const saved = {
+      ...card,
+      id: card.id || `card-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`,
+      ownerId: user.id,
+      ownerName: user.name,
+      createdAt: new Date().toISOString()
+    };
+    db.cards.unshift(saved);
+    db.cards = db.cards.slice(0, 40);
+    writeDb(db);
+    return saved;
+  }
+
+  function getCards() {
+    const user = actor();
+    return readDb().cards.filter((card) => card.ownerId === user.id || card.ownerId === "guest");
+  }
+
+  function saveResult(result) {
+    const user = actor();
+    const db = readDb();
+    const saved = {
+      ...result,
+      id: `result-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`,
+      ownerId: user.id,
+      ownerName: user.name,
+      createdAt: new Date().toISOString()
+    };
+    db.quizResults.unshift(saved);
+    db.quizResults = db.quizResults.slice(0, 20);
+    writeDb(db);
+    return saved;
+  }
+
+  function getResults() {
+    const user = actor();
+    return readDb().quizResults.filter((result) => result.ownerId === user.id || result.ownerId === "guest");
   }
 
   function exportSnapshot() {
     return {
-      currentUser: publicUser(currentUser()),
-      seeds,
-      creations: readCreations()
+      user: publicUser(currentUser()),
+      posts: getPosts(),
+      cards: getCards(),
+      quizResults: getResults()
     };
   }
 
-  window.VOC_DB = {
-    init: loadSeeds,
-    getSeeds: (kind) => kind ? seeds.filter((seed) => seed.kind === kind) : seeds.slice(),
+  window.SEFIRAH_DB = {
+    init,
     currentUser: () => publicUser(currentUser()),
     signUp,
     logIn,
     logOut,
-    saveCreation,
-    readCreations,
-    readGallery,
-    clearCreations,
+    createPost,
+    getPosts,
+    toggleMysterious,
+    addComment,
+    saveCard,
+    getCards,
+    saveResult,
+    getResults,
     exportSnapshot
   };
 })();
