@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">API-ocalypse icon</title>
+  <desc id="desc">Original API gateway icon with a lightning signal for the CTRL+ALT+DEFEAT simulator.</desc>
+  <defs>
+    <linearGradient id="g" x1="12" x2="116" y1="10" y2="118" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#21a8a0"/>
+      <stop offset=".5" stop-color="#116bb0"/>
+      <stop offset="1" stop-color="#bd6b1f"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="112" height="112" rx="27" fill="url(#g)"/>
+  <path d="M42 36 28 64l14 28M86 36l14 28-14 28" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M66 31 52 67h22L62 99" fill="none" stroke="#f8d27c" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="31" cy="96" r="5" fill="#f8d27c"/>
+  <circle cx="96" cy="28" r="5" fill="#fff"/>
+  <path d="M31 96h24M96 28H76" fill="none" stroke="#d8edf6" stroke-width="4" stroke-linecap="round"/>
+</svg>
