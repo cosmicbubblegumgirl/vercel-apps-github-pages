@@ -527,6 +527,73 @@ img {
   display: block;
 }
 
+.signals-section {
+  background:
+    linear-gradient(135deg, rgba(18, 37, 31, 0.95), rgba(23, 107, 137, 0.9)),
+    var(--soil);
+  color: var(--white);
+}
+
+.signals-section .section-head h2 {
+  color: var(--white);
+}
+
+.signals-section .section-head p {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.signals-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.signal-card {
+  display: grid;
+  gap: 10px;
+  min-height: 250px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.09);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.18);
+}
+
+.signal-card span {
+  color: #a7d2be;
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.signal-card h3 {
+  margin: 0;
+  color: var(--white);
+  font-size: 1.1rem;
+  line-height: 1.24;
+}
+
+.signal-card p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.76);
+  line-height: 1.62;
+}
+
+.signal-card a {
+  align-self: end;
+  justify-self: start;
+  min-height: 34px;
+  padding: 9px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--radius);
+  color: var(--white);
+  font-weight: 820;
+}
+
+.signal-card a:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
 .playbook-panel {
   display: grid;
   gap: 18px;
@@ -1060,6 +1127,7 @@ img {
 
   .impact-grid,
   .command-grid,
+  .signals-grid,
   .training-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1114,6 +1182,7 @@ img {
   .hero-impact,
   .impact-grid,
   .command-grid,
+  .signals-grid,
   .training-grid,
   .contact-list {
     grid-template-columns: 1fr;
