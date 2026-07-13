@@ -1,24 +1,28 @@
 (() => {
-  const streamContent = {
+  const consoleContent = {
     retention: {
       label: "Retention",
-      title: "Client accounts kept warm and moving.",
-      text: "Launell manages regular visits, follow-ups, service satisfaction checks, customer needs analysis, and internal coordination so account relationships do not drift."
+      title: "Customer relationships stay warm because follow-up is deliberate.",
+      text: "Regular visits, satisfaction checks, issue resolution, and internal coordination keep important accounts from drifting.",
+      track: 25
     },
-    commercial: {
-      label: "Commercials",
-      title: "Revenue and account detail kept under control.",
-      text: "She works across monthly KPIs, price adjustments, quotations, contract maintenance, proposals, and tender requirements with the discipline major accounts need."
+    revenue: {
+      label: "Revenue",
+      title: "Commercial pressure becomes a managed rhythm.",
+      text: "Monthly KPIs, price adjustments, quotations, proposals and contract details are kept visible, current and accountable.",
+      track: 50
     },
     tenders: {
       label: "Tenders",
-      title: "Commercial paperwork handled with precision.",
-      text: "She supports quotations, proposals, tender submissions, price adjustments, contract maintenance, CRM records, data sheets, and follow-up until the detail is closed."
+      title: "Paperwork becomes a customer-confidence signal.",
+      text: "Tender packs, CRM records, data sheets, job cards, labels and service codes are followed through with detail.",
+      track: 75
     },
-    sector: {
-      label: "Sector depth",
-      title: "Specialist waste-management context adds credibility.",
-      text: "Her EnviroServ background gives her practical fluency in service codes, safe-disposal documentation, hazardous-waste awareness, regulation, recycling, treatment, and alternatives to landfill."
+    service: {
+      label: "Service",
+      title: "The customer gets one steady point of care.",
+      text: "She connects sales, technical, customer care, site management and service teams around what the account needs next.",
+      track: 100
     }
   };
 
@@ -68,19 +72,29 @@
     }
   };
 
+  const heroWords = [
+    "client retention",
+    "commercial follow-through",
+    "service coordination",
+    "tender readiness",
+    "CRM accuracy",
+    "relationship trust"
+  ];
+
   document.addEventListener("DOMContentLoaded", () => {
     document.body.classList.add("ready");
     setCurrentYear();
     initReveals();
-    initCounters();
     initScrollProgress();
     initActiveNavigation();
-    initStreams();
+    initHeroRotator();
+    initConsole();
     initPlaybook();
     initCareerDetails();
-    initCopyEmail();
     initFocusBuilder();
+    initCopyEmail();
     initLightbox();
+    initTilt();
   });
 
   function setCurrentYear() {
@@ -104,48 +118,6 @@
     }, { threshold: 0.16 });
 
     revealItems.forEach((item) => observer.observe(item));
-  }
-
-  function initCounters() {
-    const counters = Array.from(document.querySelectorAll(".metric-number"));
-    if (!counters.length) return;
-
-    const runCounter = (element) => {
-      if (element.dataset.counted === "true") return;
-      element.dataset.counted = "true";
-
-      const target = Number(element.dataset.target || "0");
-      const decimals = Number(element.dataset.decimals || "0");
-      const prefix = element.dataset.prefix || "";
-      const suffix = element.dataset.suffix || "";
-      const duration = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 1 : 900;
-      const start = performance.now();
-
-      const tick = (now) => {
-        const progress = Math.min((now - start) / duration, 1);
-        const eased = 1 - Math.pow(1 - progress, 3);
-        const value = target * eased;
-        element.textContent = `${prefix}${value.toFixed(decimals)}${suffix}`;
-        if (progress < 1) requestAnimationFrame(tick);
-      };
-
-      requestAnimationFrame(tick);
-    };
-
-    if (!("IntersectionObserver" in window)) {
-      counters.forEach(runCounter);
-      return;
-    }
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        runCounter(entry.target);
-        observer.unobserve(entry.target);
-      });
-    }, { threshold: 0.65 });
-
-    counters.forEach((counter) => observer.observe(counter));
   }
 
   function initScrollProgress() {
@@ -187,29 +159,38 @@
     sections.forEach((section) => observer.observe(section));
   }
 
-  function initStreams() {
-    const buttons = Array.from(document.querySelectorAll("[data-stream]"));
-    const label = document.querySelector("#streamLabel");
-    const title = document.querySelector("#streamTitle");
-    const text = document.querySelector("#streamText");
+  function initHeroRotator() {
+    const target = document.querySelector("#heroRotator");
+    if (!target) return;
+    let index = 0;
 
-    if (!buttons.length || !label || !title || !text) return;
+    setInterval(() => {
+      index = (index + 1) % heroWords.length;
+      target.classList.add("switching");
+      setTimeout(() => {
+        target.textContent = heroWords[index];
+        target.classList.remove("switching");
+      }, 180);
+    }, 2400);
+  }
+
+  function initConsole() {
+    const buttons = Array.from(document.querySelectorAll("[data-console]"));
+    const label = document.querySelector("#consoleLabel");
+    const title = document.querySelector("#consoleTitle");
+    const text = document.querySelector("#consoleText");
+    const track = document.querySelector("#consoleTrack");
+    if (!buttons.length || !label || !title || !text || !track) return;
 
     buttons.forEach((button) => {
       button.addEventListener("click", () => {
-        const key = button.dataset.stream;
-        const content = streamContent[key];
+        const content = consoleContent[button.dataset.console];
         if (!content) return;
-
-        buttons.forEach((item) => {
-          const active = item === button;
-          item.classList.toggle("active", active);
-          item.setAttribute("aria-selected", String(active));
-        });
-
+        setActive(buttons, button);
         label.textContent = content.label;
         title.textContent = content.title;
         text.textContent = content.text;
+        track.style.width = `${content.track}%`;
       });
     });
   }
@@ -219,34 +200,21 @@
     const label = document.querySelector("#playbookLabel");
     const title = document.querySelector("#playbookTitle");
     const text = document.querySelector("#playbookText");
-
     bindContentButtons(buttons, playbookContent, label, title, text, "playbook");
   }
 
   function initCareerDetails() {
-    const buttons = Array.from(document.querySelectorAll("[data-career]"));
+    const items = Array.from(document.querySelectorAll("[data-career-card]"));
     const label = document.querySelector("#careerLabel");
     const title = document.querySelector("#careerTitle");
     const text = document.querySelector("#careerText");
+    if (!items.length || !label || !title || !text) return;
 
-    bindContentButtons(buttons, careerContent, label, title, text, "career");
-  }
-
-  function bindContentButtons(buttons, source, label, title, text, dataKey) {
-    if (!buttons.length || !label || !title || !text) return;
-
-    buttons.forEach((button) => {
-      button.addEventListener("click", () => {
-        const key = button.dataset[dataKey];
-        const content = source[key];
+    items.forEach((item) => {
+      item.addEventListener("click", () => {
+        const content = careerContent[item.dataset.careerCard];
         if (!content) return;
-
-        buttons.forEach((item) => {
-          const active = item === button;
-          item.classList.toggle("active", active);
-          if (item.hasAttribute("aria-selected")) item.setAttribute("aria-selected", String(active));
-        });
-
+        items.forEach((entry) => entry.classList.toggle("current", entry === item));
         label.textContent = content.label;
         title.textContent = content.title;
         text.textContent = content.text;
@@ -254,17 +222,18 @@
     });
   }
 
-  function initCopyEmail() {
-    const button = document.querySelector("[data-copy-email]");
-    if (!button) return;
+  function bindContentButtons(buttons, source, label, title, text, dataKey) {
+    if (!buttons.length || !label || !title || !text) return;
 
-    button.addEventListener("click", async () => {
-      try {
-        await navigator.clipboard.writeText("govenderlaunell@gmail.com");
-        showToast("Email copied to clipboard.");
-      } catch (error) {
-        showToast("Email: govenderlaunell@gmail.com");
-      }
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const content = source[button.dataset[dataKey]];
+        if (!content) return;
+        setActive(buttons, button);
+        label.textContent = content.label;
+        title.textContent = content.title;
+        text.textContent = content.text;
+      });
     });
   }
 
@@ -282,12 +251,11 @@
       const percent = Math.max(12, Math.round((selected.length / buttons.length) * 100));
       meter.style.width = `${percent}%`;
 
-      const label = selected.length >= 4
+      title.textContent = selected.length >= 4
         ? "Full-service key account profile"
         : selected.length >= 2
           ? "Balanced key account profile"
           : "Focused account strength";
-      title.textContent = label;
       summary.textContent = selected.length
         ? `Launell's portfolio currently highlights ${formatList(selected)}.`
         : "Choose a focus area to shape the account story.";
@@ -301,6 +269,20 @@
     });
 
     update();
+  }
+
+  function initCopyEmail() {
+    const button = document.querySelector("[data-copy-email]");
+    if (!button) return;
+
+    button.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText("govenderlaunell@gmail.com");
+        showToast("Email copied to clipboard.");
+      } catch (error) {
+        showToast("Email: govenderlaunell@gmail.com");
+      }
+    });
   }
 
   function initLightbox() {
@@ -318,7 +300,8 @@
     };
 
     images.forEach((image) => {
-      image.addEventListener("click", () => {
+      image.addEventListener("click", (event) => {
+        event.stopPropagation();
         const figure = image.closest("figure");
         preview.src = image.src;
         preview.alt = image.alt;
@@ -334,6 +317,34 @@
     });
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && !lightbox.hidden) hide();
+    });
+  }
+
+  function initTilt() {
+    const elements = Array.from(document.querySelectorAll("[data-tilt]"));
+    if (!elements.length || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    elements.forEach((element) => {
+      element.addEventListener("pointermove", (event) => {
+        const rect = element.getBoundingClientRect();
+        const x = (event.clientX - rect.left) / rect.width - 0.5;
+        const y = (event.clientY - rect.top) / rect.height - 0.5;
+        element.style.setProperty("--tilt-x", `${(-y * 5).toFixed(2)}deg`);
+        element.style.setProperty("--tilt-y", `${(x * 5).toFixed(2)}deg`);
+      });
+
+      element.addEventListener("pointerleave", () => {
+        element.style.setProperty("--tilt-x", "0deg");
+        element.style.setProperty("--tilt-y", "0deg");
+      });
+    });
+  }
+
+  function setActive(items, activeItem) {
+    items.forEach((item) => {
+      const active = item === activeItem;
+      item.classList.toggle("active", active);
+      if (item.hasAttribute("aria-selected")) item.setAttribute("aria-selected", String(active));
     });
   }
 
