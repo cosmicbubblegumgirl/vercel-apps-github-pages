@@ -79,6 +79,8 @@
     initPlaybook();
     initCareerDetails();
     initCopyEmail();
+    initFocusBuilder();
+    initLightbox();
   });
 
   function setCurrentYear() {
@@ -266,6 +268,75 @@
     });
   }
 
+  function initFocusBuilder() {
+    const buttons = Array.from(document.querySelectorAll("[data-focus]"));
+    const meter = document.querySelector("#builderMeter");
+    const title = document.querySelector("#builderTitle");
+    const summary = document.querySelector("#builderSummary");
+    if (!buttons.length || !meter || !title || !summary) return;
+
+    const update = () => {
+      const selected = buttons
+        .filter((button) => button.classList.contains("active"))
+        .map((button) => button.dataset.focus);
+      const percent = Math.max(12, Math.round((selected.length / buttons.length) * 100));
+      meter.style.width = `${percent}%`;
+
+      const label = selected.length >= 4
+        ? "Full-service key account profile"
+        : selected.length >= 2
+          ? "Balanced key account profile"
+          : "Focused account strength";
+      title.textContent = label;
+      summary.textContent = selected.length
+        ? `Launell's portfolio currently highlights ${formatList(selected)}.`
+        : "Choose a focus area to shape the account story.";
+    };
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        button.classList.toggle("active");
+        update();
+      });
+    });
+
+    update();
+  }
+
+  function initLightbox() {
+    const images = Array.from(document.querySelectorAll("[data-lightbox-image]"));
+    const lightbox = document.querySelector("#mediaLightbox");
+    if (!images.length || !lightbox) return;
+
+    const preview = lightbox.querySelector("img");
+    const caption = lightbox.querySelector("p");
+    const close = lightbox.querySelector("[data-lightbox-close]");
+
+    const hide = () => {
+      lightbox.hidden = true;
+      document.body.classList.remove("no-scroll");
+    };
+
+    images.forEach((image) => {
+      image.addEventListener("click", () => {
+        const figure = image.closest("figure");
+        preview.src = image.src;
+        preview.alt = image.alt;
+        caption.textContent = figure?.querySelector("figcaption")?.textContent || "";
+        lightbox.hidden = false;
+        document.body.classList.add("no-scroll");
+      });
+    });
+
+    close?.addEventListener("click", hide);
+    lightbox.addEventListener("click", (event) => {
+      if (event.target === lightbox) hide();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !lightbox.hidden) hide();
+    });
+  }
+
   function showToast(message) {
     const toast = document.querySelector("#toast");
     if (!toast) return;
@@ -273,5 +344,11 @@
     toast.classList.add("show");
     clearTimeout(showToast.timer);
     showToast.timer = setTimeout(() => toast.classList.remove("show"), 2400);
+  }
+
+  function formatList(items) {
+    if (items.length <= 1) return items[0] || "";
+    if (items.length === 2) return `${items[0]} and ${items[1]}`;
+    return `${items.slice(0, -1).join(", ")}, and ${items[items.length - 1]}`;
   }
 })();

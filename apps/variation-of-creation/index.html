@@ -28,8 +28,19 @@
     </nav>
 
     <div class="top-actions">
-      <a class="icon-action" href="mailto:govenderlaunell@gmail.com?subject=Portfolio%20enquiry%20for%20Launell%20Govender" aria-label="Email Launell Govender">@</a>
-      <a class="button small" href="https://www.linkedin.com/in/launell-govender-12ab19116" target="_blank" rel="noreferrer">LinkedIn</a>
+      <a class="icon-action" href="mailto:govenderlaunell@gmail.com?subject=Portfolio%20enquiry%20for%20Launell%20Govender" aria-label="Email Launell Govender">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+          <path d="m4 7 8 6 8-6"></path>
+        </svg>
+      </a>
+      <a class="icon-action linkedin" href="https://www.linkedin.com/in/launell-govender-12ab19116" target="_blank" rel="noreferrer" aria-label="Open Launell Govender on LinkedIn">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M16 8a6 6 0 0 1 6 6v6h-4v-6a2 2 0 0 0-4 0v6h-4V9h4v2"></path>
+          <rect x="2" y="9" width="4" height="11"></rect>
+          <circle cx="4" cy="4" r="2"></circle>
+        </svg>
+      </a>
     </div>
   </header>
 
@@ -48,8 +59,21 @@
           <strong>Precise account administration</strong>
         </div>
         <div class="hero-actions" data-reveal>
-          <a class="button primary" href="mailto:govenderlaunell@gmail.com?subject=Portfolio%20enquiry%20for%20Launell%20Govender">Email Launell</a>
-          <a class="button ghost" href="https://www.linkedin.com/in/launell-govender-12ab19116" target="_blank" rel="noreferrer">View LinkedIn</a>
+          <a class="button primary icon-button" href="mailto:govenderlaunell@gmail.com?subject=Portfolio%20enquiry%20for%20Launell%20Govender">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+              <path d="m4 7 8 6 8-6"></path>
+            </svg>
+            <span>Email Launell</span>
+          </a>
+          <a class="button ghost icon-button" href="https://www.linkedin.com/in/launell-govender-12ab19116" target="_blank" rel="noreferrer">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M16 8a6 6 0 0 1 6 6v6h-4v-6a2 2 0 0 0-4 0v6h-4V9h4v2"></path>
+              <rect x="2" y="9" width="4" height="11"></rect>
+              <circle cx="4" cy="4" r="2"></circle>
+            </svg>
+            <span>View LinkedIn</span>
+          </a>
         </div>
       </div>
 
@@ -146,6 +170,25 @@
           <p id="playbookText">She identifies customer needs, service requirements, recurring queries, satisfaction risks, and the internal teams needed to resolve them.</p>
         </div>
       </div>
+
+      <div class="account-builder" data-reveal>
+        <div class="panel-heading">
+          <span>Live account focus builder</span>
+          <h3>Shape the value story</h3>
+        </div>
+        <div class="focus-toggles" aria-label="Account focus options">
+          <button type="button" class="active" data-focus="Retention">Retention</button>
+          <button type="button" class="active" data-focus="Revenue">Revenue</button>
+          <button type="button" data-focus="Tenders">Tenders</button>
+          <button type="button" data-focus="CRM">CRM</button>
+          <button type="button" data-focus="Sustainability">Sustainability</button>
+        </div>
+        <div class="builder-readout">
+          <div class="builder-meter" aria-hidden="true"><span id="builderMeter"></span></div>
+          <strong id="builderTitle">Balanced key account profile</strong>
+          <p id="builderSummary">Launell's portfolio currently highlights Retention and Revenue.</p>
+        </div>
+      </div>
     </section>
 
     <section class="section split-section" id="expertise">
@@ -204,12 +247,20 @@
           <span>January 2025 to present</span>
           <h3>Key Account Consultant</h3>
           <p>Manages and retains customers through regular client visits, proactive communication, KPIs, SLAs, price adjustments, quotations, CRM records, tenders, and landfill-alternative guidance.</p>
+          <figure class="journey-media">
+            <img src="./assets/journey-beach-cleanup.png" alt="Beach cleanup waste bags collected near EnviroServ event flags on the shoreline." data-lightbox-image>
+            <figcaption>Field impact: visible service outcomes, cleanup support, and practical customer-facing sustainability work.</figcaption>
+          </figure>
           <button type="button" class="text-action" data-career="key-account">View focus</button>
         </article>
         <article class="timeline-entry" data-reveal data-detail="sales">
           <span>2015 to January 2025</span>
           <h3>Sales Consultant</h3>
           <p>Maintained accounts, prepared pricing and tender documentation, managed contract maintenance, followed data sheets, and improved service delivery through sustainable options.</p>
+          <figure class="journey-media compact">
+            <img src="./assets/journey-zero-waste.png" alt="Zero Waste Generation campaign graphic with a waste bin and paper on a green background." data-lightbox-image>
+            <figcaption>Service improvement: customer conversations around reduced waste, recovery thinking, and alternatives to landfill.</figcaption>
+          </figure>
           <button type="button" class="text-action" data-career="sales">View focus</button>
         </article>
         <article class="timeline-entry" data-reveal data-detail="technical">
@@ -266,9 +317,28 @@
           For roles, client-service opportunities, account consulting, sales support, and specialist service coordination, reach her directly by email or LinkedIn.
         </p>
         <div class="contact-actions">
-          <a class="button primary" href="mailto:govenderlaunell@gmail.com?subject=Portfolio%20enquiry%20for%20Launell%20Govender">govenderlaunell@gmail.com</a>
-          <a class="button ghost dark" href="https://www.linkedin.com/in/launell-govender-12ab19116" target="_blank" rel="noreferrer">linkedin.com/in/launell-govender-12ab19116</a>
-          <button class="button ghost dark" type="button" data-copy-email>Copy email</button>
+          <a class="button primary icon-button" href="mailto:govenderlaunell@gmail.com?subject=Portfolio%20enquiry%20for%20Launell%20Govender">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+              <path d="m4 7 8 6 8-6"></path>
+            </svg>
+            <span>govenderlaunell@gmail.com</span>
+          </a>
+          <a class="button ghost dark icon-button" href="https://www.linkedin.com/in/launell-govender-12ab19116" target="_blank" rel="noreferrer">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M16 8a6 6 0 0 1 6 6v6h-4v-6a2 2 0 0 0-4 0v6h-4V9h4v2"></path>
+              <rect x="2" y="9" width="4" height="11"></rect>
+              <circle cx="4" cy="4" r="2"></circle>
+            </svg>
+            <span>LinkedIn profile</span>
+          </a>
+          <button class="button ghost dark icon-button" type="button" data-copy-email>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="8" y="8" width="12" height="12" rx="2"></rect>
+              <path d="M4 16V6a2 2 0 0 1 2-2h10"></path>
+            </svg>
+            <span>Copy email</span>
+          </button>
         </div>
         <dl class="contact-list">
           <div>
@@ -293,5 +363,10 @@
     <span id="currentYear"></span>
   </footer>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <div class="media-lightbox" id="mediaLightbox" hidden>
+    <button class="lightbox-close" type="button" data-lightbox-close aria-label="Close image preview">Close</button>
+    <img alt="">
+    <p></p>
+  </div>
 </body>
 </html>
