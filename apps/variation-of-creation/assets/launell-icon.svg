@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-labelledby="title desc">
+  <title id="title">Launell Govender icon</title>
+  <desc id="desc">A professional LG monogram with relationship rings and a leaf accent.</desc>
+  <defs>
+    <linearGradient id="lgField" x1="12" y1="12" x2="84" y2="84" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#12352d"/>
+      <stop offset="0.55" stop-color="#1f7a53"/>
+      <stop offset="1" stop-color="#176b89"/>
+    </linearGradient>
+  </defs>
+  <rect width="96" height="96" rx="22" fill="url(#lgField)"/>
+  <path d="M23 65V28h9v29h16v8H23Z" fill="#fff"/>
+  <path d="M58 66c-11 0-19-8-19-19s8-19 20-19c7 0 12 3 16 8l-7 5c-2-3-5-5-9-5-6 0-11 5-11 11s5 11 11 11c4 0 7-1 9-4v-3H57v-7h20v14c-4 5-10 8-19 8Z" fill="#fff"/>
+  <path d="M63 20c8 2 14 7 18 15" fill="none" stroke="#dbead7" stroke-width="4" stroke-linecap="round"/>
+  <path d="M17 56c3 9 10 16 20 20" fill="none" stroke="#dbead7" stroke-width="4" stroke-linecap="round"/>
+  <path d="M72 19c-8 1-13 6-15 13 8-1 13-5 15-13Z" fill="#dbead7"/>
+</svg>
