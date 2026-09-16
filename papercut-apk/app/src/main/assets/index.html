@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0a1028">
+<title>PaperCut</title>
+<style>
+:root{--ink:#0a1028;--paper:#f8f7f3;--violet:#7c6cff;--cyan:#51d7e8;--pink:#ff79b0;--muted:#aeb9dd}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:linear-gradient(145deg,#0a1028,#161d4d);color:#fff;min-height:100vh;display:grid;place-items:center;padding:22px}
+.card{width:min(620px,100%);background:var(--paper);color:#14182a;border-radius:28px;padding:28px;box-shadow:0 30px 70px rgba(0,0,0,.28)}
+.brand{display:flex;align-items:center;gap:12px;font-size:24px;font-weight:900}.mark{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--violet),var(--cyan));position:relative}.mark:after{content:"";position:absolute;left:10px;right:10px;top:20px;height:3px;background:#fff;transform:rotate(-28deg);border-radius:3px}
+.kicker{margin-top:26px;font-size:11px;font-weight:900;letter-spacing:.14em;color:var(--violet)}h1{font-size:38px;line-height:1;margin:9px 0 12px;letter-spacing:-.05em}p{line-height:1.55;color:#686e88}
+label{display:block;font-size:13px;font-weight:800;margin:22px 0 7px}input{width:100%;padding:14px;border:1px solid #d9dae5;border-radius:13px;font:inherit;outline:none}input:focus{border-color:var(--violet);box-shadow:0 0 0 4px rgba(124,108,255,.13)}
+button{width:100%;margin-top:12px;border:0;border-radius:14px;padding:14px;font:inherit;font-weight:850;color:#fff;background:linear-gradient(135deg,var(--violet),#578fff)}
+.note{margin-top:18px;font-size:12px;color:#7f849c}.footer{margin-top:23px;font-size:12px;color:#747a95}.footer b{color:var(--pink)}
+</style>
+</head>
+<body>
+<main class="card">
+<div class="brand"><span class="mark"></span>PaperCut</div>
+<div class="kicker">MOBILE CONNECTION</div>
+<h1>Cut through the fine print.</h1>
+<p>The app uses your PaperCut server for sign-in, saved roadmaps, document processing and progress tracking.</p>
+<label for="server">PaperCut web address</label>
+<input id="server" placeholder="https://papercut.example.com">
+<button id="open">Open PaperCut →</button>
+<p class="note">For the Android emulator, use <b>http://10.0.2.2:8787</b> while the server runs on your computer. On a physical phone, use the HTTPS address of your deployed server.</p>
+<div class="footer">A <b>Quantum Cupcake</b> Creation ✦</div>
+</main>
+<script>
+const input=document.getElementById('server');
+input.value=localStorage.getItem('papercut_server')||'http://10.0.2.2:8787';
+document.getElementById('open').addEventListener('click',()=>{
+  const url=input.value.trim().replace(/\/$/,'');
+  if(!/^https?:\/\//i.test(url)){alert('Enter a full http:// or https:// address.');return;}
+  localStorage.setItem('papercut_server',url);
+  location.href=url;
+});
+</script>
+</body>
+</html>
